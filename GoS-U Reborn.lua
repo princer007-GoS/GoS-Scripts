@@ -8,6 +8,9 @@
 
 	Changelog:
 
+	v1.1.6
+	+ Fixed Tristana's Q usage
+
 	v1.1.5
 	+ Pushed small fix
 
@@ -129,7 +132,7 @@ local OnTicks = {Champion = nil, Utility = nil}
 local BaseUltC = {["Ashe"] = true, ["Draven"] = true, ["Ezreal"] = true, ["Jinx"] = true}
 local Champions = {["Ashe"] = true, ["Caitlyn"] = false, ["Corki"] = false, ["Draven"] = false, ["Ezreal"] = true, ["Jhin"] = false, ["Jinx"] = true, ["Kaisa"] = true, ["Kalista"] = false, ["KogMaw"] = true, ["Lucian"] = true, ["MissFortune"] = false, ["Quinn"] = false, ["Sivir"] = true, ["Tristana"] = true, ["Twitch"] = true, ["Varus"] = false, ["Vayne"] = true, ["Xayah"] = false}
 local Item_HK = {[ITEM_1] = HK_ITEM_1, [ITEM_2] = HK_ITEM_2, [ITEM_3] = HK_ITEM_3, [ITEM_4] = HK_ITEM_4, [ITEM_5] = HK_ITEM_5, [ITEM_6] = HK_ITEM_6, [ITEM_7] = HK_ITEM_7}
-local Version = "1.15"; local LuaVer = "1.1.5"
+local Version = "1.16"; local LuaVer = "1.1.6"
 local VerSite = "https://raw.githubusercontent.com/Ark223/GoS-Scripts/master/GoS-U%20Reborn.version"
 local LuaSite = "https://raw.githubusercontent.com/Ark223/GoS-Scripts/master/GoS-U%20Reborn.lua"
 
@@ -2587,7 +2590,7 @@ function Tristana:Draw()
 end
 
 function Tristana:OnPreAttack(args)
-	if (self.TristanaMenu.Combo.UseQ:Value() and GoSuManager:GetOrbwalkerMode() == "Combo") or (GoSuManager:GetPercentMana(myHero) > self.TristanaMenu.Harass.MP:Value() and self.TristanaMenu.Harass.UseQ:Value() and GoSuManager:GetOrbwalkerMode() == "Harass") then
+	if GoSuManager:IsReady(_Q) and ((self.TristanaMenu.Combo.UseQ:Value() and GoSuManager:GetOrbwalkerMode() == "Combo") or (GoSuManager:GetPercentMana(myHero) > self.TristanaMenu.Harass.MP:Value() and self.TristanaMenu.Harass.UseQ:Value() and GoSuManager:GetOrbwalkerMode() == "Harass")) then
 		local target = Module.TargetSelector:GetTarget(self.Range, nil); args.Target = target; ControlCastSpell(HK_Q)
 	end
 end
