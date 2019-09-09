@@ -1,38 +1,6 @@
---[[
-	   ___                _            ___             ___     __  _         
-	  / _ \_______ __ _  (_)_ ____ _  / _ \_______ ___/ (_)___/ /_(_)__  ___ 
-	 / ___/ __/ -_)  ' \/ / // /  ' \/ ___/ __/ -_) _  / / __/ __/ / _ \/ _ \
-	/_/  /_/  \__/_/_/_/_/\_,_/_/_/_/_/  /_/  \__/\_,_/_/\__/\__/_/\___/_//_/
-                                                             Powered by GoS!
 
-	-> Generic API
-
-	* GetPrediction(source, unit, speed, range, delay, radius, angle, collision)
-	> returns: CastPos, PredPos, HitChance, TimeToHit
-
-	* GetDashPrediction(source, unit, speed, delay, radius)
-	> returns: CastPos, TimeToHit
-
-	* GetHitChance(source, unit, predPos, timeToHit, speed, range, delay, radius, angle, collision)
-	> returns: HitChance
-
-	* PredictTargetPosition(source, minion, speed, delay, radius)
-	> returns: CastPos, PredPos, TimeToHit
-
-	-> Hitchances
-
-	-1             Minion or wall collision
-	0              Unit is out of range
-	0.1 - 0.24     Low accuracy
-	0.25 - 0.49    Medium accuracy
-	0.50 - 0.74    High accuracy
-	0.75 - 0.99    Very high accuracy
-	1              Unit is immobile or dashing
-
---]]
-
-local a = "2.02"
-require("MapPositionGOS")
+local a = "2.03"
+require 'MapPositionGOS'
 local b, c, d, e, f, g = Game.Latency, Game.Timer, Game.HeroCount, Game.Hero, Game.MinionCount, Game.Minion
 local h, i, j, k, l, m, n, o, p, q, r, s, t, u, v = math.abs, math.atan, math.atan2, math.acos, math.ceil, math.cos, math.deg, math.floor, math.huge, math.max, math.min, math.pi, math.rad, math.sin, math.sqrt
 local w, x = table.insert, table.remove
