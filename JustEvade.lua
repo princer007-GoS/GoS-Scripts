@@ -1092,7 +1092,7 @@ function JEvade:__init()
 	self.JEMenu.Main:MenuElement({id = "Evade", name = "Enable Evade", value = true})
 	self.JEMenu.Main:MenuElement({id = "Dodge", name = "Dodge Spells", value = true})
 	self.JEMenu.Main:MenuElement({id = "Draw", name = "Draw Spells", value = true})
-	self.JEMenu.Main:MenuElement({id = "FOW", name = "Enable Missile Detection", value = false})
+	self.JEMenu.Main:MenuElement({id = "Missile", name = "Enable Missile Detection", value = false})
 	self.JEMenu.Main:MenuElement({id = "Debug", name = "Debug Evade Points", value = true})
 	self.JEMenu.Main:MenuElement({id = "Status", name = "Draw Evade Status", value = true})
 	self.JEMenu.Main:MenuElement({id = "SafePos", name = "Draw Safe Position", value = true})
@@ -1655,7 +1655,7 @@ function JEvade:Tick()
 			for i = 1, #self.OnProcSpellCBs do self.OnProcSpellCBs[i](unit, active) end
 		end
 	end
-	if self.JEMenu.Main.FOW:Value() then
+	if self.JEMenu.Main.Missile:Value() then
 		for i = 1, GameMissileCount() do
 			local mis = GameMissile(i)
 			if mis then
