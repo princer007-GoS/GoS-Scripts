@@ -1733,9 +1733,11 @@ function JEvade:CoreManager(s)
 					self.ExtendedPos = self:GetExtendedSafePos(alternPos)
 					self.SafePos, self.Evading = alternPos, true
 				elseif result == 0 then
+					self.ExtendedPos, self.SafePos, self.Evading = nil, nil, false
 					for i = 1, #self.OnImpDodgeCBs do self.OnImpDodgeCBs[i]() end
 				end
 			else
+				self.ExtendedPos, self.SafePos, self.Evading = nil, nil, false
 				for i = 1, #self.OnImpDodgeCBs do self.OnImpDodgeCBs[i]() end
 			end
 			self.OldTimer = self.NewTimer
