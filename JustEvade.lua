@@ -12,6 +12,9 @@
 
 	Changelog:
 
+	v1.0.1
+	+ Fixed loading & spell usage
+
 	v1.0
 	+ Initial release of new series
 
@@ -21,7 +24,7 @@ local function DownloadFile(site, file)
 	DownloadFileAsync(site, file, function() end)
 	local timer = os.clock()
 	while os.clock() < timer + 1 do end
-	while not FileExist(path) do end
+	while not FileExist(file) do end
 end
 
 local function ReadFile(file)
@@ -30,10 +33,10 @@ local function ReadFile(file)
 	txt:close(); return result
 end
 
-local Version, IntVer = 1.0, "1.0"
+local Version, IntVer = 1.01, "1.0.1"
 local function AutoUpdate()
 	DownloadFile("https://raw.githubusercontent.com/Ark223/GoS-Scripts/master/JustEvade.version", SCRIPT_PATH .. "JustEvade.version")
-	if tonumber(ReadFile(SCRIPT_PATH .. "GoS-U Reborn.version")) > Version then
+	if tonumber(ReadFile(SCRIPT_PATH .. "JustEvade.version")) > Version then
 		print("JustEvade: Found update! Downloading...")
 		DownloadFile("https://raw.githubusercontent.com/Ark223/GoS-Scripts/master/JustEvade.lua", SCRIPT_PATH .. "JustEvade.lua")
 		print("JustEvade: Successfully updated. Use 2x F6!")
@@ -51,637 +54,637 @@ require 'MapPositionGOS'
 
 local SpellDatabase = {
 	["Aatrox"] = {
-		["AatroxQ"] = {icon = Icons.."AatroxQ1"..Png, displayName = "The Darkin Blade [First]", slot = "Q", type = "linear", speed = MathHuge, range = 650, delay = 0.6, radius = 130, danger = 3, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
-		["AatroxQ2"] = {icon = Icons.."AatroxQ2"..Png, displayName = "The Darkin Blade [Second]", slot = "Q", type = "polygon", speed = MathHuge, range = 500, delay = 0.6, radius = 200, danger = 3, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
-		["AatroxQ3"] = {icon = Icons.."AatroxQ3"..Png, displayName = "The Darkin Blade [Third]", slot = "Q", type = "circular", speed = MathHuge, range = 200, delay = 0.6, radius = 300, danger = 4, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
-		["AatroxW"] = {icon = Icons.."AatroxW"..Png, displayName = "Infernal Chains", missileName = "AatroxW", slot = "W", type = "linear", speed = 1800, range = 825, delay = 0.25, radius = 80, danger = 2, cc = true, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
+		["AatroxQ"] = {icon = Icons.."AatroxQ1"..Png, displayName = "The Darkin Blade [First]", slot = _Q, type = "linear", speed = MathHuge, range = 650, delay = 0.6, radius = 130, danger = 3, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
+		["AatroxQ2"] = {icon = Icons.."AatroxQ2"..Png, displayName = "The Darkin Blade [Second]", slot = _Q, type = "polygon", speed = MathHuge, range = 500, delay = 0.6, radius = 200, danger = 3, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
+		["AatroxQ3"] = {icon = Icons.."AatroxQ3"..Png, displayName = "The Darkin Blade [Third]", slot = _Q, type = "circular", speed = MathHuge, range = 200, delay = 0.6, radius = 300, danger = 4, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
+		["AatroxW"] = {icon = Icons.."AatroxW"..Png, displayName = "Infernal Chains", missileName = "AatroxW", slot = _W, type = "linear", speed = 1800, range = 825, delay = 0.25, radius = 80, danger = 2, cc = true, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
 	},
 	["Ahri"] = {
-		["AhriOrbofDeception"] = {icon = Icons.."AhriQ"..Png, missileName = "AhriOrbMissile", displayName = "Orb of Deception", slot = "Q", type = "linear", speed = 2500, range = 880, delay = 0.25, radius = 100, danger = 2, cc = false, collision = false, windwall = true, hitbox = true, fow = true, exception = false},
-		["AhriSeduce"] = {icon = Icons.."AhriE"..Png, displayName = "Seduce",  missileName = "AhriSeduceMissile", slot = "E", type = "linear", speed = 1500, range = 975, delay = 0.25, radius = 60, danger = 1, cc = true, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
+		["AhriOrbofDeception"] = {icon = Icons.."AhriQ"..Png, missileName = "AhriOrbMissile", displayName = "Orb of Deception", slot = _Q, type = "linear", speed = 2500, range = 880, delay = 0.25, radius = 100, danger = 2, cc = false, collision = false, windwall = true, hitbox = true, fow = true, exception = false},
+		["AhriSeduce"] = {icon = Icons.."AhriE"..Png, displayName = "Seduce",  missileName = "AhriSeduceMissile", slot = _E, type = "linear", speed = 1500, range = 975, delay = 0.25, radius = 60, danger = 1, cc = true, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
 	},
 	["Akali"] = {
-		["AkaliQ"] = {icon = Icons.."AkaliQ"..Png, displayName = "Five Point Strike", slot = "Q", type = "conic", speed = 3200, range = 550, delay = 0.25, radius = 60, angle = 45, danger = 2, cc = false, collision = false, windwall = true, hitbox = false, fow = false, exception = false},
-		["AkaliE"] = {icon = Icons.."AkaliE"..Png, displayName = "Shuriken Flip", missileName = "AkaliEMis", slot = "E", type = "linear", speed = 1800, range = 825, delay = 0.25, radius = 70, danger = 2, cc = false, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
-		["AkaliR"] = {icon = Icons.."AkaliR1"..Png, displayName = "Perfect Execution [First]", slot = "R", type = "linear", speed = 1800, range = 525, delay = 0, radius = 65, danger = 4, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
-		["AkaliRb"] = {icon = Icons.."AkaliR2"..Png, displayName = "Perfect Execution [Second]", slot = "R", type = "linear", speed = 3600, range = 525, delay = 0, radius = 65, danger = 4, cc = false, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
+		["AkaliQ"] = {icon = Icons.."AkaliQ"..Png, displayName = "Five Point Strike", slot = _Q, type = "conic", speed = 3200, range = 550, delay = 0.25, radius = 60, angle = 45, danger = 2, cc = false, collision = false, windwall = true, hitbox = false, fow = false, exception = false},
+		["AkaliE"] = {icon = Icons.."AkaliE"..Png, displayName = "Shuriken Flip", missileName = "AkaliEMis", slot = _E, type = "linear", speed = 1800, range = 825, delay = 0.25, radius = 70, danger = 2, cc = false, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
+		["AkaliR"] = {icon = Icons.."AkaliR1"..Png, displayName = "Perfect Execution [First]", slot = _R, type = "linear", speed = 1800, range = 525, delay = 0, radius = 65, danger = 4, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
+		["AkaliRb"] = {icon = Icons.."AkaliR2"..Png, displayName = "Perfect Execution [Second]", slot = _R, type = "linear", speed = 3600, range = 525, delay = 0, radius = 65, danger = 4, cc = false, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
 	},
 	["Alistar"] = {
-		["Pulverize"] = {icon = Icons.."AlistarQ"..Png, displayName = "Pulverize", slot = "Q", type = "circular", speed = MathHuge, range = 0, delay = 0.25, radius = 365, danger = 3, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
+		["Pulverize"] = {icon = Icons.."AlistarQ"..Png, displayName = "Pulverize", slot = _Q, type = "circular", speed = MathHuge, range = 0, delay = 0.25, radius = 365, danger = 3, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
 	},
 	["Amumu"] = {
-		["BandageToss"] = {icon = Icons.."AmumuQ"..Png, displayName = "Bandage Toss", missileName = "SadMummyBandageToss", slot = "Q", type = "linear", speed = 2000, range = 1100, delay = 0.25, radius = 80, danger = 3, cc = true, collision = true, windwall = true, hitbox = false, fow = true, exception = false},
-		["CurseoftheSadMummy"] = {icon = Icons.."AmumuR"..Png, displayName = "Curse of the Sad Mummy", slot = "R", type = "circular", speed = MathHuge, range = 0, delay = 0.25, radius = 550, danger = 5, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
+		["BandageToss"] = {icon = Icons.."AmumuQ"..Png, displayName = "Bandage Toss", missileName = "SadMummyBandageToss", slot = _Q, type = "linear", speed = 2000, range = 1100, delay = 0.25, radius = 80, danger = 3, cc = true, collision = true, windwall = true, hitbox = false, fow = true, exception = false},
+		["CurseoftheSadMummy"] = {icon = Icons.."AmumuR"..Png, displayName = "Curse of the Sad Mummy", slot = _R, type = "circular", speed = MathHuge, range = 0, delay = 0.25, radius = 550, danger = 5, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
 	},
 	["Anivia"] = {
-		["FlashFrostSpell"] = {icon = Icons.."AniviaQ"..Png, displayName = "Flash Frost", missileName = "FlashFrostSpell", slot = "Q", type = "linear", speed = 850, range = 1100, delay = 0.25, radius = 110, danger = 2, cc = true, collision = false, windwall = true, hitbox = true, fow = true, exception = false},
+		["FlashFrostSpell"] = {icon = Icons.."AniviaQ"..Png, displayName = "Flash Frost", missileName = "FlashFrostSpell", slot = _Q, type = "linear", speed = 850, range = 1100, delay = 0.25, radius = 110, danger = 2, cc = true, collision = false, windwall = true, hitbox = true, fow = true, exception = false},
 	},
 	["Annie"] = {
-		["AnnieW"] = {icon = Icons.."AnnieW"..Png, displayName = "Incinerate", slot = "W", type = "conic", speed = MathHuge, range = 600, delay = 0.25, radius = 0, angle = 50, danger = 2, cc = false, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
-		["AnnieR"] = {icon = Icons.."AnnieR"..Png, displayName = "Summon: Tibbers", slot = "R", type = "circular", speed = MathHuge, range = 600, delay = 0.25, radius = 290, danger = 5, cc = false, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
+		["AnnieW"] = {icon = Icons.."AnnieW"..Png, displayName = "Incinerate", slot = _W, type = "conic", speed = MathHuge, range = 600, delay = 0.25, radius = 0, angle = 50, danger = 2, cc = false, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
+		["AnnieR"] = {icon = Icons.."AnnieR"..Png, displayName = "Summon: Tibbers", slot = _R, type = "circular", speed = MathHuge, range = 600, delay = 0.25, radius = 290, danger = 5, cc = false, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
 	},
 	["Ashe"] = {
-		["Volley"] = {icon = Icons.."AsheW"..Png, displayName = "Volley", missileName = "VolleyRightAttack", slot = "W", type = "conic", speed = 2000, range = 1200, delay = 0.25, radius = 20, angle = 40, danger = 2, cc = true, collision = true, windwall = true, hitbox = false, fow = true, exception = false},
-		["EnchantedCrystalArrow"] = {icon = Icons.."AsheR"..Png, displayName = "Enchanted Crystal Arrow", missileName = "EnchantedCrystalArrow", slot = "R", type = "linear", speed = 1600, range = 12500, delay = 0.25, radius = 130, danger = 4, cc = true, collision = false, windwall = true, hitbox = true, fow = true, exception = false},
+		["Volley"] = {icon = Icons.."AsheW"..Png, displayName = "Volley", missileName = "VolleyRightAttack", slot = _W, type = "conic", speed = 2000, range = 1200, delay = 0.25, radius = 20, angle = 40, danger = 2, cc = true, collision = true, windwall = true, hitbox = false, fow = true, exception = false},
+		["EnchantedCrystalArrow"] = {icon = Icons.."AsheR"..Png, displayName = "Enchanted Crystal Arrow", missileName = "EnchantedCrystalArrow", slot = _R, type = "linear", speed = 1600, range = 12500, delay = 0.25, radius = 130, danger = 4, cc = true, collision = false, windwall = true, hitbox = true, fow = true, exception = false},
 	},
 	["AurelionSol"] = {
-		["AurelionSolQ"] = {icon = Icons.."AurelionSolQ"..Png, displayName = "Starsurge", missileName = "AurelionSolQMissile", slot = "Q", type = "linear", speed = 850, range = 1075, delay = 0, radius = 110, danger = 2, cc = true, collision = false, windwall = true, hitbox = true, fow = true, exception = false},
-		["AurelionSolR"] = {icon = Icons.."AurelionSolR"..Png, displayName = "Voice of Light", slot = "R", type = "linear", speed = 4500, range = 1500, delay = 0.35, radius = 120, danger = 5, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
+		["AurelionSolQ"] = {icon = Icons.."AurelionSolQ"..Png, displayName = "Starsurge", missileName = "AurelionSolQMissile", slot = _Q, type = "linear", speed = 850, range = 1075, delay = 0, radius = 110, danger = 2, cc = true, collision = false, windwall = true, hitbox = true, fow = true, exception = false},
+		["AurelionSolR"] = {icon = Icons.."AurelionSolR"..Png, displayName = "Voice of Light", slot = _R, type = "linear", speed = 4500, range = 1500, delay = 0.35, radius = 120, danger = 5, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
 	},
 	["Azir"] = {
-		["AzirR"] = {icon = Icons.."AzirR"..Png, displayName = "Emperor's Divide", slot = "R", type = "linear", speed = 1400, range = 500, delay = 0.3, radius = 250, danger = 5, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
+		["AzirR"] = {icon = Icons.."AzirR"..Png, displayName = "Emperor's Divide", slot = _R, type = "linear", speed = 1400, range = 500, delay = 0.3, radius = 250, danger = 5, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
 	},
 	["Bard"] = {
-		["BardQ"] = {icon = Icons.."BardQ"..Png, displayName = "Cosmic Binding", missileName = "BardQMissile", slot = "Q", type = "linear", speed = 1500, range = 950, delay = 0.25, radius = 60, danger = 2, cc = true, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
-		["BardR"] = {icon = Icons.."BardR"..Png, displayName = "Tempered Fate", missileName = "BardRMissile", slot = "R", type = "circular", speed = 2100, range = 3400, delay = 0.5, radius = 350, danger = 2, cc = true, collision = false, windwall = false, hitbox = false, fow = true, exception = false},
+		["BardQ"] = {icon = Icons.."BardQ"..Png, displayName = "Cosmic Binding", missileName = "BardQMissile", slot = _Q, type = "linear", speed = 1500, range = 950, delay = 0.25, radius = 60, danger = 2, cc = true, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
+		["BardR"] = {icon = Icons.."BardR"..Png, displayName = "Tempered Fate", missileName = "BardRMissile", slot = _R, type = "circular", speed = 2100, range = 3400, delay = 0.5, radius = 350, danger = 2, cc = true, collision = false, windwall = false, hitbox = false, fow = true, exception = false},
 	},
 	["Blitzcrank"] = {
-		["RocketGrab"] = {icon = Icons.."BlitzcrankQ"..Png, displayName = "Rocket Grab", missileName = "RocketGrabMissile", slot = "Q", type = "linear", speed = 1800, range = 925, delay = 0.25, radius = 70, danger = 3, cc = true, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
-		["StaticField"] = {icon = Icons.."BlitzcrankR"..Png, displayName = "Static Field", slot = "R", type = "circular", speed = MathHuge, range = 0, delay = 0.25, radius = 600, danger = 4, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
+		["RocketGrab"] = {icon = Icons.."BlitzcrankQ"..Png, displayName = "Rocket Grab", missileName = "RocketGrabMissile", slot = _Q, type = "linear", speed = 1800, range = 925, delay = 0.25, radius = 70, danger = 3, cc = true, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
+		["StaticField"] = {icon = Icons.."BlitzcrankR"..Png, displayName = "Static Field", slot = _R, type = "circular", speed = MathHuge, range = 0, delay = 0.25, radius = 600, danger = 4, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
 	},
 	["Brand"] = {
-		["BrandQ"] = {icon = Icons.."BrandQ"..Png, displayName = "Sear", missileName = "BrandQMissile", slot = "Q", type = "linear", speed = 1600, range = 1050, delay = 0.25, radius = 60, danger = 1, cc = false, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
-		["BrandW"] = {icon = Icons.."BrandW"..Png, displayName = "Pillar of Flame", slot = "W", type = "circular", speed = MathHuge, range = 900, delay = 0.85, radius = 250, danger = 2, cc = false, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
+		["BrandQ"] = {icon = Icons.."BrandQ"..Png, displayName = "Sear", missileName = "BrandQMissile", slot = _Q, type = "linear", speed = 1600, range = 1050, delay = 0.25, radius = 60, danger = 1, cc = false, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
+		["BrandW"] = {icon = Icons.."BrandW"..Png, displayName = "Pillar of Flame", slot = _W, type = "circular", speed = MathHuge, range = 900, delay = 0.85, radius = 250, danger = 2, cc = false, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
 	},
 	["Braum"] = {
-		["BraumQ"] = {icon = Icons.."BraumQ"..Png, displayName = "Winter's Bite", missileName = "BraumQMissile", slot = "Q", type = "linear", speed = 1700, range = 1000, delay = 0.25, radius = 70, danger = 3, cc = true, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
-		["BraumR"] = {icon = Icons.."BraumR"..Png, displayName = "Glacial Fissure", missileName = "BraumRMissile", slot = "R", type = "linear", speed = 1400, range = 1250, delay = 0.5, radius = 115, danger = 4, cc = true, collision = false, windwall = true, hitbox = true, fow = true, exception = false},
+		["BraumQ"] = {icon = Icons.."BraumQ"..Png, displayName = "Winter's Bite", missileName = "BraumQMissile", slot = _Q, type = "linear", speed = 1700, range = 1000, delay = 0.25, radius = 70, danger = 3, cc = true, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
+		["BraumR"] = {icon = Icons.."BraumR"..Png, displayName = "Glacial Fissure", missileName = "BraumRMissile", slot = _R, type = "linear", speed = 1400, range = 1250, delay = 0.5, radius = 115, danger = 4, cc = true, collision = false, windwall = true, hitbox = true, fow = true, exception = false},
 	},
 	["Caitlyn"] = {
-		["CaitlynPiltoverPeacemaker"] = {icon = Icons.."CaitlynQ"..Png, displayName = "Piltover Peacemaker", missileName = "CaitlynPiltoverPeacemaker", slot = "Q", type = "linear", speed = 2200, range = 1250, delay = 0.625, radius = 90, danger = 1, cc = false, collision = false, windwall = true, hitbox = true, fow = true, exception = false},
-		["CaitlynYordleTrap"] = {icon = Icons.."CaitlynW"..Png, displayName = "Yordle Trap", slot = "W", type = "circular", speed = MathHuge, range = 800, delay = 0.35, radius = 75, danger = 1, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
-		["CaitlynEntrapment"] = {icon = Icons.."CaitlynE"..Png, displayName = "Entrapment", missileName = "CaitlynEntrapment", slot = "E", type = "linear", speed = 1600, range = 750, delay = 0.15, radius = 70, danger = 2, cc = true, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
+		["CaitlynPiltoverPeacemaker"] = {icon = Icons.."CaitlynQ"..Png, displayName = "Piltover Peacemaker", missileName = "CaitlynPiltoverPeacemaker", slot = _Q, type = "linear", speed = 2200, range = 1250, delay = 0.625, radius = 90, danger = 1, cc = false, collision = false, windwall = true, hitbox = true, fow = true, exception = false},
+		["CaitlynYordleTrap"] = {icon = Icons.."CaitlynW"..Png, displayName = "Yordle Trap", slot = _W, type = "circular", speed = MathHuge, range = 800, delay = 0.35, radius = 75, danger = 1, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
+		["CaitlynEntrapment"] = {icon = Icons.."CaitlynE"..Png, displayName = "Entrapment", missileName = "CaitlynEntrapment", slot = _E, type = "linear", speed = 1600, range = 750, delay = 0.15, radius = 70, danger = 2, cc = true, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
 	},
 	["Camille"] = {
-		["CamilleE"] = {icon = Icons.."CamilleE1"..Png, displayName = "Hookshot [First]", missileName = "CamilleEMissile", slot = "E", type = "linear", speed = 1900, range = 800, delay = 0, radius = 60, danger = 1, cc = false, collision = false, windwall = true, hitbox = true, fow = true, exception = false},
-		["CamilleEDash2"] = {icon = Icons.."CamilleE2"..Png, displayName = "Hookshot [Second]", slot = "E", type = "linear", speed = 1900, range = 400, delay = 0, radius = 60, danger = 2, cc = true, collision = false, windwall = true, hitbox = false, fow = false, exception = false},
+		["CamilleE"] = {icon = Icons.."CamilleE1"..Png, displayName = "Hookshot [First]", missileName = "CamilleEMissile", slot = _E, type = "linear", speed = 1900, range = 800, delay = 0, radius = 60, danger = 1, cc = false, collision = false, windwall = true, hitbox = true, fow = true, exception = false},
+		["CamilleEDash2"] = {icon = Icons.."CamilleE2"..Png, displayName = "Hookshot [Second]", slot = _E, type = "linear", speed = 1900, range = 400, delay = 0, radius = 60, danger = 2, cc = true, collision = false, windwall = true, hitbox = false, fow = false, exception = false},
 	},
 	["Cassiopeia"] = {
-		["CassiopeiaQ"] = {icon = Icons.."CassiopeiaQ"..Png, displayName = "Noxious Blast", slot = "Q", type = "circular", speed = MathHuge, range = 850, delay = 0.75, radius = 150, danger = 2, cc = false, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
-		["CassiopeiaW"] = {icon = Icons.."CassiopeiaW"..Png, displayName = "Miasma", slot = "W", type = "circular", speed = 2500, range = 800, delay = 0.75, radius = 160, danger = 2, cc = true, collision = false, windwall = true, hitbox = false, fow = false, exception = false},
-		["CassiopeiaR"] = {icon = Icons.."CassiopeiaR"..Png, displayName = "Petrifying Gaze", slot = "R", type = "conic", speed = MathHuge, range = 825, delay = 0.5, radius = 0, angle = 80, danger = 5, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
+		["CassiopeiaQ"] = {icon = Icons.."CassiopeiaQ"..Png, displayName = "Noxious Blast", slot = _Q, type = "circular", speed = MathHuge, range = 850, delay = 0.75, radius = 150, danger = 2, cc = false, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
+		["CassiopeiaW"] = {icon = Icons.."CassiopeiaW"..Png, displayName = "Miasma", slot = _W, type = "circular", speed = 2500, range = 800, delay = 0.75, radius = 160, danger = 2, cc = true, collision = false, windwall = true, hitbox = false, fow = false, exception = false},
+		["CassiopeiaR"] = {icon = Icons.."CassiopeiaR"..Png, displayName = "Petrifying Gaze", slot = _R, type = "conic", speed = MathHuge, range = 825, delay = 0.5, radius = 0, angle = 80, danger = 5, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
 	},
 	["Chogath"] = {
-		["Rupture"] = {icon = Icons.."ChogathQ"..Png, displayName = "Rupture", slot = "Q", type = "circular", speed = MathHuge, range = 950, delay = 1.2, radius = 250, danger = 2, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
-		["FeralScream"] = {icon = Icons.."ChogathW"..Png, displayName = "Feral Scream", slot = "W", type = "conic", speed = MathHuge, range = 650, delay = 0.5, radius = 0, angle = 56, danger = 2, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
+		["Rupture"] = {icon = Icons.."ChogathQ"..Png, displayName = "Rupture", slot = _Q, type = "circular", speed = MathHuge, range = 950, delay = 1.2, radius = 250, danger = 2, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
+		["FeralScream"] = {icon = Icons.."ChogathW"..Png, displayName = "Feral Scream", slot = _W, type = "conic", speed = MathHuge, range = 650, delay = 0.5, radius = 0, angle = 56, danger = 2, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
 	},
 	["Corki"] = {
-		["PhosphorusBomb"] = {icon = Icons.."CorkiQ"..Png, displayName = "Phosphorus Bomb", missileName = "PhosphorusBombMissile", slot = "Q", type = "circular", speed = 1000, range = 825, delay = 0.25, radius = 250, danger = 2, cc = false, collision = false, windwall = true, hitbox = false, fow = true, exception = false},
-		["MissileBarrageMissile"] = {icon = Icons.."CorkiR1"..Png, displayName = "Missile Barrage [Standard]", missileName = "MissileBarrageMissile", slot = "R", type = "linear", speed = 2000, range = 1300, delay = 0.175, radius = 40, danger = 1, cc = false, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
-		["MissileBarrageMissile2"] = {icon = Icons.."CorkiR2"..Png, displayName = "Missile Barrage [Big]", missileName = "MissileBarrageMissile2", slot = "R", type = "linear", speed = 2000, range = 1500, delay = 0.175, radius = 40, danger = 1, cc = false, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
+		["PhosphorusBomb"] = {icon = Icons.."CorkiQ"..Png, displayName = "Phosphorus Bomb", missileName = "PhosphorusBombMissile", slot = _Q, type = "circular", speed = 1000, range = 825, delay = 0.25, radius = 250, danger = 2, cc = false, collision = false, windwall = true, hitbox = false, fow = true, exception = false},
+		["MissileBarrageMissile"] = {icon = Icons.."CorkiR1"..Png, displayName = "Missile Barrage [Standard]", missileName = "MissileBarrageMissile", slot = _R, type = "linear", speed = 2000, range = 1300, delay = 0.175, radius = 40, danger = 1, cc = false, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
+		["MissileBarrageMissile2"] = {icon = Icons.."CorkiR2"..Png, displayName = "Missile Barrage [Big]", missileName = "MissileBarrageMissile2", slot = _R, type = "linear", speed = 2000, range = 1500, delay = 0.175, radius = 40, danger = 1, cc = false, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
 	},
 	["Diana"] = {
-		["DianaQ"] = {icon = Icons.."DianaQ"..Png, displayName = "Crescent Strike", slot = "Q", type = "circular", speed = 1900, range = 900, delay = 0.25, radius = 185, danger = 2, cc = false, collision = true, windwall = true, hitbox = false, fow = false, exception = false},
+		["DianaQ"] = {icon = Icons.."DianaQ"..Png, displayName = "Crescent Strike", slot = _Q, type = "circular", speed = 1900, range = 900, delay = 0.25, radius = 185, danger = 2, cc = false, collision = true, windwall = true, hitbox = false, fow = false, exception = false},
 	},
 	["Draven"] = {
-		["DravenDoubleShot"] = {icon = Icons.."DravenE"..Png, displayName = "Double Shot", missileName = "DravenDoubleShotMissile", slot = "E", type = "linear", speed = 1600, range = 1050, delay = 0.25, radius = 130, danger = 3, cc = true, collision = false, windwall = true, hitbox = true, fow = true, exception = false},
-		["DravenRCast"] = {icon = Icons.."DravenR"..Png, displayName = "Whirling Death", slot = "R", type = "linear", speed = 2000, range = 12500, delay = 0.25, radius = 160, danger = 4, cc = false, collision = false, windwall = true, hitbox = true, fow = false, exception = false},
+		["DravenDoubleShot"] = {icon = Icons.."DravenE"..Png, displayName = "Double Shot", missileName = "DravenDoubleShotMissile", slot = _E, type = "linear", speed = 1600, range = 1050, delay = 0.25, radius = 130, danger = 3, cc = true, collision = false, windwall = true, hitbox = true, fow = true, exception = false},
+		["DravenRCast"] = {icon = Icons.."DravenR"..Png, displayName = "Whirling Death", slot = _R, type = "linear", speed = 2000, range = 12500, delay = 0.25, radius = 160, danger = 4, cc = false, collision = false, windwall = true, hitbox = true, fow = false, exception = false},
 	},
 	["DrMundo"] = {
-		["InfectedCleaverMissile"] = {icon = Icons.."DrMundoQ"..Png, displayName = "Infected Cleaver", missileName = "InfectedCleaverMissile", slot = "Q", type = "linear", speed = 2000, range = 975, delay = 0.25, radius = 60, danger = 2, cc = true, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
+		["InfectedCleaverMissile"] = {icon = Icons.."DrMundoQ"..Png, displayName = "Infected Cleaver", missileName = "InfectedCleaverMissile", slot = _Q, type = "linear", speed = 2000, range = 975, delay = 0.25, radius = 60, danger = 2, cc = true, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
 	},
 	["Ekko"] = {
-		["EkkoQ"] = {icon = Icons.."EkkoQ"..Png, displayName = "Timewinder", missileName = "EkkoQMis", slot = "Q", type = "linear", speed = 1650, range = 1175, delay = 0.25, radius = 60, danger = 1, cc = true, collision = false, windwall = true, hitbox = true, fow = true, exception = false},
-		["EkkoW"] = {icon = Icons.."EkkoW"..Png, displayName = "Parallel Convergence", slot = "W", type = "circular", speed = MathHuge, range = 1600, delay = 3.35, radius = 400, danger = 1, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
+		["EkkoQ"] = {icon = Icons.."EkkoQ"..Png, displayName = "Timewinder", missileName = "EkkoQMis", slot = _Q, type = "linear", speed = 1650, range = 1175, delay = 0.25, radius = 60, danger = 1, cc = true, collision = false, windwall = true, hitbox = true, fow = true, exception = false},
+		["EkkoW"] = {icon = Icons.."EkkoW"..Png, displayName = "Parallel Convergence", slot = _W, type = "circular", speed = MathHuge, range = 1600, delay = 3.35, radius = 400, danger = 1, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
 	},
 	["Elise"] = {
-		["EliseHumanE"] = {icon = Icons.."EliseE"..Png, displayName = "Cocoon", missileName = "EliseHumanE", slot = "E", type = "linear", speed = 1600, range = 1075, delay = 0.25, radius = 55, danger = 1, cc = true, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
+		["EliseHumanE"] = {icon = Icons.."EliseE"..Png, displayName = "Cocoon", missileName = "EliseHumanE", slot = _E, type = "linear", speed = 1600, range = 1075, delay = 0.25, radius = 55, danger = 1, cc = true, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
 	},
 	["Evelynn"] = {
-		["EvelynnQ"] = {icon = Icons.."EvelynnQ"..Png, displayName = "Hate Spike", missileName = "EvelynnQ", slot = "Q", type = "linear", speed = 2400, range = 800, delay = 0.25, radius = 60, danger = 2, cc = false, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
-		["EvelynnR"] = {icon = Icons.."EvelynnR"..Png, displayName = "Last Caress", slot = "R", type = "conic", speed = MathHuge, range = 450, delay = 0.35, radius = 180, angle = 180, danger = 5, cc = false, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
+		["EvelynnQ"] = {icon = Icons.."EvelynnQ"..Png, displayName = "Hate Spike", missileName = "EvelynnQ", slot = _Q, type = "linear", speed = 2400, range = 800, delay = 0.25, radius = 60, danger = 2, cc = false, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
+		["EvelynnR"] = {icon = Icons.."EvelynnR"..Png, displayName = "Last Caress", slot = _R, type = "conic", speed = MathHuge, range = 450, delay = 0.35, radius = 180, angle = 180, danger = 5, cc = false, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
 	},
 	["Ezreal"] = {
-		["EzrealQ"] = {icon = Icons.."EzrealQ"..Png, displayName = "Mystic Shot", missileName = "EzrealQ", slot = "Q", type = "linear", speed = 2000, range = 1150, delay = 0.25, radius = 60, danger = 1, cc = false, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
-		["EzrealW"] = {icon = Icons.."EzrealW"..Png, displayName = "Essence Flux", missileName = "EzrealW", slot = "W", type = "linear", speed = 2000, range = 1150, delay = 0.25, radius = 60, danger = 1, cc = false, collision = false, windwall = true, hitbox = true, fow = true, exception = false},
-		["EzrealR"] = {icon = Icons.."EzrealR"..Png, displayName = "Trueshot Barrage", missileName = "EzrealR", slot = "R", type = "linear", speed = 2000, range = 12500, delay = 1, radius = 160, danger = 4, cc = false, collision = false, windwall = true, hitbox = true, fow = true, exception = false},
+		["EzrealQ"] = {icon = Icons.."EzrealQ"..Png, displayName = "Mystic Shot", missileName = "EzrealQ", slot = _Q, type = "linear", speed = 2000, range = 1150, delay = 0.25, radius = 60, danger = 1, cc = false, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
+		["EzrealW"] = {icon = Icons.."EzrealW"..Png, displayName = "Essence Flux", missileName = "EzrealW", slot = _W, type = "linear", speed = 2000, range = 1150, delay = 0.25, radius = 60, danger = 1, cc = false, collision = false, windwall = true, hitbox = true, fow = true, exception = false},
+		["EzrealR"] = {icon = Icons.."EzrealR"..Png, displayName = "Trueshot Barrage", missileName = "EzrealR", slot = _R, type = "linear", speed = 2000, range = 12500, delay = 1, radius = 160, danger = 4, cc = false, collision = false, windwall = true, hitbox = true, fow = true, exception = false},
 	},
 	["Fiora"] = {
-		["FioraW"] = {icon = Icons.."FioraW"..Png, displayName = "Riposte", slot = "W", type = "linear", speed = 3200, range = 750, delay = 0.75, radius = 70, danger = 2, cc = true, collision = false, windwall = true, hitbox = false, fow = false, exception = false},
+		["FioraW"] = {icon = Icons.."FioraW"..Png, displayName = "Riposte", slot = _W, type = "linear", speed = 3200, range = 750, delay = 0.75, radius = 70, danger = 2, cc = true, collision = false, windwall = true, hitbox = false, fow = false, exception = false},
 	},
 	["Fizz"] = {
-		["FizzR"] = {icon = Icons.."FizzR"..Png, displayName = "Chum the Waters", missileName = "FizzRMissile", slot = "R", type = "linear", speed = 1300, range = 1300, delay = 0.25, radius = 150, danger = 5, cc = true, collision = false, windwall = true, hitbox = true, fow = true, exception = false},
+		["FizzR"] = {icon = Icons.."FizzR"..Png, displayName = "Chum the Waters", missileName = "FizzRMissile", slot = _R, type = "linear", speed = 1300, range = 1300, delay = 0.25, radius = 150, danger = 5, cc = true, collision = false, windwall = true, hitbox = true, fow = true, exception = false},
 	},
 	["Galio"] = {
-		["GalioQ"] = {icon = Icons.."GalioQ"..Png, displayName = "Winds of War", missileName = "GalioQMissile", slot = "Q", type = "circular", speed = 1150, range = 825, delay = 0.25, radius = 235, danger = 2, cc = false, collision = false, windwall = true, hitbox = false, fow = true, exception = false},
-		["GalioE"] = {icon = Icons.."GalioE"..Png, displayName = "Justice Punch", slot = "E", type = "linear", speed = 2300, range = 650, delay = 0.4, radius = 160, danger = 3, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
+		["GalioQ"] = {icon = Icons.."GalioQ"..Png, displayName = "Winds of War", missileName = "GalioQMissile", slot = _Q, type = "circular", speed = 1150, range = 825, delay = 0.25, radius = 235, danger = 2, cc = false, collision = false, windwall = true, hitbox = false, fow = true, exception = false},
+		["GalioE"] = {icon = Icons.."GalioE"..Png, displayName = "Justice Punch", slot = _E, type = "linear", speed = 2300, range = 650, delay = 0.4, radius = 160, danger = 3, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
 	},
 	["Gnar"] = {
-		["GnarQMissile"] = {icon = Icons.."GnarQMini"..Png, displayName = "Boomerang Throw", missileName = "GnarQMissile", slot = "Q", type = "linear", speed = 2500, range = 1125, delay = 0.25, radius = 55, danger = 2, cc = true, collision = false, windwall = true, hitbox = true, fow = true, exception = false},
-		["GnarBigQMissile"] = {icon = Icons.."GnarQMega"..Png, displayName = "Boulder Toss", missileName = "GnarBigQMissile", slot = "Q", type = "linear", speed = 2100, range = 1125, delay = 0.5, radius = 90, danger = 2, cc = true, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
-		["GnarBigW"] = {icon = Icons.."GnarWMega"..Png, displayName = "Wallop", slot = "W", type = "linear", speed = MathHuge, range = 575, delay = 0.6, radius = 100, danger = 3, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
-		--["GnarE"] = {icon = Icons.."GnarEMini"..Png, displayName = "Hop", slot = "E", type = "circular", speed = 900, range = 475, delay = 0.25, radius = 160, danger = 2, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
-		--["GnarBigE"] = {icon = Icons.."GnarEMega"..Png, displayName = "Crunch", slot = "E", type = "circular", speed = 800, range = 600, delay = 0.25, radius = 375, danger = 3, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
-		["GnarR"] = {icon = Icons.."GnarR"..Png, displayName = "GNAR!", slot = "R", type = "circular", speed = MathHuge, range = 0, delay = 0.25, radius = 475, danger = 5, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
+		["GnarQMissile"] = {icon = Icons.."GnarQMini"..Png, displayName = "Boomerang Throw", missileName = "GnarQMissile", slot = _Q, type = "linear", speed = 2500, range = 1125, delay = 0.25, radius = 55, danger = 2, cc = true, collision = false, windwall = true, hitbox = true, fow = true, exception = false},
+		["GnarBigQMissile"] = {icon = Icons.."GnarQMega"..Png, displayName = "Boulder Toss", missileName = "GnarBigQMissile", slot = _Q, type = "linear", speed = 2100, range = 1125, delay = 0.5, radius = 90, danger = 2, cc = true, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
+		["GnarBigW"] = {icon = Icons.."GnarWMega"..Png, displayName = "Wallop", slot = _W, type = "linear", speed = MathHuge, range = 575, delay = 0.6, radius = 100, danger = 3, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
+		--["GnarE"] = {icon = Icons.."GnarEMini"..Png, displayName = "Hop", slot = _E, type = "circular", speed = 900, range = 475, delay = 0.25, radius = 160, danger = 2, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
+		--["GnarBigE"] = {icon = Icons.."GnarEMega"..Png, displayName = "Crunch", slot = _E, type = "circular", speed = 800, range = 600, delay = 0.25, radius = 375, danger = 3, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
+		["GnarR"] = {icon = Icons.."GnarR"..Png, displayName = "GNAR!", slot = _R, type = "circular", speed = MathHuge, range = 0, delay = 0.25, radius = 475, danger = 5, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
 	},
 	["Gragas"] = {
-		["GragasQ"] = {icon = Icons.."GragasQ"..Png, displayName = "Barrel Roll", missileName = "GragasQMissile", slot = "Q", type = "circular", speed = 1000, range = 850, delay = 0.25, radius = 275, danger = 2, cc = true, collision = false, windwall = true, hitbox = false, fow = true, exception = false},
-		--["GragasE"] = {icon = Icons.."GragasE"..Png, displayName = "Body Slam", slot = "E", type = "linear", speed = 900, range = 600, delay = 0.25, radius = 170, danger = 2, cc = true, collision = true, windwall = false, hitbox = false, fow = false, exception = false},
-		["GragasR"] = {icon = Icons.."GragasR"..Png, displayName = "Explosive Cask", missileName = "GragasRBoom", slot = "R", type = "circular", speed = 1800, range = 1000, delay = 0.25, radius = 400, danger = 5, cc = true, collision = false, windwall = true, hitbox = false, fow = true, exception = false},
+		["GragasQ"] = {icon = Icons.."GragasQ"..Png, displayName = "Barrel Roll", missileName = "GragasQMissile", slot = _Q, type = "circular", speed = 1000, range = 850, delay = 0.25, radius = 275, danger = 2, cc = true, collision = false, windwall = true, hitbox = false, fow = true, exception = false},
+		--["GragasE"] = {icon = Icons.."GragasE"..Png, displayName = "Body Slam", slot = _E, type = "linear", speed = 900, range = 600, delay = 0.25, radius = 170, danger = 2, cc = true, collision = true, windwall = false, hitbox = false, fow = false, exception = false},
+		["GragasR"] = {icon = Icons.."GragasR"..Png, displayName = "Explosive Cask", missileName = "GragasRBoom", slot = _R, type = "circular", speed = 1800, range = 1000, delay = 0.25, radius = 400, danger = 5, cc = true, collision = false, windwall = true, hitbox = false, fow = true, exception = false},
 	},
 	["Graves"] = {
-		["GravesQLineSpell"] = {icon = Icons.."GravesQ"..Png, displayName = "End of the Line", slot = "Q", type = "polygon", speed = MathHuge, range = 800, delay = 1.4, radius = 20, danger = 1, cc = false, collision = false, windwall = true, hitbox = true, fow = false, exception = false},
-		["GravesSmokeGrenade"] = {icon = Icons.."GravesW"..Png, displayName = "Smoke Grenade", missileName = "GravesSmokeGrenadeBoom", slot = "W", type = "circular", speed = 1500, range = 950, delay = 0.15, radius = 250, danger = 2, cc = true, collision = false, windwall = true, hitbox = false, fow = true, exception = false},
-		["GravesChargeShot"] = {icon = Icons.."GravesR"..Png, displayName = "Charge Shot", missileName = "GravesChargeShotShot", slot = "R", type = "polygon", speed = 2100, range = 1000, delay = 0.25, radius = 100, danger = 5, cc = false, collision = false, windwall = true, hitbox = true, fow = true, exception = false},
+		["GravesQLineSpell"] = {icon = Icons.."GravesQ"..Png, displayName = "End of the Line", slot = _Q, type = "polygon", speed = MathHuge, range = 800, delay = 1.4, radius = 20, danger = 1, cc = false, collision = false, windwall = true, hitbox = true, fow = false, exception = false},
+		["GravesSmokeGrenade"] = {icon = Icons.."GravesW"..Png, displayName = "Smoke Grenade", missileName = "GravesSmokeGrenadeBoom", slot = _W, type = "circular", speed = 1500, range = 950, delay = 0.15, radius = 250, danger = 2, cc = true, collision = false, windwall = true, hitbox = false, fow = true, exception = false},
+		["GravesChargeShot"] = {icon = Icons.."GravesR"..Png, displayName = "Charge Shot", missileName = "GravesChargeShotShot", slot = _R, type = "polygon", speed = 2100, range = 1000, delay = 0.25, radius = 100, danger = 5, cc = false, collision = false, windwall = true, hitbox = true, fow = true, exception = false},
 	},
 	["Hecarim"] = {
-		["HecarimUlt"] = {icon = Icons.."HecarimR"..Png, displayName = "Onslaught of Shadows", missileName = "HecarimUltMissile", slot = "R", type = "linear", speed = 1100, range = 1650, delay = 0.2, radius = 280, danger = 4, cc = true, collision = false, windwall = false, hitbox = false, fow = true, exception = false},
+		["HecarimUlt"] = {icon = Icons.."HecarimR"..Png, displayName = "Onslaught of Shadows", missileName = "HecarimUltMissile", slot = _R, type = "linear", speed = 1100, range = 1650, delay = 0.2, radius = 280, danger = 4, cc = true, collision = false, windwall = false, hitbox = false, fow = true, exception = false},
 	},
 	["Heimerdinger"] = {
-		["HeimerdingerW"] = {icon = Icons.."HeimerdingerW"..Png, displayName = "Hextech Micro-Rockets", slot = "W", type = "linear", speed = 2050, range = 1325, delay = 0.25, radius = 100, danger = 2, cc = false, collision = false, windwall = true, hitbox = true, fow = false, exception = false},
-		["HeimerdingerE"] = {icon = Icons.."HeimerdingerE1"..Png, displayName = "CH-2 Electron Storm Grenade", missileName = "HeimerdingerESpell", slot = "E", type = "circular", speed = 1200, range = 970, delay = 0.25, radius = 250, danger = 2, cc = true, collision = false, windwall = true, hitbox = false, fow = true, exception = false},
-		["HeimerdingerEUlt"] = {icon = Icons.."HeimerdingerE2"..Png, displayName = "CH-2 Electron Storm Grenade [Ult]", missileName = "HeimerdingerESpell_ult", slot = "E", type = "circular", speed = 1200, range = 970, delay = 0.25, radius = 250, danger = 3, cc = true, collision = false, windwall = true, hitbox = false, fow = true, exception = false},
+		["HeimerdingerW"] = {icon = Icons.."HeimerdingerW"..Png, displayName = "Hextech Micro-Rockets", slot = _W, type = "linear", speed = 2050, range = 1325, delay = 0.25, radius = 100, danger = 2, cc = false, collision = false, windwall = true, hitbox = true, fow = false, exception = false},
+		["HeimerdingerE"] = {icon = Icons.."HeimerdingerE1"..Png, displayName = "CH-2 Electron Storm Grenade", missileName = "HeimerdingerESpell", slot = _E, type = "circular", speed = 1200, range = 970, delay = 0.25, radius = 250, danger = 2, cc = true, collision = false, windwall = true, hitbox = false, fow = true, exception = false},
+		["HeimerdingerEUlt"] = {icon = Icons.."HeimerdingerE2"..Png, displayName = "CH-2 Electron Storm Grenade [Ult]", missileName = "HeimerdingerESpell_ult", slot = _E, type = "circular", speed = 1200, range = 970, delay = 0.25, radius = 250, danger = 3, cc = true, collision = false, windwall = true, hitbox = false, fow = true, exception = false},
 	},
 	["Illaoi"] = {
-		["IllaoiQ"] = {icon = Icons.."IllaoiQ"..Png, displayName = "Tentacle Smash", slot = "Q", type = "linear", speed = MathHuge, range = 850, delay = 0.75, radius = 100, danger = 2, cc = false, collision = true, windwall = false, hitbox = false, fow = false, exception = false},
-		["IllaoiE"] = {icon = Icons.."IllaoiE"..Png, displayName = "Test of Spirit", missileName = "IllaoiEMis", slot = "E", type = "linear", speed = 1900, range = 900, delay = 0.25, radius = 50, danger = 1, cc = false, collision = true, windwall = true, hitbox = false, fow = true, exception = false},
+		["IllaoiQ"] = {icon = Icons.."IllaoiQ"..Png, displayName = "Tentacle Smash", slot = _Q, type = "linear", speed = MathHuge, range = 850, delay = 0.75, radius = 100, danger = 2, cc = false, collision = true, windwall = false, hitbox = false, fow = false, exception = false},
+		["IllaoiE"] = {icon = Icons.."IllaoiE"..Png, displayName = "Test of Spirit", missileName = "IllaoiEMis", slot = _E, type = "linear", speed = 1900, range = 900, delay = 0.25, radius = 50, danger = 1, cc = false, collision = true, windwall = true, hitbox = false, fow = true, exception = false},
 	},
 	["Irelia"] = {
-		["IreliaW2"] = {icon = Icons.."IreliaW"..Png, displayName = "Defiant Dance", slot = "W", type = "linear", speed = MathHuge, range = 825, delay = 0.25, radius = 120, danger = 3, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
-		--["IreliaEParticleMissile"] = {icon = Icons.."IreliaE"..Png, displayName = "Flawless Duet", missileName = "IreliaEParticleMissile", slot = "E", type = "linear", speed = MathHuge, range = 1550, delay = 0.5, radius = 70, danger = 2, cc = true, collision = false, windwall = false, hitbox = false, fow = true, exception = true},
-		["IreliaR"] = {icon = Icons.."IreliaR"..Png, displayName = "Vanguard's Edge", missileName = "IreliaR", slot = "R", type = "linear", speed = 2000, range = 950, delay = 0.4, radius = 160, danger = 4, cc = true, collision = false, windwall = true, hitbox = false, fow = true, exception = false},
+		["IreliaW2"] = {icon = Icons.."IreliaW"..Png, displayName = "Defiant Dance", slot = _W, type = "linear", speed = MathHuge, range = 825, delay = 0.25, radius = 120, danger = 3, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
+		--["IreliaEParticleMissile"] = {icon = Icons.."IreliaE"..Png, displayName = "Flawless Duet", missileName = "IreliaEParticleMissile", slot = _E, type = "linear", speed = MathHuge, range = 1550, delay = 0.5, radius = 70, danger = 2, cc = true, collision = false, windwall = false, hitbox = false, fow = true, exception = true},
+		["IreliaR"] = {icon = Icons.."IreliaR"..Png, displayName = "Vanguard's Edge", missileName = "IreliaR", slot = _R, type = "linear", speed = 2000, range = 950, delay = 0.4, radius = 160, danger = 4, cc = true, collision = false, windwall = true, hitbox = false, fow = true, exception = false},
 	},
 	["Ivern"] = {
-		["IvernQ"] = {icon = Icons.."IvernQ"..Png, displayName = "Rootcaller", missileName = "IvernQ", slot = "Q", type = "linear", speed = 1300, range = 1075, delay = 0.25, radius = 80, danger = 1, cc = true, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
+		["IvernQ"] = {icon = Icons.."IvernQ"..Png, displayName = "Rootcaller", missileName = "IvernQ", slot = _Q, type = "linear", speed = 1300, range = 1075, delay = 0.25, radius = 80, danger = 1, cc = true, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
 	},
 	["Janna"] = {
-		["HowlingGaleSpell"] = {icon = Icons.."JannaQ"..Png, displayName = "Howling Gale", missileName = "HowlingGaleSpell", slot = "Q", type = "linear", speed = 667, range = 1750, radius = 100, danger = 2, cc = true, collision = false, windwall = true, fow = true, exception = true},
+		["HowlingGaleSpell"] = {icon = Icons.."JannaQ"..Png, displayName = "Howling Gale", missileName = "HowlingGaleSpell", slot = _Q, type = "linear", speed = 667, range = 1750, radius = 100, danger = 2, cc = true, collision = false, windwall = true, fow = true, exception = true},
 	},
 	["JarvanIV"] = {
-		["JarvanIVDragonStrike"] = {icon = Icons.."JarvanIVQ"..Png, displayName = "Dragon Strike", slot = "Q", type = "linear", speed = MathHuge, range = 770, delay = 0.4, radius = 70, danger = 2, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
-		["JarvanIVDemacianStandard"] = {icon = Icons.."JarvanIVE"..Png, displayName = "Demacian Standard", slot = "E", type = "circular", speed = 3440, range = 860, delay = 0, radius = 175, danger = 2, cc = false, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
+		["JarvanIVDragonStrike"] = {icon = Icons.."JarvanIVQ"..Png, displayName = "Dragon Strike", slot = _Q, type = "linear", speed = MathHuge, range = 770, delay = 0.4, radius = 70, danger = 2, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
+		["JarvanIVDemacianStandard"] = {icon = Icons.."JarvanIVE"..Png, displayName = "Demacian Standard", slot = _E, type = "circular", speed = 3440, range = 860, delay = 0, radius = 175, danger = 2, cc = false, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
 	},
 	["Jayce"] = {
-		["JayceShockBlast"] = {icon = Icons.."JayceQ"..Png, displayName = "Shock Blast", missileName = "JayceShockBlastMis", slot = "Q", type = "linear", speed = 1450, range = 1050, delay = 0.214, radius = 70, danger = 1, cc = false, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
+		["JayceShockBlast"] = {icon = Icons.."JayceQ"..Png, displayName = "Shock Blast", missileName = "JayceShockBlastMis", slot = _Q, type = "linear", speed = 1450, range = 1050, delay = 0.214, radius = 70, danger = 1, cc = false, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
 	},
 	["Jhin"] = {
-		["JhinW"] = {icon = Icons.."JhinW"..Png, displayName = "Deadly Flourish", slot = "W", type = "linear", speed = 5000, range = 2550, delay = 0.75, radius = 40, danger = 1, cc = true, collision = false, windwall = true, hitbox = false, fow = false, exception = false},
-		["JhinE"] = {icon = Icons.."JhinE"..Png, displayName = "Captive Audience", missileName = "JhinETrap", slot = "E", type = "circular", speed = 1600, range = 750, delay = 0.25, radius = 130, danger = 1, cc = true, collision = false, windwall = false, hitbox = false, fow = true, exception = false},
-		["JhinRShot"] = {icon = Icons.."JhinR"..Png, displayName = "Curtain Call", missileName = "JhinRShotMis", slot = "R", type = "linear", speed = 5000, range = 3500, delay = 0.25, radius = 80, danger = 2, cc = true, collision = false, windwall = true, hitbox = true, fow = true, exception = true},
+		["JhinW"] = {icon = Icons.."JhinW"..Png, displayName = "Deadly Flourish", slot = _W, type = "linear", speed = 5000, range = 2550, delay = 0.75, radius = 40, danger = 1, cc = true, collision = false, windwall = true, hitbox = false, fow = false, exception = false},
+		["JhinE"] = {icon = Icons.."JhinE"..Png, displayName = "Captive Audience", missileName = "JhinETrap", slot = _E, type = "circular", speed = 1600, range = 750, delay = 0.25, radius = 130, danger = 1, cc = true, collision = false, windwall = false, hitbox = false, fow = true, exception = false},
+		["JhinRShot"] = {icon = Icons.."JhinR"..Png, displayName = "Curtain Call", missileName = "JhinRShotMis", slot = _R, type = "linear", speed = 5000, range = 3500, delay = 0.25, radius = 80, danger = 2, cc = true, collision = false, windwall = true, hitbox = true, fow = true, exception = true},
 	},
 	["Jinx"] = {
-		["JinxWMissile"] = {icon = Icons.."JinxW"..Png, displayName = "Zap!", missileName = "JinxWMissile", slot = "W", type = "linear", speed = 3300, range = 1450, delay = 0.6, radius = 60, danger = 1, cc = true, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
-		--["JinxE"] = {icon = Icons.."JinxE"..Png, displayName = "Flame Chompers!", missileName = "JinxEHit", slot = "E", type = "polygon", speed = 1100, range = 900, delay = 1.5, radius = 120, danger = 1, cc = true, collision = false, windwall = true, hitbox = false, fow = true, exception = false},
-		["JinxR"] = {icon = Icons.."JinxR"..Png, displayName = "Super Mega Death Rocket!", missileName = "JinxR", slot = "R", type = "linear", speed = 1700, range = 12500, delay = 0.6, radius = 140, danger = 4, cc = false, collision = false, windwall = true, hitbox = true, fow = true, exception = false},
+		["JinxWMissile"] = {icon = Icons.."JinxW"..Png, displayName = "Zap!", missileName = "JinxWMissile", slot = _W, type = "linear", speed = 3300, range = 1450, delay = 0.6, radius = 60, danger = 1, cc = true, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
+		--["JinxE"] = {icon = Icons.."JinxE"..Png, displayName = "Flame Chompers!", missileName = "JinxEHit", slot = _E, type = "polygon", speed = 1100, range = 900, delay = 1.5, radius = 120, danger = 1, cc = true, collision = false, windwall = true, hitbox = false, fow = true, exception = false},
+		["JinxR"] = {icon = Icons.."JinxR"..Png, displayName = "Super Mega Death Rocket!", missileName = "JinxR", slot = _R, type = "linear", speed = 1700, range = 12500, delay = 0.6, radius = 140, danger = 4, cc = false, collision = false, windwall = true, hitbox = true, fow = true, exception = false},
 	},
 	["Kaisa"] = {
-		["KaisaW"] = {icon = Icons.."KaisaW"..Png, displayName = "Void Seeker", missileName = "KaisaW", slot = "W", type = "linear", speed = 1750, range = 3000, delay = 0.4, radius = 100, danger = 1, cc = false, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
+		["KaisaW"] = {icon = Icons.."KaisaW"..Png, displayName = "Void Seeker", missileName = "KaisaW", slot = _W, type = "linear", speed = 1750, range = 3000, delay = 0.4, radius = 100, danger = 1, cc = false, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
 	},
 	["Kalista"] = {
-		["KalistaMysticShot"] = {icon = Icons.."KalistaQ"..Png, displayName = "Pierce", missileName = "KalistaMysticShotMisTrue", slot = "Q", type = "linear", speed = 2400, range = 1150, delay = 0.25, radius = 40, danger = 1, cc = false, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
+		["KalistaMysticShot"] = {icon = Icons.."KalistaQ"..Png, displayName = "Pierce", missileName = "KalistaMysticShotMisTrue", slot = _Q, type = "linear", speed = 2400, range = 1150, delay = 0.25, radius = 40, danger = 1, cc = false, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
 	},
 	["Karma"] = {
-		["KarmaQ"] = {icon = Icons.."KarmaQ1"..Png, displayName = "Inner Flame", missileName = "KarmaQMissile", slot = "Q", type = "linear", speed = 1700, range = 950, delay = 0.25, radius = 60, danger = 2, cc = true, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
-		["KarmaQMantra"] = {icon = Icons.."KarmaQ2"..Png, displayName = "Inner Flame [Mantra]", missileName = "KarmaQMissileMantra", slot = "Q", type = "linear", speed = 1700, range = 950, delay = 0.25, radius = 80, danger = 2, cc = true, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
+		["KarmaQ"] = {icon = Icons.."KarmaQ1"..Png, displayName = "Inner Flame", missileName = "KarmaQMissile", slot = _Q, type = "linear", speed = 1700, range = 950, delay = 0.25, radius = 60, danger = 2, cc = true, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
+		["KarmaQMantra"] = {icon = Icons.."KarmaQ2"..Png, displayName = "Inner Flame [Mantra]", missileName = "KarmaQMissileMantra", slot = _Q, type = "linear", speed = 1700, range = 950, delay = 0.25, radius = 80, danger = 2, cc = true, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
 	},
 	["Karthus"] = {
-		["KarthusLayWasteA1"] = {icon = Icons.."KarthusQ"..Png, displayName = "Lay Waste [1]", slot = "Q", type = "circular", speed = MathHuge, range = 875, delay = 0.9, radius = 175, danger = 1, cc = false, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
-		["KarthusLayWasteA2"] = {icon = Icons.."KarthusQ"..Png, displayName = "Lay Waste [2]", slot = "Q", type = "circular", speed = MathHuge, range = 875, delay = 0.9, radius = 175, danger = 1, cc = false, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
-		["KarthusLayWasteA3"] = {icon = Icons.."KarthusQ"..Png, displayName = "Lay Waste [3]", slot = "Q", type = "circular", speed = MathHuge, range = 875, delay = 0.9, radius = 175, danger = 1, cc = false, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
+		["KarthusLayWasteA1"] = {icon = Icons.."KarthusQ"..Png, displayName = "Lay Waste [1]", slot = _Q, type = "circular", speed = MathHuge, range = 875, delay = 0.9, radius = 175, danger = 1, cc = false, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
+		["KarthusLayWasteA2"] = {icon = Icons.."KarthusQ"..Png, displayName = "Lay Waste [2]", slot = _Q, type = "circular", speed = MathHuge, range = 875, delay = 0.9, radius = 175, danger = 1, cc = false, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
+		["KarthusLayWasteA3"] = {icon = Icons.."KarthusQ"..Png, displayName = "Lay Waste [3]", slot = _Q, type = "circular", speed = MathHuge, range = 875, delay = 0.9, radius = 175, danger = 1, cc = false, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
 	},
 	["Kassadin"] = {
-		["ForcePulse"] = {icon = Icons.."KassadinE"..Png, displayName = "Force Pulse", slot = "E", type = "conic", speed = MathHuge, range = 600, delay = 0.3, radius = 0, angle = 80, danger = 3, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
-		["RiftWalk"] = {icon = Icons.."KassadinR"..Png, displayName = "Rift Walk", slot = "R", type = "circular", speed = MathHuge, range = 500, delay = 0.25, radius = 250, danger = 3, cc = false, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
+		["ForcePulse"] = {icon = Icons.."KassadinE"..Png, displayName = "Force Pulse", slot = _E, type = "conic", speed = MathHuge, range = 600, delay = 0.3, radius = 0, angle = 80, danger = 3, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
+		["RiftWalk"] = {icon = Icons.."KassadinR"..Png, displayName = "Rift Walk", slot = _R, type = "circular", speed = MathHuge, range = 500, delay = 0.25, radius = 250, danger = 3, cc = false, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
 	},
 	["Kayle"] = {
-		["KayleQ"] = {icon = Icons.."KayleQ"..Png, displayName = "Radiant Blast", missileName = "KayleQMis", slot = "Q", type = "linear", speed = 1600, range = 900, delay = 0.25, radius = 60, danger = 1, cc = true, collision = false, windwall = true, hitbox = true, fow = true, exception = false},
+		["KayleQ"] = {icon = Icons.."KayleQ"..Png, displayName = "Radiant Blast", missileName = "KayleQMis", slot = _Q, type = "linear", speed = 1600, range = 900, delay = 0.25, radius = 60, danger = 1, cc = true, collision = false, windwall = true, hitbox = true, fow = true, exception = false},
 	},
 	["Kayn"] = {
-		--["KaynQ"] = {icon = Icons.."KaynQ"..Png, displayName = "Reaping Slash", slot = "Q", type = "circular", speed = MathHuge, range = 0, delay = 0.15, radius = 350, danger = 2, cc = false, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
-		["KaynW"] = {icon = Icons.."KaynW"..Png, displayName = "Blade's Reach", slot = "W", type = "linear", speed = MathHuge, range = 700, delay = 0.55, radius = 90, danger = 2, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
+		--["KaynQ"] = {icon = Icons.."KaynQ"..Png, displayName = "Reaping Slash", slot = _Q, type = "circular", speed = MathHuge, range = 0, delay = 0.15, radius = 350, danger = 2, cc = false, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
+		["KaynW"] = {icon = Icons.."KaynW"..Png, displayName = "Blade's Reach", slot = _W, type = "linear", speed = MathHuge, range = 700, delay = 0.55, radius = 90, danger = 2, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
 	},
 	["Kennen"] = {
-		["KennenShurikenHurlMissile1"] = {icon = Icons.."KennenQ"..Png, displayName = "Shuriken Hurl", missileName = "KennenShurikenHurlMissile1", slot = "Q", type = "linear", speed = 1700, range = 1050, delay = 0.175, radius = 50, danger = 2, cc = false, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
+		["KennenShurikenHurlMissile1"] = {icon = Icons.."KennenQ"..Png, displayName = "Shuriken Hurl", missileName = "KennenShurikenHurlMissile1", slot = _Q, type = "linear", speed = 1700, range = 1050, delay = 0.175, radius = 50, danger = 2, cc = false, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
 	},
 	["Khazix"] = {
-		["KhazixW"] = {icon = Icons.."KhazixW1"..Png, displayName = "Void Spike [Standard]", missileName = "KhazixWMissile", slot = "W", type = "linear", speed = 1700, range = 1000, delay = 0.25, radius = 70, danger = 1, cc = false, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
-		["KhazixWLong"] = {icon = Icons.."KhazixW2"..Png, displayName = "Void Spike [Threeway]", slot = "W", type = "threeway", speed = 1700, range = 1000, delay = 0.25, radius = 70, angle = 23, danger = 2, cc = true, collision = true, windwall = true, hitbox = true, fow = false, exception = false},
+		["KhazixW"] = {icon = Icons.."KhazixW1"..Png, displayName = "Void Spike [Standard]", missileName = "KhazixWMissile", slot = _W, type = "linear", speed = 1700, range = 1000, delay = 0.25, radius = 70, danger = 1, cc = false, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
+		["KhazixWLong"] = {icon = Icons.."KhazixW2"..Png, displayName = "Void Spike [Threeway]", slot = _W, type = "threeway", speed = 1700, range = 1000, delay = 0.25, radius = 70, angle = 23, danger = 2, cc = true, collision = true, windwall = true, hitbox = true, fow = false, exception = false},
 	},
 	["Kled"] = {
-		["KledQ"] = {icon = Icons.."KledQMount"..Png, displayName = "Beartrap on a Rope", missileName = "KledQMissile", slot = "Q", type = "linear", speed = 1600, range = 800, delay = 0.25, radius = 45, danger = 1, cc = true, collision = false, windwall = true, fow = true, exception = false},
-		["KledRiderQ"] = {icon = Icons.."KledQDismount"..Png, displayName = "Pocket Pistol", missileName = "KledRiderQMissile", slot = "Q", type = "conic", speed = 3000, range = 700, delay = 0.25, radius = 0, angle = 25, danger = 3, cc = false, collision = false, windwall = true, hitbox = false, fow = true, exception = false},
-		--["KledEDash"] = {icon = Icons.."KledE"..Png, displayName = "Jousting", slot = "E", type = "linear", speed = 1100, range = 550, delay = 0, radius = 90, danger = 2, cc = false, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
+		["KledQ"] = {icon = Icons.."KledQMount"..Png, displayName = "Beartrap on a Rope", missileName = "KledQMissile", slot = _Q, type = "linear", speed = 1600, range = 800, delay = 0.25, radius = 45, danger = 1, cc = true, collision = false, windwall = true, fow = true, exception = false},
+		["KledRiderQ"] = {icon = Icons.."KledQDismount"..Png, displayName = "Pocket Pistol", missileName = "KledRiderQMissile", slot = _Q, type = "conic", speed = 3000, range = 700, delay = 0.25, radius = 0, angle = 25, danger = 3, cc = false, collision = false, windwall = true, hitbox = false, fow = true, exception = false},
+		--["KledEDash"] = {icon = Icons.."KledE"..Png, displayName = "Jousting", slot = _E, type = "linear", speed = 1100, range = 550, delay = 0, radius = 90, danger = 2, cc = false, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
 	},
 	["KogMaw"] = {
-		["KogMawQ"] = {icon = Icons.."KogMawQ"..Png, displayName = "Caustic Spittle", missileName = "KogMawQ", slot = "Q", type = "linear", speed = 1650, range = 1175, delay = 0.25, radius = 70, danger = 1, cc = false, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
-		["KogMawVoidOozeMissile"] = {icon = Icons.."KogMawE"..Png, displayName = "Void Ooze", missileName = "KogMawVoidOozeMissile", slot = "E", type = "linear", speed = 1400, range = 1360, delay = 0.25, radius = 120, danger = 2, cc = true, collision = false, windwall = true, hitbox = true, fow = true, exception = false},
-		["KogMawLivingArtillery"] = {icon = Icons.."KogMawR"..Png, displayName = "Living Artillery", slot = "R", type = "circular", speed = MathHuge, range = 1300, delay = 1.1, radius = 200, danger = 1, cc = false, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
+		["KogMawQ"] = {icon = Icons.."KogMawQ"..Png, displayName = "Caustic Spittle", missileName = "KogMawQ", slot = _Q, type = "linear", speed = 1650, range = 1175, delay = 0.25, radius = 70, danger = 1, cc = false, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
+		["KogMawVoidOozeMissile"] = {icon = Icons.."KogMawE"..Png, displayName = "Void Ooze", missileName = "KogMawVoidOozeMissile", slot = _E, type = "linear", speed = 1400, range = 1360, delay = 0.25, radius = 120, danger = 2, cc = true, collision = false, windwall = true, hitbox = true, fow = true, exception = false},
+		["KogMawLivingArtillery"] = {icon = Icons.."KogMawR"..Png, displayName = "Living Artillery", slot = _R, type = "circular", speed = MathHuge, range = 1300, delay = 1.1, radius = 200, danger = 1, cc = false, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
 	},
 	["Leblanc"] = {
-		["LeblancE"] = {icon = Icons.."LeblancE"..Png, displayName = "Ethereal Chains [Standard]", missileName = "LeblancEMissile", slot = "E", type = "linear", speed = 1750, range = 925, delay = 0.25, radius = 55, danger = 1, cc = true, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
-		["LeblancRE"] = {icon = Icons.."LeblancRE"..Png, displayName = "Ethereal Chains [Ultimate]", missileName = "LeblancREMissile", slot = "E", type = "linear", speed = 1750, range = 925, delay = 0.25, radius = 55, danger = 1, cc = true, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
+		["LeblancE"] = {icon = Icons.."LeblancE"..Png, displayName = "Ethereal Chains [Standard]", missileName = "LeblancEMissile", slot = _E, type = "linear", speed = 1750, range = 925, delay = 0.25, radius = 55, danger = 1, cc = true, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
+		["LeblancRE"] = {icon = Icons.."LeblancRE"..Png, displayName = "Ethereal Chains [Ultimate]", missileName = "LeblancREMissile", slot = _E, type = "linear", speed = 1750, range = 925, delay = 0.25, radius = 55, danger = 1, cc = true, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
 	},
 	["LeeSin"] = {
-		["BlindMonkQOne"] = {icon = Icons.."LeeSinQ"..Png, displayName = "Sonic Wave", missileName = "BlindMonkQOne", slot = "Q", type = "linear", speed = 1800, range = 1100, delay = 0.25, radius = 60, danger = 1, cc = false, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
+		["BlindMonkQOne"] = {icon = Icons.."LeeSinQ"..Png, displayName = "Sonic Wave", missileName = "BlindMonkQOne", slot = _Q, type = "linear", speed = 1800, range = 1100, delay = 0.25, radius = 60, danger = 1, cc = false, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
 	},
 	["Leona"] = {
-		["LeonaZenithBlade"] = {icon = Icons.."LeonaE"..Png, displayName = "Zenith Blade", missileName = "LeonaZenithBladeMissile", slot = "E", type = "linear", speed = 2000, range = 875, delay = 0.25, radius = 70, danger = 2, cc = true, collision = false, windwall = true, hitbox = true, fow = true, exception = false},
-		["LeonaSolarFlare"] = {icon = Icons.."LeonaR"..Png, displayName = "Solar Flare", slot = "R", type = "circular", speed = MathHuge, range = 1200, delay = 0.85, radius = 300, danger = 5, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
+		["LeonaZenithBlade"] = {icon = Icons.."LeonaE"..Png, displayName = "Zenith Blade", missileName = "LeonaZenithBladeMissile", slot = _E, type = "linear", speed = 2000, range = 875, delay = 0.25, radius = 70, danger = 2, cc = true, collision = false, windwall = true, hitbox = true, fow = true, exception = false},
+		["LeonaSolarFlare"] = {icon = Icons.."LeonaR"..Png, displayName = "Solar Flare", slot = _R, type = "circular", speed = MathHuge, range = 1200, delay = 0.85, radius = 300, danger = 5, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
 	},
 	["Lissandra"] = {
-		["LissandraQMissile"] = {icon = Icons.."LissandraQ"..Png, displayName = "Ice Shard", missileName = "LissandraQMissile", slot = "Q", type = "linear", speed = 2200, range = 750, delay = 0.25, radius = 75, danger = 2, cc = true, collision = false, windwall = true, hitbox = true, fow = true, exception = false},
-		["LissandraEMissile"] = {icon = Icons.."LissandraE"..Png, displayName = "Glacial Path", missileName = "LissandraEMissile", slot = "E", type = "linear", speed = 850, range = 1025, delay = 0.25, radius = 125, danger = 2, cc = false, collision = false, windwall = true, hitbox = true, fow = true, exception = false},
+		["LissandraQMissile"] = {icon = Icons.."LissandraQ"..Png, displayName = "Ice Shard", missileName = "LissandraQMissile", slot = _Q, type = "linear", speed = 2200, range = 750, delay = 0.25, radius = 75, danger = 2, cc = true, collision = false, windwall = true, hitbox = true, fow = true, exception = false},
+		["LissandraEMissile"] = {icon = Icons.."LissandraE"..Png, displayName = "Glacial Path", missileName = "LissandraEMissile", slot = _E, type = "linear", speed = 850, range = 1025, delay = 0.25, radius = 125, danger = 2, cc = false, collision = false, windwall = true, hitbox = true, fow = true, exception = false},
 	},
 	["Lucian"] = {
-		["LucianQ"] = {icon = Icons.."LucianQ"..Png, displayName = "Piercing Light", slot = "Q", type = "linear", speed = MathHuge, range = 900, delay = 0.35, radius = 65, danger = 2, cc = false, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
-		["LucianW"] = {icon = Icons.."LucianW"..Png, displayName = "Ardent Blaze", missileName = "LucianW", slot = "W", type = "linear", speed = 1600, range = 900, delay = 0.25, radius = 80, danger = 2, cc = false, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
+		["LucianQ"] = {icon = Icons.."LucianQ"..Png, displayName = "Piercing Light", slot = _Q, type = "linear", speed = MathHuge, range = 900, delay = 0.35, radius = 65, danger = 2, cc = false, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
+		["LucianW"] = {icon = Icons.."LucianW"..Png, displayName = "Ardent Blaze", missileName = "LucianW", slot = _W, type = "linear", speed = 1600, range = 900, delay = 0.25, radius = 80, danger = 2, cc = false, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
 	},
 	["Lulu"] = {
-		["LuluQ"] = {icon = Icons.."LuluQ"..Png, displayName = "Glitterlance", missileName = "LuluQMissile", slot = "Q", type = "linear", speed = 1450, range = 925, delay = 0.25, radius = 60, danger = 1, cc = true, collision = false, windwall = true, hitbox = true, fow = true, exception = false},
+		["LuluQ"] = {icon = Icons.."LuluQ"..Png, displayName = "Glitterlance", missileName = "LuluQMissile", slot = _Q, type = "linear", speed = 1450, range = 925, delay = 0.25, radius = 60, danger = 1, cc = true, collision = false, windwall = true, hitbox = true, fow = true, exception = false},
 	},
 	["Lux"] = {
-		["LuxLightBinding"] = {icon = Icons.."LuxQ"..Png, displayName = "Light Binding", missileName = "LuxLightBindingDummy", slot = "Q", type = "linear", speed = 1200, range = 1175, delay = 0.25, radius = 70, danger = 1, cc = true, collision = false, windwall = true, hitbox = true, fow = true, exception = false},
-		["LuxLightStrikeKugel"] = {icon = Icons.."LuxE"..Png, displayName = "Light Strike Kugel", missileName = "LuxLightStrikeKugel", slot = "E", type = "circular", speed = 1200, range = 1100, delay = 0.25, radius = 300, danger = 3, cc = true, collision = true, windwall = true, hitbox = false, fow = true, exception = false},
-		["LuxMaliceCannon"] = {icon = Icons.."LuxR"..Png, displayName = "Malice Cannon", missileName = "LuxRVfxMis", slot = "R", type = "linear", speed = MathHuge, range = 3340, delay = 1, radius = 120, danger = 4, cc = false, collision = false, windwall = false, hitbox = false, fow = true, exception = false},
+		["LuxLightBinding"] = {icon = Icons.."LuxQ"..Png, displayName = "Light Binding", missileName = "LuxLightBindingDummy", slot = _Q, type = "linear", speed = 1200, range = 1175, delay = 0.25, radius = 70, danger = 1, cc = true, collision = false, windwall = true, hitbox = true, fow = true, exception = false},
+		["LuxLightStrikeKugel"] = {icon = Icons.."LuxE"..Png, displayName = "Light Strike Kugel", missileName = "LuxLightStrikeKugel", slot = _E, type = "circular", speed = 1200, range = 1100, delay = 0.25, radius = 300, danger = 3, cc = true, collision = true, windwall = true, hitbox = false, fow = true, exception = false},
+		["LuxMaliceCannon"] = {icon = Icons.."LuxR"..Png, displayName = "Malice Cannon", missileName = "LuxRVfxMis", slot = _R, type = "linear", speed = MathHuge, range = 3340, delay = 1, radius = 120, danger = 4, cc = false, collision = false, windwall = false, hitbox = false, fow = true, exception = false},
 	},
 	["Malphite"] = {
-		["Landslide"] = {icon = Icons.."MalphiteE"..Png, displayName = "Ground Slam", slot = "E", type = "circular", speed = MathHuge, range = 0, delay = 0.242, radius = 400, danger = 2, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
-		--["UFSlash"] = {icon = Icons.."MalphiteR"..Png, displayName = "Unstoppable Force", slot = "R", type = "circular", speed = 1835, range = 1000, delay = 0, radius = 300, danger = 5, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
+		["Landslide"] = {icon = Icons.."MalphiteE"..Png, displayName = "Ground Slam", slot = _E, type = "circular", speed = MathHuge, range = 0, delay = 0.242, radius = 400, danger = 2, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
+		--["UFSlash"] = {icon = Icons.."MalphiteR"..Png, displayName = "Unstoppable Force", slot = _R, type = "circular", speed = 1835, range = 1000, delay = 0, radius = 300, danger = 5, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
 	},
 	["Malzahar"] = {
-		["MalzaharQ"] = {icon = Icons.."MalzaharQ"..Png, displayName = "Call of the Void", slot = "Q", type = "rectangular", speed = 1600, range = 900, delay = 0.5, radius = 100, danger = 1, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
+		["MalzaharQ"] = {icon = Icons.."MalzaharQ"..Png, displayName = "Call of the Void", slot = _Q, type = "rectangular", speed = 1600, range = 900, delay = 0.5, radius = 100, danger = 1, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
 	},
 	["Maokai"] = {
-		["MaokaiQ"] = {icon = Icons.."MaokaiQ"..Png, displayName = "Bramble Smash", missileName = "MaokaiQMissile", slot = "Q", type = "linear", speed = 1600, range = 600, delay = 0.375, radius = 110, danger = 2, cc = true, collision = false, windwall = true, hitbox = true, fow = true, exception = false},
+		["MaokaiQ"] = {icon = Icons.."MaokaiQ"..Png, displayName = "Bramble Smash", missileName = "MaokaiQMissile", slot = _Q, type = "linear", speed = 1600, range = 600, delay = 0.375, radius = 110, danger = 2, cc = true, collision = false, windwall = true, hitbox = true, fow = true, exception = false},
 	},
 	["MissFortune"] = {
-		["MissFortuneBulletTime"] = {icon = Icons.."MissFortuneR"..Png, displayName = "Bullet Time", slot = "R", type = "conic", speed = 2000, range = 1400, delay = 0.25, radius = 100, angle = 34, danger = 4, cc = false, collision = false, windwall = true, hitbox = false, fow = false, exception = false},
+		["MissFortuneBulletTime"] = {icon = Icons.."MissFortuneR"..Png, displayName = "Bullet Time", slot = _R, type = "conic", speed = 2000, range = 1400, delay = 0.25, radius = 100, angle = 34, danger = 4, cc = false, collision = false, windwall = true, hitbox = false, fow = false, exception = false},
 	},
 	["Mordekaiser"] = {
-		["MordekaiserQ"] = {icon = Icons.."MordekaiserQ"..Png, displayName = "Obliterate", slot = "Q", type = "polygon", speed = MathHuge, range = 675, delay = 0.4, radius = 200, danger = 2, cc = false, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
-		["MordekaiserE"] = {icon = Icons.."MordekaiserE"..Png, displayName = "Death's Grasp", slot = "E", type = "polygon", speed = MathHuge, range = 900, delay = 0.9, radius = 140, danger = 3, cc = true, collision = false, windwall = true, hitbox = true, fow = false, exception = false},
+		["MordekaiserQ"] = {icon = Icons.."MordekaiserQ"..Png, displayName = "Obliterate", slot = _Q, type = "polygon", speed = MathHuge, range = 675, delay = 0.4, radius = 200, danger = 2, cc = false, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
+		["MordekaiserE"] = {icon = Icons.."MordekaiserE"..Png, displayName = "Death's Grasp", slot = _E, type = "polygon", speed = MathHuge, range = 900, delay = 0.9, radius = 140, danger = 3, cc = true, collision = false, windwall = true, hitbox = true, fow = false, exception = false},
 	},
 	["Morgana"] = {
-		["MorganaQ"] = {icon = Icons.."MorganaQ"..Png, displayName = "Dark Binding", missileName = "MorganaQ", slot = "Q", type = "linear", speed = 1200, range = 1250, delay = 0.25, radius = 70, danger = 1, cc = true, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
+		["MorganaQ"] = {icon = Icons.."MorganaQ"..Png, displayName = "Dark Binding", missileName = "MorganaQ", slot = _Q, type = "linear", speed = 1200, range = 1250, delay = 0.25, radius = 70, danger = 1, cc = true, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
 	},
 	["Nami"] = {
-		["NamiQ"] = {icon = Icons.."NamiQ"..Png, displayName = "Aqua Prison", missileName = "NamiQMissile", slot = "Q", type = "circular", speed = MathHuge, range = 875, delay = 1, radius = 180, danger = 1, cc = true, collision = false, windwall = true, hitbox = false, fow = true, exception = false},
-		["NamiRMissile"] = {icon = Icons.."NamiR"..Png, displayName = "Tidal Wave", missileName = "NamiRMissile", slot = "R", type = "linear", speed = 850, range = 2750, delay = 0.5, radius = 250, danger = 3, cc = true, collision = false, windwall = true, hitbox = true, fow = true, exception = false},
+		["NamiQ"] = {icon = Icons.."NamiQ"..Png, displayName = "Aqua Prison", missileName = "NamiQMissile", slot = _Q, type = "circular", speed = MathHuge, range = 875, delay = 1, radius = 180, danger = 1, cc = true, collision = false, windwall = true, hitbox = false, fow = true, exception = false},
+		["NamiRMissile"] = {icon = Icons.."NamiR"..Png, displayName = "Tidal Wave", missileName = "NamiRMissile", slot = _R, type = "linear", speed = 850, range = 2750, delay = 0.5, radius = 250, danger = 3, cc = true, collision = false, windwall = true, hitbox = true, fow = true, exception = false},
 	},
 	["Nautilus"] = {
-		["NautilusAnchorDragMissile"] = {icon = Icons.."NautilusQ"..Png, displayName = "Dredge Line", missileName = "NautilusAnchorDragMissile", slot = "Q", type = "linear", speed = 2000, range = 925, delay = 0.25, radius = 90, danger = 3, cc = true, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
+		["NautilusAnchorDragMissile"] = {icon = Icons.."NautilusQ"..Png, displayName = "Dredge Line", missileName = "NautilusAnchorDragMissile", slot = _Q, type = "linear", speed = 2000, range = 925, delay = 0.25, radius = 90, danger = 3, cc = true, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
 	},
 	["Neeko"] = {
-		["NeekoQ"] = {icon = Icons.."NeekoQ"..Png, displayName = "Blooming Burst", missileName = "NeekoQ", slot = "Q", type = "circular", speed = 1500, range = 800, delay = 0.25, radius = 200, danger = 2, cc = true, collision = false, windwall = true, hitbox = false, fow = true, exception = false},
-		["NeekoE"] = {icon = Icons.."NeekoE"..Png, displayName = "Tangle-Barbs", missileName = "NeekoE", slot = "E", type = "linear", speed = 1300, range = 1000, delay = 0.25, radius = 70, danger = 1, cc = true, collision = false, windwall = true, hitbox = true, fow = true, exception = false},
+		["NeekoQ"] = {icon = Icons.."NeekoQ"..Png, displayName = "Blooming Burst", missileName = "NeekoQ", slot = _Q, type = "circular", speed = 1500, range = 800, delay = 0.25, radius = 200, danger = 2, cc = true, collision = false, windwall = true, hitbox = false, fow = true, exception = false},
+		["NeekoE"] = {icon = Icons.."NeekoE"..Png, displayName = "Tangle-Barbs", missileName = "NeekoE", slot = _E, type = "linear", speed = 1300, range = 1000, delay = 0.25, radius = 70, danger = 1, cc = true, collision = false, windwall = true, hitbox = true, fow = true, exception = false},
 	},
 	["Nidalee"] = {
-		["JavelinToss"] = {icon = Icons.."NidaleeQ"..Png, displayName = "Javelin Toss", missileName = "JavelinToss", slot = "Q", type = "linear", speed = 1300, range = 1500, delay = 0.25, radius = 40, danger = 1, cc = false, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
-		["Bushwhack"] = {icon = Icons.."NidaleeW"..Png, displayName = "Bushwhack", slot = "W", type = "circular", speed = MathHuge, range = 900, delay = 1.25, radius = 85, danger = 1, cc = false, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
-		["Swipe"] = {icon = Icons.."NidaleeE"..Png, displayName = "Swipe", slot = "E", type = "conic", speed = MathHuge, range = 350, delay = 0.25, radius = 0, angle = 180, danger = 2, cc = false, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
+		["JavelinToss"] = {icon = Icons.."NidaleeQ"..Png, displayName = "Javelin Toss", missileName = "JavelinToss", slot = _Q, type = "linear", speed = 1300, range = 1500, delay = 0.25, radius = 40, danger = 1, cc = false, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
+		["Bushwhack"] = {icon = Icons.."NidaleeW"..Png, displayName = "Bushwhack", slot = _W, type = "circular", speed = MathHuge, range = 900, delay = 1.25, radius = 85, danger = 1, cc = false, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
+		["Swipe"] = {icon = Icons.."NidaleeE"..Png, displayName = "Swipe", slot = _E, type = "conic", speed = MathHuge, range = 350, delay = 0.25, radius = 0, angle = 180, danger = 2, cc = false, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
 	},
 	["Nocturne"] = {
-		["NocturneDuskbringer"] = {icon = Icons.."NocturneQ"..Png, displayName = "Duskbringer", missileName = "NocturneDuskbringer", slot = "Q", type = "linear", speed = 1600, range = 1200, delay = 0.25, radius = 60, danger = 2, cc = false, collision = false, windwall = true, hitbox = true, fow = true, exception = false},
+		["NocturneDuskbringer"] = {icon = Icons.."NocturneQ"..Png, displayName = "Duskbringer", missileName = "NocturneDuskbringer", slot = _Q, type = "linear", speed = 1600, range = 1200, delay = 0.25, radius = 60, danger = 2, cc = false, collision = false, windwall = true, hitbox = true, fow = true, exception = false},
 	},
 	["Nunu"] = {
-		["NunuR"] = {icon = Icons.."NunuR"..Png, displayName = "Absolute Zero", slot = "R", type = "circular", speed = MathHuge, range = 0, delay = 3, radius = 650, danger = 5, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
+		["NunuR"] = {icon = Icons.."NunuR"..Png, displayName = "Absolute Zero", slot = _R, type = "circular", speed = MathHuge, range = 0, delay = 3, radius = 650, danger = 5, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
 	},
 	["Olaf"] = {
-		["OlafAxeThrowCast"] = {icon = Icons.."OlafQ"..Png, displayName = "Undertow", missileName = "OlafAxeThrow", slot = "Q", type = "linear", speed = 1600, range = 1000, delay = 0.25, radius = 90, danger = 2, cc = true, collision = false, windwall = true, hitbox = true, fow = true, exception = false},
+		["OlafAxeThrowCast"] = {icon = Icons.."OlafQ"..Png, displayName = "Undertow", missileName = "OlafAxeThrow", slot = _Q, type = "linear", speed = 1600, range = 1000, delay = 0.25, radius = 90, danger = 2, cc = true, collision = false, windwall = true, hitbox = true, fow = true, exception = false},
 	},
 	["Orianna"] = {
-		["OrianaIzuna"] = {icon = Icons.."OriannaQ"..Png, displayName = "Command: Attack", missileName = "OrianaIzuna", slot = "Q", type = "polygon", speed = 1400, range = 825, radius = 80, danger = 2, cc = false, collision = false, windwall = false, fow = true, exception = true},
+		["OrianaIzuna"] = {icon = Icons.."OriannaQ"..Png, displayName = "Command: Attack", missileName = "OrianaIzuna", slot = _Q, type = "polygon", speed = 1400, range = 825, radius = 80, danger = 2, cc = false, collision = false, windwall = false, fow = true, exception = true},
 	},
 	["Ornn"] = {
-		["OrnnQ"] = {icon = Icons.."OrnnQ"..Png, displayName = "Volcanic Rupture", slot = "Q", type = "linear", speed = 1800, range = 800, delay = 0.3, radius = 65, danger = 1, cc = true, collision = false, windwall = true, hitbox = true, fow = false, exception = false},
-		["OrnnE"] = {icon = Icons.."OrnnE"..Png, displayName = "Searing Charge", slot = "E", type = "linear", speed = 1800, range = 800, delay = 0.35, radius = 150, danger = 3, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
-		["OrnnRCharge"] = {icon = Icons.."OrnnR"..Png, displayName = "Call of the Forge God", slot = "R", type = "linear", speed = 1650, range = 2500, delay = 0.5, radius = 200, danger = 3, cc = true, collision = false, windwall = true, hitbox = true, fow = false, exception = false},
+		["OrnnQ"] = {icon = Icons.."OrnnQ"..Png, displayName = "Volcanic Rupture", slot = _Q, type = "linear", speed = 1800, range = 800, delay = 0.3, radius = 65, danger = 1, cc = true, collision = false, windwall = true, hitbox = true, fow = false, exception = false},
+		["OrnnE"] = {icon = Icons.."OrnnE"..Png, displayName = "Searing Charge", slot = _E, type = "linear", speed = 1800, range = 800, delay = 0.35, radius = 150, danger = 3, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
+		["OrnnRCharge"] = {icon = Icons.."OrnnR"..Png, displayName = "Call of the Forge God", slot = _R, type = "linear", speed = 1650, range = 2500, delay = 0.5, radius = 200, danger = 3, cc = true, collision = false, windwall = true, hitbox = true, fow = false, exception = false},
 	},
 	["Pantheon"] = {
-		["PantheonQTap"] = {icon = Icons.."PantheonQ"..Png, displayName = "Comet Spear [Melee]", slot = "Q", type = "linear", speed = MathHuge, range = 575, delay = 0.25, radius = 80, danger = 2, cc = false, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
-		["PantheonQMissile"] = {icon = Icons.."PantheonQ"..Png, displayName = "Comet Spear [Range]", missileName = "PantheonQMissile", slot = "Q", type = "linear", speed = 2700, range = 1200, delay = 0.25, radius = 60, danger = 2, cc = false, collision = false, windwall = true, hitbox = true, fow = true, exception = false},
-		["PantheonR"] = {icon = Icons.."PantheonR"..Png, displayName = "Grand Starfall", slot = "R", type = "linear", speed = 2250, range = 1350, delay = 4, radius = 250, danger = 3, cc = false, collision = false, windwall = true, hitbox = true, fow = false, exception = false},
+		["PantheonQTap"] = {icon = Icons.."PantheonQ"..Png, displayName = "Comet Spear [Melee]", slot = _Q, type = "linear", speed = MathHuge, range = 575, delay = 0.25, radius = 80, danger = 2, cc = false, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
+		["PantheonQMissile"] = {icon = Icons.."PantheonQ"..Png, displayName = "Comet Spear [Range]", missileName = "PantheonQMissile", slot = _Q, type = "linear", speed = 2700, range = 1200, delay = 0.25, radius = 60, danger = 2, cc = false, collision = false, windwall = true, hitbox = true, fow = true, exception = false},
+		["PantheonR"] = {icon = Icons.."PantheonR"..Png, displayName = "Grand Starfall", slot = _R, type = "linear", speed = 2250, range = 1350, delay = 4, radius = 250, danger = 3, cc = false, collision = false, windwall = true, hitbox = true, fow = false, exception = false},
 	},
 	["Poppy"] = {
-		["PoppyQSpell"] = {icon = Icons.."PoppyQ"..Png, displayName = "Hammer Shock", slot = "Q", type = "linear", speed = MathHuge, range = 430, delay = 0.332, radius = 100, danger = 2, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
-		["PoppyRSpell"] = {icon = Icons.."PoppyR"..Png, displayName = "Keeper's Verdict", missileName = "PoppyRMissile", slot = "R", type = "linear", speed = 2000, range = 1200, delay = 0.33, radius = 100, danger = 3, cc = true, collision = false, windwall = true, hitbox = true, fow = true, exception = false},
+		["PoppyQSpell"] = {icon = Icons.."PoppyQ"..Png, displayName = "Hammer Shock", slot = _Q, type = "linear", speed = MathHuge, range = 430, delay = 0.332, radius = 100, danger = 2, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
+		["PoppyRSpell"] = {icon = Icons.."PoppyR"..Png, displayName = "Keeper's Verdict", missileName = "PoppyRMissile", slot = _R, type = "linear", speed = 2000, range = 1200, delay = 0.33, radius = 100, danger = 3, cc = true, collision = false, windwall = true, hitbox = true, fow = true, exception = false},
 	},
 	["Pyke"] = {
-		["PykeQMelee"] = {icon = Icons.."PykeQ"..Png, displayName = "Bone Skewer [Melee]", slot = "Q", type = "linear", speed = MathHuge, range = 400, delay = 0.25, radius = 70, danger = 2, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
-		["PykeQRange"] = {icon = Icons.."PykeQ"..Png, displayName = "Bone Skewer [Range]", missileName = "PykeQRange", slot = "Q", type = "linear", speed = 2000, range = 1100, delay = 0.2, radius = 70, danger = 2, cc = true, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
-		["PykeE"] = {icon = Icons.."PykeE"..Png, displayName = "Phantom Undertow", slot = "E", type = "linear", speed = 3000, range = 12500, delay = 0, radius = 110, danger = 2, cc = true, collision = false, windwall = false, hitbox = true, fow = false, exception = false},
-		["PykeR"] = {icon = Icons.."PykeR"..Png, displayName = "Death from Below", slot = "R", type = "circular", speed = MathHuge, range = 750, delay = 0.5, radius = 100, danger = 5, cc = false, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
+		["PykeQMelee"] = {icon = Icons.."PykeQ"..Png, displayName = "Bone Skewer [Melee]", slot = _Q, type = "linear", speed = MathHuge, range = 400, delay = 0.25, radius = 70, danger = 2, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
+		["PykeQRange"] = {icon = Icons.."PykeQ"..Png, displayName = "Bone Skewer [Range]", missileName = "PykeQRange", slot = _Q, type = "linear", speed = 2000, range = 1100, delay = 0.2, radius = 70, danger = 2, cc = true, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
+		["PykeE"] = {icon = Icons.."PykeE"..Png, displayName = "Phantom Undertow", slot = _E, type = "linear", speed = 3000, range = 12500, delay = 0, radius = 110, danger = 2, cc = true, collision = false, windwall = false, hitbox = true, fow = false, exception = false},
+		["PykeR"] = {icon = Icons.."PykeR"..Png, displayName = "Death from Below", slot = _R, type = "circular", speed = MathHuge, range = 750, delay = 0.5, radius = 100, danger = 5, cc = false, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
 	},
 	["Qiyana"] = {
-		["QiyanaQ"] = {icon = Icons.."QiyanaQ"..Png, displayName = "Edge of Ixtal", slot = "Q", type = "linear", speed = MathHuge, range = 500, delay = 0.25, radius = 60, danger = 2, cc = false, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
-		["QiyanaQ_Grass"] = {icon = Icons.."QiyanaQGrass"..Png, displayName = "Edge of Ixtal [Grass]", slot = "Q", type = "linear", speed = 1600, range = 925, delay = 0.25, radius = 70, danger = 2, cc = false, collision = false, windwall = true, hitbox = true, fow = false, exception = false},
-		["QiyanaQ_Rock"] = {icon = Icons.."QiyanaQRock"..Png, displayName = "Edge of Ixtal [Rock]", slot = "Q", type = "linear", speed = 1600, range = 925, delay = 0.25, radius = 70, danger = 2, cc = false, collision = false, windwall = true, hitbox = true, fow = false, exception = false},
-		["QiyanaQ_Water"] = {icon = Icons.."QiyanaQWater"..Png, displayName = "Edge of Ixtal [Water]", slot = "Q", type = "linear", speed = 1600, range = 925, delay = 0.25, radius = 70, danger = 2, cc = true, collision = false, windwall = true, hitbox = true, fow = false, exception = false},
-		["QiyanaR"] = {icon = Icons.."QiyanaR"..Png, displayName = "Supreme Display of Talent", slot = "R", type = "linear", speed = 2000, range = 950, delay = 0.25, radius = 190, danger = 4, cc = true, collision = false, windwall = true, hitbox = true, fow = false, exception = false},
+		["QiyanaQ"] = {icon = Icons.."QiyanaQ"..Png, displayName = "Edge of Ixtal", slot = _Q, type = "linear", speed = MathHuge, range = 500, delay = 0.25, radius = 60, danger = 2, cc = false, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
+		["QiyanaQ_Grass"] = {icon = Icons.."QiyanaQGrass"..Png, displayName = "Edge of Ixtal [Grass]", slot = _Q, type = "linear", speed = 1600, range = 925, delay = 0.25, radius = 70, danger = 2, cc = false, collision = false, windwall = true, hitbox = true, fow = false, exception = false},
+		["QiyanaQ_Rock"] = {icon = Icons.."QiyanaQRock"..Png, displayName = "Edge of Ixtal [Rock]", slot = _Q, type = "linear", speed = 1600, range = 925, delay = 0.25, radius = 70, danger = 2, cc = false, collision = false, windwall = true, hitbox = true, fow = false, exception = false},
+		["QiyanaQ_Water"] = {icon = Icons.."QiyanaQWater"..Png, displayName = "Edge of Ixtal [Water]", slot = _Q, type = "linear", speed = 1600, range = 925, delay = 0.25, radius = 70, danger = 2, cc = true, collision = false, windwall = true, hitbox = true, fow = false, exception = false},
+		["QiyanaR"] = {icon = Icons.."QiyanaR"..Png, displayName = "Supreme Display of Talent", slot = _R, type = "linear", speed = 2000, range = 950, delay = 0.25, radius = 190, danger = 4, cc = true, collision = false, windwall = true, hitbox = true, fow = false, exception = false},
 	},
 	["Quinn"] = {
-		["QuinnQ"] = {icon = Icons.."QuinnQ"..Png, displayName = "Blinding Assault", missileName = "QuinnQ", slot = "Q", type = "linear", speed = 1550, range = 1025, delay = 0.25, radius = 60, danger = 1, cc = false, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
+		["QuinnQ"] = {icon = Icons.."QuinnQ"..Png, displayName = "Blinding Assault", missileName = "QuinnQ", slot = _Q, type = "linear", speed = 1550, range = 1025, delay = 0.25, radius = 60, danger = 1, cc = false, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
 	},
 	["Rakan"] = {
-		["RakanQ"] = {icon = Icons.."RakanQ"..Png, displayName = "Gleaming Quill", missileName = "RakanQMis", slot = "Q", type = "linear", speed = 1850, range = 850, delay = 0.25, radius = 65, danger = 1, cc = false, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
-		["RakanW"] = {icon = Icons.."RakanW"..Png, displayName = "Grand Entrance", slot = "W", type = "circular", speed = MathHuge, range = 650, delay = 0.7, radius = 265, danger = 3, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
+		["RakanQ"] = {icon = Icons.."RakanQ"..Png, displayName = "Gleaming Quill", missileName = "RakanQMis", slot = _Q, type = "linear", speed = 1850, range = 850, delay = 0.25, radius = 65, danger = 1, cc = false, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
+		["RakanW"] = {icon = Icons.."RakanW"..Png, displayName = "Grand Entrance", slot = _W, type = "circular", speed = MathHuge, range = 650, delay = 0.7, radius = 265, danger = 3, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
 	},
 	["RekSai"] = {
-		["RekSaiQBurrowed"] = {icon = Icons.."RekSaiQ"..Png, displayName = "Prey Seeker", missileName = "RekSaiQBurrowedMis", slot = "Q", type = "linear", speed = 1950, range = 1625, delay = 0.125, radius = 65, danger = 2, cc = false, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
+		["RekSaiQBurrowed"] = {icon = Icons.."RekSaiQ"..Png, displayName = "Prey Seeker", missileName = "RekSaiQBurrowedMis", slot = _Q, type = "linear", speed = 1950, range = 1625, delay = 0.125, radius = 65, danger = 2, cc = false, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
 	},
 	--["Renekton"] = {
-		--["RenektonSliceAndDice"] = {icon = Icons.."RenektonE"..Png, displayName = "Slice and Dice", slot = "E", type = "linear", speed = 1125, range = 450, delay = 0.25, radius = 65, danger = 2, cc = false, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
+		--["RenektonSliceAndDice"] = {icon = Icons.."RenektonE"..Png, displayName = "Slice and Dice", slot = _E, type = "linear", speed = 1125, range = 450, delay = 0.25, radius = 65, danger = 2, cc = false, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
 	--},
 	["Rengar"] = {
-		["RengarE"] = {icon = Icons.."RengarE"..Png, displayName = "Bola Strike", missileName = "RengarEMis", slot = "E", type = "linear", speed = 1500, range = 1000, delay = 0.25, radius = 70, danger = 1, cc = true, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
+		["RengarE"] = {icon = Icons.."RengarE"..Png, displayName = "Bola Strike", missileName = "RengarEMis", slot = _E, type = "linear", speed = 1500, range = 1000, delay = 0.25, radius = 70, danger = 1, cc = true, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
 	},
 	["Riven"] = {
-		["RivenIzunaBlade"] = {icon = Icons.."RivenR"..Png, displayName = "Wind Slash", slot = "R", type = "conic", speed = 1600, range = 900, delay = 0.25, radius = 0, angle = 75, danger = 5, cc = false, collision = false, windwall = true, hitbox = false, fow = false, exception = false},
+		["RivenIzunaBlade"] = {icon = Icons.."RivenR"..Png, displayName = "Wind Slash", slot = _R, type = "conic", speed = 1600, range = 900, delay = 0.25, radius = 0, angle = 75, danger = 5, cc = false, collision = false, windwall = true, hitbox = false, fow = false, exception = false},
 	},
 	["Rumble"] = {
-		["RumbleGrenade"] = {icon = Icons.."RumbleE"..Png, displayName = "Electro Harpoon", missileName = "RumbleGrenadeMissile", slot = "E", type = "linear", speed = 2000, range = 850, delay = 0.25, radius = 60, danger = 2, cc = true, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
+		["RumbleGrenade"] = {icon = Icons.."RumbleE"..Png, displayName = "Electro Harpoon", missileName = "RumbleGrenadeMissile", slot = _E, type = "linear", speed = 2000, range = 850, delay = 0.25, radius = 60, danger = 2, cc = true, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
 	},
 	["Ryze"] = {
-		["RyzeQ"] = {icon = Icons.."RyzeQ"..Png, displayName = "Overload", missileName = "RyzeQ", slot = "Q", type = "linear", speed = 1700, range = 1000, delay = 0.25, radius = 55, danger = 1, cc = false, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
+		["RyzeQ"] = {icon = Icons.."RyzeQ"..Png, displayName = "Overload", missileName = "RyzeQ", slot = _Q, type = "linear", speed = 1700, range = 1000, delay = 0.25, radius = 55, danger = 1, cc = false, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
 	},
 	["Sejuani"] = {
-		["SejuaniR"] = {icon = Icons.."SejuaniR"..Png, displayName = "Glacial Prison", missileName = "SejuaniRMissile", slot = "R", type = "linear", speed = 1600, range = 1300, delay = 0.25, radius = 120, danger = 5, cc = true, collision = false, windwall = true, hitbox = true, fow = true, exception = false},
+		["SejuaniR"] = {icon = Icons.."SejuaniR"..Png, displayName = "Glacial Prison", missileName = "SejuaniRMissile", slot = _R, type = "linear", speed = 1600, range = 1300, delay = 0.25, radius = 120, danger = 5, cc = true, collision = false, windwall = true, hitbox = true, fow = true, exception = false},
 	},
 	--["Shen"] = {
-		--["ShenE"] = {icon = Icons.."ShenE"..Png, displayName = "Shadow Dash", slot = "E", type = "linear", speed = 1200, range = 600, delay = 0, radius = 60, danger = 2, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
+		--["ShenE"] = {icon = Icons.."ShenE"..Png, displayName = "Shadow Dash", slot = _E, type = "linear", speed = 1200, range = 600, delay = 0, radius = 60, danger = 2, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
 	--},
 	["Shyvana"] = {
-		["ShyvanaFireball"] = {icon = Icons.."ShyvanaE"..Png, displayName = "Flame Breath [Standard]", missileName = "ShyvanaFireballMissile", slot = "E", type = "linear", speed = 1575, range = 925, delay = 0.25, radius = 60, danger = 1, cc = false, collision = false, windwall = true, hitbox = false, fow = true, exception = false},
-		["ShyvanaFireballDragon2"] = {icon = Icons.."ShyvanaE"..Png, displayName = "Flame Breath [Dragon]", missileName = "ShyvanaFireballDragonMissile", slot = "E", type = "linear", speed = 1575, range = 975, delay = 0.333, radius = 60, danger = 2, cc = false, collision = false, windwall = true, hitbox = false, fow = true, exception = false},
-		["ShyvanaTransformLeap"] = {icon = Icons.."ShyvanaR"..Png, displayName = "Transform Leap", slot = "R", type = "linear", speed = 700, range = 850, delay = 0.25, radius = 150, danger = 4, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
+		["ShyvanaFireball"] = {icon = Icons.."ShyvanaE"..Png, displayName = "Flame Breath [Standard]", missileName = "ShyvanaFireballMissile", slot = _E, type = "linear", speed = 1575, range = 925, delay = 0.25, radius = 60, danger = 1, cc = false, collision = false, windwall = true, hitbox = false, fow = true, exception = false},
+		["ShyvanaFireballDragon2"] = {icon = Icons.."ShyvanaE"..Png, displayName = "Flame Breath [Dragon]", missileName = "ShyvanaFireballDragonMissile", slot = _E, type = "linear", speed = 1575, range = 975, delay = 0.333, radius = 60, danger = 2, cc = false, collision = false, windwall = true, hitbox = false, fow = true, exception = false},
+		["ShyvanaTransformLeap"] = {icon = Icons.."ShyvanaR"..Png, displayName = "Transform Leap", slot = _R, type = "linear", speed = 700, range = 850, delay = 0.25, radius = 150, danger = 4, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
 	},
 	["Sion"] = {
-		["SionQ"] = {icon = Icons.."SionQ"..Png, displayName = "Decimating Smash", slot = "Q", type = "linear", speed = MathHuge, range = 750, delay = 2, radius = 150, danger = 3, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
-		["SionE"] = {icon = Icons.."SionE"..Png, displayName = "Roar of the Slayer", missileName = "SionEMissile", slot = "E", type = "linear", speed = 1800, range = 800, delay = 0.25, radius = 80, danger = 2, cc = true, collision = false, windwall = true, hitbox = false, fow = true, exception = false},
+		["SionQ"] = {icon = Icons.."SionQ"..Png, displayName = "Decimating Smash", slot = _Q, type = "linear", speed = MathHuge, range = 750, delay = 2, radius = 150, danger = 3, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
+		["SionE"] = {icon = Icons.."SionE"..Png, displayName = "Roar of the Slayer", missileName = "SionEMissile", slot = _E, type = "linear", speed = 1800, range = 800, delay = 0.25, radius = 80, danger = 2, cc = true, collision = false, windwall = true, hitbox = false, fow = true, exception = false},
 	},
 	["Sivir"] = {
-		["SivirQ"] = {icon = Icons.."SivirQ"..Png, displayName = "Boomerang Blade", missileName = "SivirQMissile", slot = "Q", type = "linear", speed = 1350, range = 1250, delay = 0.25, radius = 90, danger = 2, cc = false, collision = false, windwall = true, hitbox = false, fow = true, exception = false},
+		["SivirQ"] = {icon = Icons.."SivirQ"..Png, displayName = "Boomerang Blade", missileName = "SivirQMissile", slot = _Q, type = "linear", speed = 1350, range = 1250, delay = 0.25, radius = 90, danger = 2, cc = false, collision = false, windwall = true, hitbox = false, fow = true, exception = false},
 	},
 	["Skarner"] = {
-		["SkarnerFractureMissile"] = {icon = Icons.."SkarnerE"..Png, displayName = "Fracture", missileName = "SkarnerFractureMissile", slot = "E", type = "linear", speed = 1500, range = 1000, delay = 0.25, radius = 70, danger = 1, cc = true, collision = false, windwall = true, hitbox = false, fow = true, exception = false},
+		["SkarnerFractureMissile"] = {icon = Icons.."SkarnerE"..Png, displayName = "Fracture", missileName = "SkarnerFractureMissile", slot = _E, type = "linear", speed = 1500, range = 1000, delay = 0.25, radius = 70, danger = 1, cc = true, collision = false, windwall = true, hitbox = false, fow = true, exception = false},
 	},
 	["Sona"] = {
-		["SonaR"] = {icon = Icons.."SonaR"..Png, displayName = "Crescendo", missileName = "SonaRMissile", slot = "R", type = "linear", speed = 2400, range = 1000, delay = 0.25, radius = 140, danger = 5, cc = true, collision = false, windwall = true, hitbox = false, fow = true, exception = false},
+		["SonaR"] = {icon = Icons.."SonaR"..Png, displayName = "Crescendo", missileName = "SonaRMissile", slot = _R, type = "linear", speed = 2400, range = 1000, delay = 0.25, radius = 140, danger = 5, cc = true, collision = false, windwall = true, hitbox = false, fow = true, exception = false},
 	},
 	["Soraka"] = {
-		["SorakaQ"] = {icon = Icons.."SorakaQ"..Png, displayName = "Starcall", missileName = "SorakaQMissile", slot = "Q", type = "circular", speed = 1150, range = 810, delay = 0.25, radius = 235, danger = 2, cc = true, collision = false, windwall = false, hitbox = false, fow = true, exception = false},
+		["SorakaQ"] = {icon = Icons.."SorakaQ"..Png, displayName = "Starcall", missileName = "SorakaQMissile", slot = _Q, type = "circular", speed = 1150, range = 810, delay = 0.25, radius = 235, danger = 2, cc = true, collision = false, windwall = false, hitbox = false, fow = true, exception = false},
 	},
 	["Swain"] = {
-		["SwainQ"] = {icon = Icons.."SwainQ"..Png, displayName = "Death's Hand", slot = "Q", type = "conic", speed = 5000, range = 725, delay = 0.25, radius = 0, angle = 60, danger = 2, cc = false, collision = false, windwall = true, hitbox = false, fow = false, exception = false},
-		["SwainW"] = {icon = Icons.."SwainW"..Png, displayName = "Vision of Empire", slot = "W", type = "circular", speed = MathHuge, range = 3500, delay = 1.5, radius = 300, danger = 1, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
-		["SwainE"] = {icon = Icons.."SwainE"..Png, displayName = "Nevermove", slot = "E", type = "linear", speed = 1800, range = 850, delay = 0.25, radius = 85, danger = 2, cc = true, collision = false, windwall = true, hitbox = false, fow = false, exception = false},
+		["SwainQ"] = {icon = Icons.."SwainQ"..Png, displayName = "Death's Hand", slot = _Q, type = "conic", speed = 5000, range = 725, delay = 0.25, radius = 0, angle = 60, danger = 2, cc = false, collision = false, windwall = true, hitbox = false, fow = false, exception = false},
+		["SwainW"] = {icon = Icons.."SwainW"..Png, displayName = "Vision of Empire", slot = _W, type = "circular", speed = MathHuge, range = 3500, delay = 1.5, radius = 300, danger = 1, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
+		["SwainE"] = {icon = Icons.."SwainE"..Png, displayName = "Nevermove", slot = _E, type = "linear", speed = 1800, range = 850, delay = 0.25, radius = 85, danger = 2, cc = true, collision = false, windwall = true, hitbox = false, fow = false, exception = false},
 	},
 	["Sylas"] = {
-		["SylasQ"] = {icon = Icons.."SylasQ"..Png, displayName = "Chain Lash", slot = "Q", type = "polygon", speed = MathHuge, range = 775, delay = 0.4, radius = 45, danger = 2, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
-		["SylasE2"] = {icon = Icons.."SylasE"..Png, displayName = "Abduct", missileName = "SylasE2Mis", slot = "E", type = "linear", speed = 1600, range = 850, delay = 0.25, radius = 60, danger = 2, cc = true, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
+		["SylasQ"] = {icon = Icons.."SylasQ"..Png, displayName = "Chain Lash", slot = _Q, type = "polygon", speed = MathHuge, range = 775, delay = 0.4, radius = 45, danger = 2, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
+		["SylasE2"] = {icon = Icons.."SylasE"..Png, displayName = "Abduct", missileName = "SylasE2Mis", slot = _E, type = "linear", speed = 1600, range = 850, delay = 0.25, radius = 60, danger = 2, cc = true, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
 	},
 	["Syndra"] = {
-		--["SyndraQ"] = {icon = Icons.."SyndraQ"..Png, displayName = "Dark Sphere", slot = "Q", type = "circular", speed = MathHuge, range = 800, delay = 0.625, radius = 200, danger = 2, cc = false, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
-		--["SyndraWCast"] = {icon = Icons.."SyndraW"..Png, displayName = "Force of Will", slot = "W", type = "circular", speed = 1450, range = 950, delay = 0.25, radius = 225, danger = 2, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
-		["SyndraE"] = {icon = Icons.."SyndraE"..Png, displayName = "Scatter the Weak", slot = "E", type = "conic", speed = 1600, range = 700, delay = 0.25, radius = 0, angle = 40, danger = 3, cc = true, collision = false, windwall = true, hitbox = false, fow = false, exception = false},
+		--["SyndraQ"] = {icon = Icons.."SyndraQ"..Png, displayName = "Dark Sphere", slot = _Q, type = "circular", speed = MathHuge, range = 800, delay = 0.625, radius = 200, danger = 2, cc = false, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
+		--["SyndraWCast"] = {icon = Icons.."SyndraW"..Png, displayName = "Force of Will", slot = _W, type = "circular", speed = 1450, range = 950, delay = 0.25, radius = 225, danger = 2, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
+		["SyndraE"] = {icon = Icons.."SyndraE"..Png, displayName = "Scatter the Weak", slot = _E, type = "conic", speed = 1600, range = 700, delay = 0.25, radius = 0, angle = 40, danger = 3, cc = true, collision = false, windwall = true, hitbox = false, fow = false, exception = false},
 		--SyndraEQMissile
 	},
 	["TahmKench"] = {
-		["TahmKenchQ"] = {icon = Icons.."TahmKenchQ"..Png, displayName = "Tongue Lash", missileName = "TahmKenchQMissile", slot = "Q", type = "linear", speed = 2800, range = 900, delay = 0.25, radius = 70, danger = 2, cc = true, collision = true, windwall = true, hitbox = false, fow = true, exception = false},
+		["TahmKenchQ"] = {icon = Icons.."TahmKenchQ"..Png, displayName = "Tongue Lash", missileName = "TahmKenchQMissile", slot = _Q, type = "linear", speed = 2800, range = 900, delay = 0.25, radius = 70, danger = 2, cc = true, collision = true, windwall = true, hitbox = false, fow = true, exception = false},
 	},
 	["Taliyah"] = {
-		["TaliyahQMis"] = {icon = Icons.."TaliyahQ"..Png, displayName = "Threaded Volley [FOW]", missileName = "TaliyahQMis", slot = "Q", type = "linear", speed = 3600, range = 1000, radius = 100, danger = 2, cc = false, collision = true, windwall = true, fow = true, exception = true},
-		["TaliyahWVC"] = {icon = Icons.."TaliyahW"..Png, displayName = "Seismic Shove", slot = "W", type = "circular", speed = MathHuge, range = 900, delay = 0.85, radius = 150, danger = 1, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
-		["TaliyahE"] = {icon = Icons.."TaliyahE"..Png, displayName = "Unraveled Earth", slot = "E", type = "conic", speed = 2000, range = 800, delay = 0.45, radius = 0, angle = 80, danger = 2, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
-		["TaliyahR"] = {icon = Icons.."TaliyahR"..Png, displayName = "Weaver's Wall", missileName = "TaliyahRMis", slot = "R", type = "linear", speed = 1700, range = 3000, delay = 1, radius = 120, danger = 1, cc = true, collision = false, windwall = false, hitbox = false, fow = true, exception = false},
+		["TaliyahQMis"] = {icon = Icons.."TaliyahQ"..Png, displayName = "Threaded Volley [FOW]", missileName = "TaliyahQMis", slot = _Q, type = "linear", speed = 3600, range = 1000, radius = 100, danger = 2, cc = false, collision = true, windwall = true, fow = true, exception = true},
+		["TaliyahWVC"] = {icon = Icons.."TaliyahW"..Png, displayName = "Seismic Shove", slot = _W, type = "circular", speed = MathHuge, range = 900, delay = 0.85, radius = 150, danger = 1, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
+		["TaliyahE"] = {icon = Icons.."TaliyahE"..Png, displayName = "Unraveled Earth", slot = _E, type = "conic", speed = 2000, range = 800, delay = 0.45, radius = 0, angle = 80, danger = 2, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
+		["TaliyahR"] = {icon = Icons.."TaliyahR"..Png, displayName = "Weaver's Wall", missileName = "TaliyahRMis", slot = _R, type = "linear", speed = 1700, range = 3000, delay = 1, radius = 120, danger = 1, cc = true, collision = false, windwall = false, hitbox = false, fow = true, exception = false},
 	},
 	["Talon"] = {
-		["TalonW"] = {icon = Icons.."TalonW"..Png, displayName = "Rake", missileName = "TalonWMissileOne", slot = "W", type = "conic", speed = 2500, range = 650, delay = 0.25, radius = 75, angle = 26, danger = 2, cc = true, collision = false, windwall = true, hitbox = false, fow = true, exception = false},
+		["TalonW"] = {icon = Icons.."TalonW"..Png, displayName = "Rake", missileName = "TalonWMissileOne", slot = _W, type = "conic", speed = 2500, range = 650, delay = 0.25, radius = 75, angle = 26, danger = 2, cc = true, collision = false, windwall = true, hitbox = false, fow = true, exception = false},
 	},
 	["Thresh"] = {
-		["ThreshQMissile"] = {icon = Icons.."ThreshQ"..Png, displayName = "Death Sentence", missileName = "ThreshQMissile", slot = "Q", type = "linear", speed = 1900, range = 1100, delay = 0.5, radius = 70, danger = 1, cc = true, collision = true, windwall = true, hitbox = false, fow = true, exception = true},
-		["ThreshEFlay"] = {icon = Icons.."ThreshE"..Png, displayName = "Flay", slot = "E", type = "polygon", speed = MathHuge, range = 500, delay = 0.389, radius = 110, danger = 3, cc = true, collision = true, windwall = false, hitbox = false, fow = false, exception = false},
+		["ThreshQMissile"] = {icon = Icons.."ThreshQ"..Png, displayName = "Death Sentence", missileName = "ThreshQMissile", slot = _Q, type = "linear", speed = 1900, range = 1100, delay = 0.5, radius = 70, danger = 1, cc = true, collision = true, windwall = true, hitbox = false, fow = true, exception = true},
+		["ThreshEFlay"] = {icon = Icons.."ThreshE"..Png, displayName = "Flay", slot = _E, type = "polygon", speed = MathHuge, range = 500, delay = 0.389, radius = 110, danger = 3, cc = true, collision = true, windwall = false, hitbox = false, fow = false, exception = false},
 	},
 	["Tristana"] = {
-		["TristanaW"] = {icon = Icons.."TristanaW"..Png, displayName = "Rocket Jump", slot = "W", type = "circular", speed = 1100, range = 900, delay = 0.25, radius = 300, danger = 2, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
+		["TristanaW"] = {icon = Icons.."TristanaW"..Png, displayName = "Rocket Jump", slot = _W, type = "circular", speed = 1100, range = 900, delay = 0.25, radius = 300, danger = 2, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
 	},
 	["Tryndamere"] = {
-		["TryndamereE"] = {icon = Icons.."TryndamereE"..Png, displayName = "Spinning Slash", slot = "E", type = "linear", speed = 1300, range = 660, delay = 0, radius = 225, danger = 2, cc = false, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
+		["TryndamereE"] = {icon = Icons.."TryndamereE"..Png, displayName = "Spinning Slash", slot = _E, type = "linear", speed = 1300, range = 660, delay = 0, radius = 225, danger = 2, cc = false, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
 	},
 	["TwistedFate"] = {
-		["WildCards"] = {icon = Icons.."TwistedFateQ"..Png, displayName = "Wild Cards", missileName = "SealFateMissile", slot = "Q", type = "threeway", speed = 1000, range = 1450, delay = 0.25, radius = 40, angle = 28, danger = 1, cc = false, collision = false, windwall = true, hitbox = false, fow = true, exception = false},
+		["WildCards"] = {icon = Icons.."TwistedFateQ"..Png, displayName = "Wild Cards", missileName = "SealFateMissile", slot = _Q, type = "threeway", speed = 1000, range = 1450, delay = 0.25, radius = 40, angle = 28, danger = 1, cc = false, collision = false, windwall = true, hitbox = false, fow = true, exception = false},
 	},
 	["Urgot"] = {
-		["UrgotQ"] = {icon = Icons.."UrgotQ"..Png, displayName = "Corrosive Charge", missileName = "UrgotQMissile", slot = "Q", type = "circular", speed = MathHuge, range = 800, delay = 0.6, radius = 180, danger = 2, cc = true, collision = false, windwall = true, hitbox = false, fow = true, exception = false},
-		["UrgotE"] = {icon = Icons.."UrgotE"..Png, displayName = "Disdain", slot = "E", type = "linear", speed = 1500, range = 475, delay = 0.45, radius = 100, danger = 2, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
-		["UrgotR"] = {icon = Icons.."UrgotR"..Png, displayName = "Fear Beyond Death", missileName = "UrgotR", slot = "R", type = "linear", speed = 3200, range = 1600, delay = 0.5, radius = 80, danger = 4, cc = true, collision = false, windwall = true, hitbox = false, fow = true, exception = false},
+		["UrgotQ"] = {icon = Icons.."UrgotQ"..Png, displayName = "Corrosive Charge", missileName = "UrgotQMissile", slot = _Q, type = "circular", speed = MathHuge, range = 800, delay = 0.6, radius = 180, danger = 2, cc = true, collision = false, windwall = true, hitbox = false, fow = true, exception = false},
+		["UrgotE"] = {icon = Icons.."UrgotE"..Png, displayName = "Disdain", slot = _E, type = "linear", speed = 1500, range = 475, delay = 0.45, radius = 100, danger = 2, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
+		["UrgotR"] = {icon = Icons.."UrgotR"..Png, displayName = "Fear Beyond Death", missileName = "UrgotR", slot = _R, type = "linear", speed = 3200, range = 1600, delay = 0.5, radius = 80, danger = 4, cc = true, collision = false, windwall = true, hitbox = false, fow = true, exception = false},
 	},
 	["Varus"] = {
-		["VarusQMissile"] = {icon = Icons.."VarusQ"..Png, displayName = "Piercing Arrow", missileName = "VarusQMissile", slot = "Q", origin = "", type = "linear", speed = 1900, range = 1525, radius = 70, danger = 1, cc = false, collision = false, windwall = true, fow = true, exception = true},
-		["VarusE"] = {icon = Icons.."VarusE"..Png, displayName = "Hail of Arrows", missileName = "VarusEMissile", slot = "E", type = "linear", speed = 1500, range = 925, delay = 0.242, radius = 260, danger = 3, cc = true, collision = false, windwall = true, hitbox = false, fow = true, exception = false},
-		["VarusR"] = {icon = Icons.."VarusR"..Png, displayName = "Chain of Corruption", missileName = "VarusRMissile", slot = "R", type = "linear", speed = 1950, range = 1200, delay = 0.25, radius = 120, danger = 4, cc = true, collision = false, windwall = true, hitbox = false, fow = true, exception = false},
+		["VarusQMissile"] = {icon = Icons.."VarusQ"..Png, displayName = "Piercing Arrow", missileName = "VarusQMissile", slot = _Q, origin = "", type = "linear", speed = 1900, range = 1525, radius = 70, danger = 1, cc = false, collision = false, windwall = true, fow = true, exception = true},
+		["VarusE"] = {icon = Icons.."VarusE"..Png, displayName = "Hail of Arrows", missileName = "VarusEMissile", slot = _E, type = "linear", speed = 1500, range = 925, delay = 0.242, radius = 260, danger = 3, cc = true, collision = false, windwall = true, hitbox = false, fow = true, exception = false},
+		["VarusR"] = {icon = Icons.."VarusR"..Png, displayName = "Chain of Corruption", missileName = "VarusRMissile", slot = _R, type = "linear", speed = 1950, range = 1200, delay = 0.25, radius = 120, danger = 4, cc = true, collision = false, windwall = true, hitbox = false, fow = true, exception = false},
 	},
 	["Veigar"] = {
-		["VeigarBalefulStrike"] = {icon = Icons.."VeigarQ"..Png, displayName = "Baleful Strike", missileName = "VeigarBalefulStrikeMis", slot = "Q", type = "linear", speed = 2200, range = 900, delay = 0.25, radius = 70, danger = 2, cc = false, collision = false, windwall = true, hitbox = false, fow = true, exception = false},
-		["VeigarDarkMatter"] = {icon = Icons.."VeigarW"..Png, displayName = "Dark Matter", slot = "W", type = "circular", speed = MathHuge, range = 900, delay = 1.25, radius = 200, danger = 1, cc = false, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
+		["VeigarBalefulStrike"] = {icon = Icons.."VeigarQ"..Png, displayName = "Baleful Strike", missileName = "VeigarBalefulStrikeMis", slot = _Q, type = "linear", speed = 2200, range = 900, delay = 0.25, radius = 70, danger = 2, cc = false, collision = false, windwall = true, hitbox = false, fow = true, exception = false},
+		["VeigarDarkMatter"] = {icon = Icons.."VeigarW"..Png, displayName = "Dark Matter", slot = _W, type = "circular", speed = MathHuge, range = 900, delay = 1.25, radius = 200, danger = 1, cc = false, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
 	},
 	["Velkoz"] = {
-		["VelkozQ"] = {icon = Icons.."VelkozQ"..Png, displayName = "Plasma Fission", missileName = "VelkozQMissile", slot = "Q", type = "linear", speed = 1300, range = 1050, delay = 0.25, radius = 50, danger = 1, cc = true, collision = true, windwall = true, hitbox = false, fow = true, exception = false},
-		["VelkozW"] = {icon = Icons.."VelkozW"..Png, displayName = "Void Rift", missileName = "VelkozWMissile", slot = "W", type = "linear", speed = 1700, range = 1050, delay = 0.25, radius = 87.5, danger = 1, cc = false, collision = false, windwall = true, hitbox = false, fow = true, exception = false},
-		["VelkozE"] = {icon = Icons.."VelkozE"..Png, displayName = "Tectonic Disruption", slot = "E", type = "circular", speed = MathHuge, range = 800, delay = 0.8, radius = 185, danger = 2, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
+		["VelkozQ"] = {icon = Icons.."VelkozQ"..Png, displayName = "Plasma Fission", missileName = "VelkozQMissile", slot = _Q, type = "linear", speed = 1300, range = 1050, delay = 0.25, radius = 50, danger = 1, cc = true, collision = true, windwall = true, hitbox = false, fow = true, exception = false},
+		["VelkozW"] = {icon = Icons.."VelkozW"..Png, displayName = "Void Rift", missileName = "VelkozWMissile", slot = _W, type = "linear", speed = 1700, range = 1050, delay = 0.25, radius = 87.5, danger = 1, cc = false, collision = false, windwall = true, hitbox = false, fow = true, exception = false},
+		["VelkozE"] = {icon = Icons.."VelkozE"..Png, displayName = "Tectonic Disruption", slot = _E, type = "circular", speed = MathHuge, range = 800, delay = 0.8, radius = 185, danger = 2, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
 	},
 	["Vi"] = {
-		["ViQ"] = {icon = Icons.."ViQ"..Png, displayName = "Vault Breaker", slot = "Q", type = "linear", speed = 1500, range = 725, delay = 0, radius = 90, danger = 2, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
+		["ViQ"] = {icon = Icons.."ViQ"..Png, displayName = "Vault Breaker", slot = _Q, type = "linear", speed = 1500, range = 725, delay = 0, radius = 90, danger = 2, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
 	},
 	["Viktor"] = {
-		["ViktorGravitonField"] = {icon = Icons.."ViktorW"..Png, displayName = "Graviton Field", slot = "W", type = "circular", speed = MathHuge, range = 800, delay = 1.75, radius = 270, danger = 1, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
-		["ViktorDeathRayMissile"] = {icon = Icons.."ViktorE"..Png, displayName = "Death Ray", missileName = "ViktorDeathRayMissile", slot = "E", type = "linear", speed = 1050, range = 700, radius = 80, danger = 2, cc = false, collision = false, windwall = true, fow = true, exception = true},
+		["ViktorGravitonField"] = {icon = Icons.."ViktorW"..Png, displayName = "Graviton Field", slot = _W, type = "circular", speed = MathHuge, range = 800, delay = 1.75, radius = 270, danger = 1, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
+		["ViktorDeathRayMissile"] = {icon = Icons.."ViktorE"..Png, displayName = "Death Ray", missileName = "ViktorDeathRayMissile", slot = _E, type = "linear", speed = 1050, range = 700, radius = 80, danger = 2, cc = false, collision = false, windwall = true, fow = true, exception = true},
 	},
 	--["Vladimir"] = {
-		--["VladimirHemoplague"] = {icon = Icons.."VladimirR"..Png, displayName = "Hemoplague", slot = "R", type = "circular", speed = MathHuge, range = 700, delay = 0.389, radius = 350, danger = 3, cc = false, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
+		--["VladimirHemoplague"] = {icon = Icons.."VladimirR"..Png, displayName = "Hemoplague", slot = _R, type = "circular", speed = MathHuge, range = 700, delay = 0.389, radius = 350, danger = 3, cc = false, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
 	--},
 	["Warwick"] = {
-		["WarwickR"] = {icon = Icons.."WarwickR"..Png, displayName = "Infinite Duress", slot = "R", type = "linear", speed = 1800, range = 3000, delay = 0.1, radius = 55, danger = 4, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
+		["WarwickR"] = {icon = Icons.."WarwickR"..Png, displayName = "Infinite Duress", slot = _R, type = "linear", speed = 1800, range = 3000, delay = 0.1, radius = 55, danger = 4, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
 	},
 	["Xayah"] = {
-		["XayahQ"] = {icon = Icons.."XayahQ"..Png, displayName = "Double Daggers", missileName = "XayahQ", slot = "Q", type = "linear", speed = 2075, range = 1100, delay = 0.5, radius = 45, danger = 1, cc = false, collision = false, windwall = true, hitbox = false, fow = true, exception = false},
+		["XayahQ"] = {icon = Icons.."XayahQ"..Png, displayName = "Double Daggers", missileName = "XayahQ", slot = _Q, type = "linear", speed = 2075, range = 1100, delay = 0.5, radius = 45, danger = 1, cc = false, collision = false, windwall = true, hitbox = false, fow = true, exception = false},
 	},
 	["Xerath"] = {
-		--["XerathArcanopulse2"] = {icon = Icons.."XerathQ"..Png, displayName = "Arcanopulse", slot = "Q", type = "linear", speed = MathHuge, range = 1400, delay = 0.5, radius = 90, danger = 2, cc = false, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
-		["XerathArcaneBarrage2"] = {icon = Icons.."XerathW"..Png, displayName = "Arcane Barrage", slot = "W", type = "circular", speed = MathHuge, range = 1000, delay = 0.75, radius = 235, danger = 3, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
-		["XerathMageSpear"] = {icon = Icons.."XerathE"..Png, displayName = "Mage Spear", missileName = "XerathMageSpearMissile", slot = "E", type = "linear", speed = 1400, range = 1050, delay = 0.2, radius = 60, danger = 1, cc = true, collision = true, windwall = true, hitbox = false, fow = true, exception = false},
-		["XerathLocusPulse"] = {icon = Icons.."XerathR"..Png, displayName = "Rite of the Arcane", missileName = "XerathLocusPulse", slot = "R", type = "circular", speed = MathHuge, range = 5000, delay = 0.7, radius = 200, danger = 3, cc = false, collision = false, windwall = false, hitbox = false, fow = true, exception = true},
+		--["XerathArcanopulse2"] = {icon = Icons.."XerathQ"..Png, displayName = "Arcanopulse", slot = _Q, type = "linear", speed = MathHuge, range = 1400, delay = 0.5, radius = 90, danger = 2, cc = false, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
+		["XerathArcaneBarrage2"] = {icon = Icons.."XerathW"..Png, displayName = "Arcane Barrage", slot = _W, type = "circular", speed = MathHuge, range = 1000, delay = 0.75, radius = 235, danger = 3, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
+		["XerathMageSpear"] = {icon = Icons.."XerathE"..Png, displayName = "Mage Spear", missileName = "XerathMageSpearMissile", slot = _E, type = "linear", speed = 1400, range = 1050, delay = 0.2, radius = 60, danger = 1, cc = true, collision = true, windwall = true, hitbox = false, fow = true, exception = false},
+		["XerathLocusPulse"] = {icon = Icons.."XerathR"..Png, displayName = "Rite of the Arcane", missileName = "XerathLocusPulse", slot = _R, type = "circular", speed = MathHuge, range = 5000, delay = 0.7, radius = 200, danger = 3, cc = false, collision = false, windwall = false, hitbox = false, fow = true, exception = true},
 	},
 	["XinZhao"] = {
-		["XinZhaoW"] = {icon = Icons.."XinZhaoW"..Png, displayName = "Wind Becomes Lightning", slot = "W", type = "linear", speed = 5000, range = 900, delay = 0.5, radius = 40, danger = 1, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
+		["XinZhaoW"] = {icon = Icons.."XinZhaoW"..Png, displayName = "Wind Becomes Lightning", slot = _W, type = "linear", speed = 5000, range = 900, delay = 0.5, radius = 40, danger = 1, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
 	},
 	["Yasuo"] = {
-		["YasuoQ1Wrapper"] = {icon = Icons.."YasuoQ1"..Png, displayName = "Steel Tempest", slot = "Q", type = "linear", speed = MathHuge, range = 475, delay = 0.339, radius = 40, danger = 1, cc = false, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
-		["YasuoQ2Wrapper"] = {icon = Icons.."YasuoQ2"..Png, displayName = "Steel Wind Rising", slot = "Q", type = "linear", speed = MathHuge, range = 475, delay = 0.339, radius = 40, danger = 1, cc = false, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
-		["YasuoQ3Wrapper"] = {icon = Icons.."YasuoQ3"..Png, displayName = "Gathering Storm", missileName = "YasuoQ3Mis", slot = "Q", type = "linear", speed = 1200, range = 1000, delay = 0.339, radius = 90, danger = 2, cc = true, collision = false, windwall = true, hitbox = false, fow = true, exception = false},
+		["YasuoQ1Wrapper"] = {icon = Icons.."YasuoQ1"..Png, displayName = "Steel Tempest", slot = _Q, type = "linear", speed = MathHuge, range = 475, delay = 0.339, radius = 40, danger = 1, cc = false, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
+		["YasuoQ2Wrapper"] = {icon = Icons.."YasuoQ2"..Png, displayName = "Steel Wind Rising", slot = _Q, type = "linear", speed = MathHuge, range = 475, delay = 0.339, radius = 40, danger = 1, cc = false, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
+		["YasuoQ3Wrapper"] = {icon = Icons.."YasuoQ3"..Png, displayName = "Gathering Storm", missileName = "YasuoQ3Mis", slot = _Q, type = "linear", speed = 1200, range = 1000, delay = 0.339, radius = 90, danger = 2, cc = true, collision = false, windwall = true, hitbox = false, fow = true, exception = false},
 	},
 	["Zac"] = {
-		["ZacQ"] = {icon = Icons.."ZacQ"..Png, displayName = "Stretching Strikes", missileName = "ZacQMissile", slot = "Q", type = "linear", speed = 2800, range = 800, delay = 0.33, radius = 120, danger = 2, cc = true, collision = false, windwall = true, hitbox = false, fow = true, exception = false},
+		["ZacQ"] = {icon = Icons.."ZacQ"..Png, displayName = "Stretching Strikes", missileName = "ZacQMissile", slot = _Q, type = "linear", speed = 2800, range = 800, delay = 0.33, radius = 120, danger = 2, cc = true, collision = false, windwall = true, hitbox = false, fow = true, exception = false},
 	},
 	["Zed"] = {
-		["ZedQ"] = {icon = Icons.."ZedQ"..Png, displayName = "Razor Shuriken", missileName = "ZedQMissile", slot = "Q", type = "linear", speed = 1700, range = 900, delay = 0.25, radius = 50, danger = 1, cc = false, collision = false, windwall = true, hitbox = true, fow = true, exception = false},
+		["ZedQ"] = {icon = Icons.."ZedQ"..Png, displayName = "Razor Shuriken", missileName = "ZedQMissile", slot = _Q, type = "linear", speed = 1700, range = 900, delay = 0.25, radius = 50, danger = 1, cc = false, collision = false, windwall = true, hitbox = true, fow = true, exception = false},
 	},
 	["Ziggs"] = {
-		["ZiggsQ"] = {icon = Icons.."ZiggsQ"..Png, displayName = "Bouncing Bomb", missileName = "ZiggsQSpell", slot = "Q", type = "polygon", speed = 1700, range = 850, delay = 0.25, radius = 120, danger = 1, cc = false, collision = true, windwall = true, hitbox = false, fow = true, exception = false},
-		["ZiggsW"] = {icon = Icons.."ZiggsW"..Png, displayName = "Satchel Charge", missileName = "ZiggsW", slot = "W", type = "circular", speed = 1750, range = 1000, delay = 0.25, radius = 240, danger = 2, cc = true, collision = false, windwall = true, hitbox = false, fow = true, exception = false},
-		["ZiggsE"] = {icon = Icons.."ZiggsE"..Png, displayName = "Hexplosive Minefield", missileName = "ZiggsE", slot = "E", type = "circular", speed = 1800, range = 900, delay = 0.25, radius = 250, danger = 2, cc = true, collision = false, windwall = true, hitbox = false, fow = true, exception = false},
-		["ZiggsR"] = {icon = Icons.."ZiggsR"..Png, displayName = "Mega Inferno Bomb", missileName = "ZiggsRBoom", slot = "R", type = "circular", speed = 1550, range = 5000, delay = 0.375, radius = 480, danger = 4, cc = false, collision = false, windwall = false, hitbox = false, fow = true, exception = false},
+		["ZiggsQ"] = {icon = Icons.."ZiggsQ"..Png, displayName = "Bouncing Bomb", missileName = "ZiggsQSpell", slot = _Q, type = "polygon", speed = 1700, range = 850, delay = 0.25, radius = 120, danger = 1, cc = false, collision = true, windwall = true, hitbox = false, fow = true, exception = false},
+		["ZiggsW"] = {icon = Icons.."ZiggsW"..Png, displayName = "Satchel Charge", missileName = "ZiggsW", slot = _W, type = "circular", speed = 1750, range = 1000, delay = 0.25, radius = 240, danger = 2, cc = true, collision = false, windwall = true, hitbox = false, fow = true, exception = false},
+		["ZiggsE"] = {icon = Icons.."ZiggsE"..Png, displayName = "Hexplosive Minefield", missileName = "ZiggsE", slot = _E, type = "circular", speed = 1800, range = 900, delay = 0.25, radius = 250, danger = 2, cc = true, collision = false, windwall = true, hitbox = false, fow = true, exception = false},
+		["ZiggsR"] = {icon = Icons.."ZiggsR"..Png, displayName = "Mega Inferno Bomb", missileName = "ZiggsRBoom", slot = _R, type = "circular", speed = 1550, range = 5000, delay = 0.375, radius = 480, danger = 4, cc = false, collision = false, windwall = false, hitbox = false, fow = true, exception = false},
 	},
 	["Zilean"] = {
-		["ZileanQ"] = {icon = Icons.."ZileanQ"..Png, displayName = "Time Bomb", missileName = "ZileanQMissile", slot = "Q", type = "circular", speed = MathHuge, range = 900, delay = 0.8, radius = 150, danger = 2, cc = true, collision = false, windwall = true, hitbox = false, fow = true, exception = false},
+		["ZileanQ"] = {icon = Icons.."ZileanQ"..Png, displayName = "Time Bomb", missileName = "ZileanQMissile", slot = _Q, type = "circular", speed = MathHuge, range = 900, delay = 0.8, radius = 150, danger = 2, cc = true, collision = false, windwall = true, hitbox = false, fow = true, exception = false},
 	},
 	["Zoe"] = {
-		["ZoeQMissile"] = {icon = Icons.."ZoeQ1"..Png, displayName = "Paddle Star [First]", missileName = "ZoeQMissile", slot = "Q", type = "linear", speed = 1200, range = 800, delay = 0.25, radius = 50, danger = 1, cc = false, collision = true, windwall = true, hitbox = false, fow = true, exception = true},
-		["ZoeQMis2"] = {icon = Icons.."ZoeQ2"..Png, displayName = "Paddle Star [Second]", missileName = "ZoeQMis2", slot = "Q", type = "linear", speed = 2500, range = 1600, delay = 0, radius = 70, danger = 2, cc = false, collision = true, windwall = true, hitbox = false, fow = true, exception = true},
-		["ZoeE"] = {icon = Icons.."ZoeE"..Png, displayName = "Sleepy Trouble Bubble", missileName = "ZoeEMis", slot = "E", type = "linear", speed = 1700, range = 800, delay = 0.3, radius = 50, danger = 2, cc = true, collision = true, windwall = true, hitbox = false, fow = true, exception = false},
+		["ZoeQMissile"] = {icon = Icons.."ZoeQ1"..Png, displayName = "Paddle Star [First]", missileName = "ZoeQMissile", slot = _Q, type = "linear", speed = 1200, range = 800, delay = 0.25, radius = 50, danger = 1, cc = false, collision = true, windwall = true, hitbox = false, fow = true, exception = true},
+		["ZoeQMis2"] = {icon = Icons.."ZoeQ2"..Png, displayName = "Paddle Star [Second]", missileName = "ZoeQMis2", slot = _Q, type = "linear", speed = 2500, range = 1600, delay = 0, radius = 70, danger = 2, cc = false, collision = true, windwall = true, hitbox = false, fow = true, exception = true},
+		["ZoeE"] = {icon = Icons.."ZoeE"..Png, displayName = "Sleepy Trouble Bubble", missileName = "ZoeEMis", slot = _E, type = "linear", speed = 1700, range = 800, delay = 0.3, radius = 50, danger = 2, cc = true, collision = true, windwall = true, hitbox = false, fow = true, exception = false},
 	},
 	["Zyra"] = {
-		["ZyraQ"] = {icon = Icons.."ZyraQ"..Png, displayName = "Deadly Spines", slot = "Q", type = "rectangular", speed = MathHuge, range = 800, delay = 0.825, radius = 200, danger = 1, cc = false, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
-		["ZyraE"] = {icon = Icons.."ZyraE"..Png, displayName = "Grasping Roots", missileName = "ZyraE", slot = "E", type = "linear", speed = 1150, range = 1100, delay = 0.25, radius = 70, danger = 1, cc = true, collision = false, windwall = true, hitbox = false, fow = true, exception = false},
-		["ZyraR"] = {icon = Icons.."ZyraR"..Png, displayName = "Stranglethorns", slot = "R", type = "circular", speed = MathHuge, range = 700, delay = 2, radius = 500, danger = 4, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
+		["ZyraQ"] = {icon = Icons.."ZyraQ"..Png, displayName = "Deadly Spines", slot = _Q, type = "rectangular", speed = MathHuge, range = 800, delay = 0.825, radius = 200, danger = 1, cc = false, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
+		["ZyraE"] = {icon = Icons.."ZyraE"..Png, displayName = "Grasping Roots", missileName = "ZyraE", slot = _E, type = "linear", speed = 1150, range = 1100, delay = 0.25, radius = 70, danger = 1, cc = true, collision = false, windwall = true, hitbox = false, fow = true, exception = false},
+		["ZyraR"] = {icon = Icons.."ZyraR"..Png, displayName = "Stranglethorns", slot = _R, type = "circular", speed = MathHuge, range = 700, delay = 2, radius = 500, danger = 4, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
 	},
 }
 
 local EvadeSpells = {
 	["Ahri"] = {
-		[3] = {icon = Icons.."AhriR"..Png, type = 1, displayName = "Spirit Rush", name = "AhriQ-", danger = 4, range = 450, slot = "R", slot2 = HK_R},
+		[3] = {icon = Icons.."AhriR"..Png, type = 1, displayName = "Spirit Rush", name = "AhriQ-", danger = 4, range = 450, slot = _R, slot2 = HK_R},
 	},
 	["Blitzcrank"] = {
-		[1] = {icon = Icons.."BlitzcrankW"..Png, type = 2, displayName = "Overdrive", name = "BlitzcrankW-", danger = 3, slot = "W", slot2 = HK_W},
+		[1] = {icon = Icons.."BlitzcrankW"..Png, type = 2, displayName = "Overdrive", name = "BlitzcrankW-", danger = 3, slot = _W, slot2 = HK_W},
 	},
 	["Corki"] = {
-		[1] = {icon = Icons.."CorkiW"..Png, type = 1, displayName = "Valkyrie", name = "CorkiW-", danger = 4, range = 600, slot = "W", slot2 = HK_W},
+		[1] = {icon = Icons.."CorkiW"..Png, type = 1, displayName = "Valkyrie", name = "CorkiW-", danger = 4, range = 600, slot = _W, slot2 = HK_W},
 	},
 	["Draven"] = {
-		[1] = {icon = Icons.."DravenW"..Png, type = 2, displayName = "Blood Rush", name = "DravenW-", danger = 3, slot = "W", slot2 = HK_W},
+		[1] = {icon = Icons.."DravenW"..Png, type = 2, displayName = "Blood Rush", name = "DravenW-", danger = 3, slot = _W, slot2 = HK_W},
 	},
 	["Ekko"] = {
-		[2] = {icon = Icons.."EkkoE"..Png, type = 1, displayName = "Phase Dive", name = "EkkoE-", danger = 2, range = 325, slot = "E", slot2 = HK_E},
+		[2] = {icon = Icons.."EkkoE"..Png, type = 1, displayName = "Phase Dive", name = "EkkoE-", danger = 2, range = 325, slot = _E, slot2 = HK_E},
 	},
 	["Ezreal"] = {
-		[2] = {icon = Icons.."EzrealE"..Png, type = 1, displayName = "Arcane Shift", name = "EzrealE-", danger = 3, range = 475, slot = "E", slot2 = HK_E},
+		[2] = {icon = Icons.."EzrealE"..Png, type = 1, displayName = "Arcane Shift", name = "EzrealE-", danger = 3, range = 475, slot = _E, slot2 = HK_E},
 	},
 	["Fiora"] = {
-		[0] = {icon = Icons.."FioraQ"..Png, type = 1, displayName = "Lunge", name = "FioraQ-", danger = 1, range = 400, slot = "Q", slot2 = HK_Q},
-		[1] = {icon = Icons.."FioraW"..Png, type = 7, displayName = "Riposte", name = "FioraW-", danger = 2, range = 750, slot = "W", slot2 = HK_W},
+		[0] = {icon = Icons.."FioraQ"..Png, type = 1, displayName = "Lunge", name = "FioraQ-", danger = 1, range = 400, slot = _Q, slot2 = HK_Q},
+		[1] = {icon = Icons.."FioraW"..Png, type = 7, displayName = "Riposte", name = "FioraW-", danger = 2, range = 750, slot = _W, slot2 = HK_W},
 	},
 	["Fizz"] = {
-		[2] = {icon = Icons.."FizzR"..Png, type = 3, displayName = "Playful", name = "FizzE-", danger = 3, slot = "E", slot2 = HK_E},
+		[2] = {icon = Icons.."FizzR"..Png, type = 3, displayName = "Playful", name = "FizzE-", danger = 3, slot = _E, slot2 = HK_E},
 	},
 	["Garen"] = {
-		[0] = {icon = Icons.."GarenQ"..Png, type = 2, displayName = "Decisive Strike", name = "GarenQ-", danger = 3, slot = "Q", slot2 = HK_Q},
+		[0] = {icon = Icons.."GarenQ"..Png, type = 2, displayName = "Decisive Strike", name = "GarenQ-", danger = 3, slot = _Q, slot2 = HK_Q},
 	},
 	["Gnar"] = {
-		[2] = {icon = Icons.."GnarE"..Png, type = 1, displayName = "Hop/Crunch", name = "GnarE-", range = 475, danger = 3, slot = "E", slot2 = HK_E},
+		[2] = {icon = Icons.."GnarE"..Png, type = 1, displayName = "Hop/Crunch", name = "GnarE-", range = 475, danger = 3, slot = _E, slot2 = HK_E},
 	},
 	["Gragas"] = {
-		[2] = {icon = Icons.."GragasE"..Png, type = 1, displayName = "Body Slam", name = "GragasE-", range = 600, danger = 3, slot = "E", slot2 = HK_E},
+		[2] = {icon = Icons.."GragasE"..Png, type = 1, displayName = "Body Slam", name = "GragasE-", range = 600, danger = 3, slot = _E, slot2 = HK_E},
 	},
 	["Graves"] = {
-		[2] = {icon = Icons.."GravesE"..Png, type = 1, displayName = "Quickdraw", name = "GravesE-", range = 425, danger = 1, slot = "E", slot2 = HK_E},
+		[2] = {icon = Icons.."GravesE"..Png, type = 1, displayName = "Quickdraw", name = "GravesE-", range = 425, danger = 1, slot = _E, slot2 = HK_E},
 	},
 	["Kaisa"] = {
-		[2] = {icon = Icons.."KaisaE"..Png, type = 2, displayName = "Supercharge", name = "KaisaE-", danger = 2, slot = "E", slot2 = HK_E},
+		[2] = {icon = Icons.."KaisaE"..Png, type = 2, displayName = "Supercharge", name = "KaisaE-", danger = 2, slot = _E, slot2 = HK_E},
 	},
 	["Karma"] = {
-		[2] = {icon = Icons.."KarmaE"..Png, type = 2, displayName = "Inspire", name = "KarmaE-", danger = 3, slot = "E", slot2 = HK_E},
+		[2] = {icon = Icons.."KarmaE"..Png, type = 2, displayName = "Inspire", name = "KarmaE-", danger = 3, slot = _E, slot2 = HK_E},
 	},
 	["Kassadin"] = {
-		[3] = {icon = Icons.."KassadinR"..Png, type = 1, displayName = "Riftwalk", name = "KassadinR-", range = 500, danger = 3, slot = "R", slot2 = HK_R},
+		[3] = {icon = Icons.."KassadinR"..Png, type = 1, displayName = "Riftwalk", name = "KassadinR-", range = 500, danger = 3, slot = _R, slot2 = HK_R},
 	},
 	["Katarina"] = {
-		[1] = {icon = Icons.."KatarinaW"..Png, type = 2, displayName = "Preparation", name = "KatarinaW-", danger = 3, slot = "W", slot2 = HK_W},
+		[1] = {icon = Icons.."KatarinaW"..Png, type = 2, displayName = "Preparation", name = "KatarinaW-", danger = 3, slot = _W, slot2 = HK_W},
 	},
 	["Kayn"] = {
-		[0] = {icon = Icons.."KaynQ"..Png, type = 1, displayName = "Reaping Slash", name = "KaynQ-", danger = 2, slot = "Q", slot2 = HK_Q},
+		[0] = {icon = Icons.."KaynQ"..Png, type = 1, displayName = "Reaping Slash", name = "KaynQ-", danger = 2, slot = _Q, slot2 = HK_Q},
 	},
 	["Kennen"] = {
-		[2] = {icon = Icons.."KennenE"..Png, type = 2, displayName = "Lightning Rush", name = "KennenE-", danger = 3, slot = "E", slot2 = HK_E},
+		[2] = {icon = Icons.."KennenE"..Png, type = 2, displayName = "Lightning Rush", name = "KennenE-", danger = 3, slot = _E, slot2 = HK_E},
 	},
 	["Khazix"] = {
-		[2] = {icon = Icons.."KhazixE"..Png, type = 1, displayName = "Leap", name = "KhazixE-", range = 700, danger = 3, slot = "E", slot2 = HK_E},
+		[2] = {icon = Icons.."KhazixE"..Png, type = 1, displayName = "Leap", name = "KhazixE-", range = 700, danger = 3, slot = _E, slot2 = HK_E},
 	},
 	["Kindred"] = {
-		[0] = {icon = Icons.."KindredQ"..Png, type = 1, displayName = "Dance of Arrows", name = "KindredQ-", range = 340, danger = 1, slot = "Q", slot2 = HK_Q},
+		[0] = {icon = Icons.."KindredQ"..Png, type = 1, displayName = "Dance of Arrows", name = "KindredQ-", range = 340, danger = 1, slot = _Q, slot2 = HK_Q},
 	},
 	["Kled"] = {
-		[2] = {icon = Icons.."KledE"..Png, type = 1, displayName = "Jousting", name = "KledE-", range = 550, danger = 3, slot = "E", slot2 = HK_E},
+		[2] = {icon = Icons.."KledE"..Png, type = 1, displayName = "Jousting", name = "KledE-", range = 550, danger = 3, slot = _E, slot2 = HK_E},
 	},
 	["Leblanc"] = {
-		[1] = {icon = Icons.."LeblancW"..Png, type = 1, displayName = "Distortion", name = "LeblancW-", range = 600, danger = 3, slot = "W", slot2 = HK_W},
+		[1] = {icon = Icons.."LeblancW"..Png, type = 1, displayName = "Distortion", name = "LeblancW-", range = 600, danger = 3, slot = _W, slot2 = HK_W},
 	},
 	["Lucian"] = {
-		[2] = {icon = Icons.."LucianE"..Png, type = 1, displayName = "Relentless Pursuit", name = "LucianE-", range = 425, danger = 3, slot = "E", slot2 = HK_E},
+		[2] = {icon = Icons.."LucianE"..Png, type = 1, displayName = "Relentless Pursuit", name = "LucianE-", range = 425, danger = 3, slot = _E, slot2 = HK_E},
 	},
 	["MasterYi"] = {
-		[0] = {icon = Icons.."MasterYiQ"..Png, type = 4, displayName = "Alpha Strike", name = "MasterYiQ-", range = 600, danger = 3, slot = "Q", slot2 = HK_Q},
+		[0] = {icon = Icons.."MasterYiQ"..Png, type = 4, displayName = "Alpha Strike", name = "MasterYiQ-", range = 600, danger = 3, slot = _Q, slot2 = HK_Q},
 	},
 	["Morgana"] = {
-		[2] = {icon = Icons.."MorganaE"..Png, type = 5, displayName = "Black Shield", name = "MorganaE-", danger = 2, slot = "E", slot2 = HK_E},
+		[2] = {icon = Icons.."MorganaE"..Png, type = 5, displayName = "Black Shield", name = "MorganaE-", danger = 2, slot = _E, slot2 = HK_E},
 	},
 	["Pyke"] = {
-		[2] = {icon = Icons.."PykeE"..Png, type = 1, displayName = "Phantom Undertow", name = "PykeE-", range = 550, danger = 3, slot = "E", slot2 = HK_E},
+		[2] = {icon = Icons.."PykeE"..Png, type = 1, displayName = "Phantom Undertow", name = "PykeE-", range = 550, danger = 3, slot = _E, slot2 = HK_E},
 	},
 	["Rakan"] = {
-		[1] = {icon = Icons.."RakanW"..Png, type = 1, displayName = "Grand Entrance", name = "RakanW-", range = 600, danger = 3, slot = "W", slot2 = HK_W},
+		[1] = {icon = Icons.."RakanW"..Png, type = 1, displayName = "Grand Entrance", name = "RakanW-", range = 600, danger = 3, slot = _W, slot2 = HK_W},
 	},
 	["Renekton"] = {
-		[2] = {icon = Icons.."RenektonE"..Png, type = 1, displayName = "Slice and Dice", name = "RenektonE-", range = 450, danger = 3, slot = "E", slot2 = HK_E},
+		[2] = {icon = Icons.."RenektonE"..Png, type = 1, displayName = "Slice and Dice", name = "RenektonE-", range = 450, danger = 3, slot = _E, slot2 = HK_E},
 	},
 	["Riven"] = {
-		[2] = {icon = Icons.."RivenE"..Png, type = 1, displayName = "Valor", name = "RivenE-", range = 325, danger = 2, slot = "E", slot2 = HK_E},
+		[2] = {icon = Icons.."RivenE"..Png, type = 1, displayName = "Valor", name = "RivenE-", range = 325, danger = 2, slot = _E, slot2 = HK_E},
 	},
 	["Rumble"] = {
-		[1] = {icon = Icons.."RumbleW"..Png, type = 2, displayName = "Scrap Shield", name = "RumbleW-", danger = 2, slot = "W", slot2 = HK_W},
+		[1] = {icon = Icons.."RumbleW"..Png, type = 2, displayName = "Scrap Shield", name = "RumbleW-", danger = 2, slot = _W, slot2 = HK_W},
 	},
 	["Sejuani"] = {
-		[0] = {icon = Icons.."SejuaniQ"..Png, type = 1, displayName = "Arctic Assault", name = "SejuaniQ-", danger = 3, slot = "Q", slot2 = HK_Q},
+		[0] = {icon = Icons.."SejuaniQ"..Png, type = 1, displayName = "Arctic Assault", name = "SejuaniQ-", danger = 3, slot = _Q, slot2 = HK_Q},
 	},
 	["Shaco"] = {
-		[0] = {icon = Icons.."ShacoQ"..Png, type = 1, displayName = "Deceive", name = "ShacoQ-", range = 400, danger = 3, slot = "Q", slot2 = HK_Q},
+		[0] = {icon = Icons.."ShacoQ"..Png, type = 1, displayName = "Deceive", name = "ShacoQ-", range = 400, danger = 3, slot = _Q, slot2 = HK_Q},
 	},
 	["Shen"] = {
-		[2] = {icon = Icons.."ShenE"..Png, type = 1, displayName = "Shadow Dash", name = "ShenE-", range = 600, danger = 4, slot = "E", slot2 = HK_E},
+		[2] = {icon = Icons.."ShenE"..Png, type = 1, displayName = "Shadow Dash", name = "ShenE-", range = 600, danger = 4, slot = _E, slot2 = HK_E},
 	},
 	["Shyvana"] = {
-		[1] = {icon = Icons.."ShyvanaW"..Png, type = 2, displayName = "Burnout", name = "ShyvanaW-", danger = 3, slot = "W", slot2 = HK_W},
+		[1] = {icon = Icons.."ShyvanaW"..Png, type = 2, displayName = "Burnout", name = "ShyvanaW-", danger = 3, slot = _W, slot2 = HK_W},
 	},
 	["Sivir"] = {
-		[2] = {icon = Icons.."SivirE"..Png, type = 5, displayName = "Spell Shield", name = "SivirE-", danger = 2, slot = "E", slot2 = HK_E},
+		[2] = {icon = Icons.."SivirE"..Png, type = 5, displayName = "Spell Shield", name = "SivirE-", danger = 2, slot = _E, slot2 = HK_E},
 	},
 	["Skarner"] = {
-		[1] = {icon = Icons.."SkarnerW"..Png, type = 2, displayName = "Crystalline Exoskeleton", name = "SkarnerW-", danger = 3, slot = "W", slot2 = HK_W},
+		[1] = {icon = Icons.."SkarnerW"..Png, type = 2, displayName = "Crystalline Exoskeleton", name = "SkarnerW-", danger = 3, slot = _W, slot2 = HK_W},
 	},
 	["Sona"] = {
-		[2] = {icon = Icons.."SonaE"..Png, type = 2, displayName = "Song of Celerity", name = "SonaE-", danger = 3, slot = "E", slot2 = HK_E},
+		[2] = {icon = Icons.."SonaE"..Png, type = 2, displayName = "Song of Celerity", name = "SonaE-", danger = 3, slot = _E, slot2 = HK_E},
 	},
 	["Teemo"] = {
-		[1] = {icon = Icons.."TeemoW"..Png, type = 2, displayName = "Move Quick", name = "TeemoW-", danger = 3, slot = "W", slot2 = HK_W},
+		[1] = {icon = Icons.."TeemoW"..Png, type = 2, displayName = "Move Quick", name = "TeemoW-", danger = 3, slot = _W, slot2 = HK_W},
 	},
 	["Tryndamere"] = {
-		[2] = {icon = Icons.."TryndamereE"..Png, type = 1, displayName = "Spinning Slash", name = "TryndamereE-", range = 660, danger = 3, slot = "E", slot2 = HK_E},
+		[2] = {icon = Icons.."TryndamereE"..Png, type = 1, displayName = "Spinning Slash", name = "TryndamereE-", range = 660, danger = 3, slot = _E, slot2 = HK_E},
 	},
 	["Udyr"] = {
-		[2] = {icon = Icons.."UdyrE"..Png, type = 2, displayName = "Bear Stance", name = "UdyrE-", danger = 1, slot = "E", slot2 = HK_E},
+		[2] = {icon = Icons.."UdyrE"..Png, type = 2, displayName = "Bear Stance", name = "UdyrE-", danger = 1, slot = _E, slot2 = HK_E},
 	},
 	["Vayne"] = {
-		[0] = {icon = Icons.."VayneQ"..Png, type = 1, displayName = "Tumble", name = "VayneQ-", range = 300, danger = 2, slot = "Q", slot2 = HK_Q},
+		[0] = {icon = Icons.."VayneQ"..Png, type = 1, displayName = "Tumble", name = "VayneQ-", range = 300, danger = 2, slot = _Q, slot2 = HK_Q},
 	},
 	["Vi"] = {
-		[0] = {icon = Icons.."ViQ"..Png, type = 1, displayName = "Vault Breaker", name = "ViQ-", range = 250, danger = 3, slot = "Q", slot2 = HK_Q},
+		[0] = {icon = Icons.."ViQ"..Png, type = 1, displayName = "Vault Breaker", name = "ViQ-", range = 250, danger = 3, slot = _Q, slot2 = HK_Q},
 	},
 	["Vladimir"] = {
-		[1] = {icon = Icons.."VladimirW"..Png, type = 3, displayName = "Sanguine Pool", name = "VladimirW-", danger = 3, slot = "W", slot2 = HK_W},
+		[1] = {icon = Icons.."VladimirW"..Png, type = 3, displayName = "Sanguine Pool", name = "VladimirW-", danger = 3, slot = _W, slot2 = HK_W},
 	},
 	["Volibear"] = {
-		[0] = {icon = Icons.."VolibearQ"..Png, type = 2, displayName = "Rolling Thunder", name = "VolibearQ-", danger = 3, slot = "Q", slot2 = HK_Q},
+		[0] = {icon = Icons.."VolibearQ"..Png, type = 2, displayName = "Rolling Thunder", name = "VolibearQ-", danger = 3, slot = _Q, slot2 = HK_Q},
 	},
 	["Xayah"] = {
-		[3] = {icon = Icons.."XayahR"..Png, type = 3, displayName = "Featherstorm", name = "XayahR-", danger = 5, slot = "R", slot2 = HK_R},
+		[3] = {icon = Icons.."XayahR"..Png, type = 3, displayName = "Featherstorm", name = "XayahR-", danger = 5, slot = _R, slot2 = HK_R},
 	},
 	["Yasuo"] = {
-		[1] = {icon = Icons.."YasuoW"..Png, type = 6, displayName = "Wind Wall", name = "YasuoW-", danger = 2, slot = "W", slot2 = HK_W},
+		[1] = {icon = Icons.."YasuoW"..Png, type = 6, displayName = "Wind Wall", name = "YasuoW-", danger = 2, slot = _W, slot2 = HK_W},
 	},
 	["Zed"] = {
-		[3] = {icon = Icons.."ZedR"..Png, type = 4, displayName = "Death Mark", name = "ZedR-", range = 625, danger = 4, slot = "R", slot2 = HK_R},
+		[3] = {icon = Icons.."ZedR"..Png, type = 4, displayName = "Death Mark", name = "ZedR-", range = 625, danger = 4, slot = _R, slot2 = HK_R},
 	},
 	["Zilean"] = {
-		[2] = {icon = Icons.."ZileanE"..Png, type = 2, displayName = "Time Warp", name = "ZileanE-", danger = 3, slot = "E", slot2 = HK_E},
+		[2] = {icon = Icons.."ZileanE"..Png, type = 2, displayName = "Time Warp", name = "ZileanE-", danger = 3, slot = _E, slot2 = HK_E},
 	},
 }
 
@@ -1074,6 +1077,7 @@ function JEvade:__init()
 	self.ExtendedPos, self.Flash, self.Flash2, self.MousePos, self.MyHeroPos, self.SafePos = nil, nil, nil, nil, nil, nil
 	self.Debug, self.DodgeableSpells, self.DetectedSpells, self.Enemies, self.EvadeSpellData, self.OnCreateMisCBs, self.OnImpDodgeCBs, self.OnProcSpellCBs = {}, {}, {}, {}, {}, {}, {}, {}
 	self.DDTimer, self.DebugTimer, self.MoveTimer, self.MissileID, self.OldTimer, self.NewTimer = 0, 0, 0, 0, 0, 0
+	self.SpellSlot = {[_Q] = "Q", [_W] = "W", [_E] = "E", [_R] = "R"}
 	for i = 1, GameHeroCount() do
 		local unit = GameHero(i)
 		if unit and unit.team ~= myHero.team then TableInsert(self.Enemies, {unit = unit, spell = nil, missile = nil}) end
@@ -1108,7 +1112,7 @@ function JEvade:__init()
 			if SpellDatabase[enemy] then
 				for j, spell in pairs(SpellDatabase[enemy]) do
 					if not self.JEMenu.Spells[j] then
-						self.JEMenu.Spells:MenuElement({id = j, name = ""..enemy.." "..spell.slot.." - "..spell.displayName, leftIcon = spell.icon, type = MENU})
+						self.JEMenu.Spells:MenuElement({id = j, name = ""..enemy.." "..self.SpellSlot[spell.slot].." - "..spell.displayName, leftIcon = spell.icon, type = MENU})
 						self.JEMenu.Spells[j]:MenuElement({id = "Dodge"..j, name = "Dodge Spell", value = true})
 						self.JEMenu.Spells[j]:MenuElement({id = "Draw"..j, name = "Draw Spell", value = true})
 						self.JEMenu.Spells[j]:MenuElement({id = "Force"..j, name = "Force To Dodge", value = spell.danger >= 4})
@@ -1126,7 +1130,7 @@ function JEvade:__init()
 		if eS then
 			for i = 0, 3 do
 				if eS[i] then
-					self.JEMenu.Spells:MenuElement({id = eS[i].name, name = ""..myHero.charName.." "..(eS[i].slot or "?").." - "..eS[i].displayName, leftIcon = eS[i].icon, type = MENU})
+					self.JEMenu.Spells:MenuElement({id = eS[i].name, name = ""..myHero.charName.." "..self.SpellSlot[eS[i].slot].." - "..eS[i].displayName, leftIcon = eS[i].icon, type = MENU})
 					self.JEMenu.Spells[eS[i].name]:MenuElement({id = "US"..eS[i].name, name = "Use Spell", value = true})
 					self.JEMenu.Spells[eS[i].name]:MenuElement({id = "Danger"..eS[i].name, name = "Danger Level", value = (eS[i].danger or 1), min = 1, max = 5, step = 1})
 				end
