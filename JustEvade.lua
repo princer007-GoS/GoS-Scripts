@@ -1771,7 +1771,7 @@ function JEvade:Avoid(spell, dodgePos)
 	local evadeSpells = self.EvadeSpellData
 	for i = 1, #evadeSpells do
 		local data = evadeSpells[i]
-		if self:IsReady(data.slot2) and self.JEMenu.Spells[data.name]["US"..data.name]:Value() and spell.danger >= self.JEMenu.Spells[data.name]["Danger"..data.name]:Value() then
+		if self:IsReady(data.slot) and self.JEMenu.Spells[data.name]["US"..data.name]:Value() and spell.danger >= self.JEMenu.Spells[data.name]["Danger"..data.name]:Value() then
 			if dodgePos and (data.type == 1 or data.type == 2) then
 				if data.type == 1 then
 					local dashPos = Point2D(self.MyHeroPos):Extended(dodgePos, data.range)
