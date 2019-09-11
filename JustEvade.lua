@@ -1087,7 +1087,7 @@ function JEvade:__init()
 	self.JEMenu.Core:MenuElement({id = "DS", name = "Diagonal Search Step", value = 30, min = 5, max = 100, step = 5})
 	self.JEMenu.Core:MenuElement({id = "DC", name = "Diagonal Points Count", value = 3, min = 1, max = 8, step = 1})
 	self.JEMenu.Core:MenuElement({id = "LR", name = "Limited Detection Range", value = 5000, min = 500, max = 10000, step = 250})
-	self.JEMenu.Core:MenuElement({id = "SS", name = "Safety Check Sensitivity", value = 0, min = 0, max = 100, step = 1})
+	self.JEMenu.Core:MenuElement({id = "SS", name = "Safety Check Sensitivity", value = 4, min = 0, max = 100, step = 1})
 	self.JEMenu:MenuElement({id = "Main", name = "Main Settings", type = MENU})
 	self.JEMenu.Main:MenuElement({id = "Evade", name = "Enable Evade", value = true})
 	self.JEMenu.Main:MenuElement({id = "Dodge", name = "Dodge Spells", value = true})
@@ -1445,7 +1445,7 @@ function JEvade:IsAboutToHit(spell, pos, extra)
 	if moveSpeed == MathHuge then return false end
 	local pos = self:AppendVector(myPos, pos, 1000)
 	local diff = MathMax(0, GameTimer() - spell.startTime)
-	local extraSafety = self.JEMenu.Core.SS:Value() / 200 + 0.07
+	local extraSafety = self.JEMenu.Core.SS:Value() / 200 + 0.05
 	if spell.type == "linear" and spell.speed ~= MathHuge then
 		if spell.delay > 0 and diff <= spell.delay then
 			myPos = Point2D(myPos):Extended(pos, (spell.delay - diff) * moveSpeed)
