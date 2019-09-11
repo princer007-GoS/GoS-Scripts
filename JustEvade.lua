@@ -1445,7 +1445,7 @@ function JEvade:IsAboutToHit(spell, pos, extra)
 	if moveSpeed == MathHuge then return false end
 	local pos = self:AppendVector(myPos, pos, 1000)
 	local diff = MathMax(0, GameTimer() - spell.startTime)
-	local extraSafety = self.JEMenu.Core.SS:Value() / 200 + 0.07
+	local extraSafety = self.JEMenu.Core.SS:Value() / 200 + 0.05
 	if spell.type == "linear" and spell.speed ~= MathHuge then
 		if spell.delay > 0 and diff <= spell.delay then
 			myPos = Point2D(myPos):Extended(pos, (spell.delay - diff) * moveSpeed)
