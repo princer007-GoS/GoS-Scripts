@@ -1639,7 +1639,7 @@ function JEvade:LoadEvadeSpells()
 	elseif myHero:GetSpellData(SUMMONER_2).name == "SummonerFlash" then self.Flash, self.Flash2 = HK_SUMMONER_2, SUMMONER_2 end
 	for i = 0, 3 do
 		local eS = EvadeSpells[myHero.charName]
-		if eS and eS[i] then TableInsert(self.EvadeSpellData, {name = eS[i].name, slot2 = eS[i].slot2, range = eS[i].range, type = eS[i].type}) end
+		if eS and eS[i] then TableInsert(self.EvadeSpellData, {name = eS[i].name, slot = eS[i].slot, slot2 = eS[i].slot2, range = eS[i].range, type = eS[i].type}) end
 	end
 end
 
