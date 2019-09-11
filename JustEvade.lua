@@ -1076,7 +1076,7 @@ function JEvade:__init()
 	self.DoD, self.Evading, self.InsidePath, self.Loaded = false, false, false, false
 	self.ExtendedPos, self.Flash, self.Flash2, self.MousePos, self.MyHeroPos, self.SafePos = nil, nil, nil, nil, nil, nil
 	self.Debug, self.DodgeableSpells, self.DetectedSpells, self.Enemies, self.EvadeSpellData, self.OnCreateMisCBs, self.OnImpDodgeCBs, self.OnProcSpellCBs = {}, {}, {}, {}, {}, {}, {}, {}
-	self.DDTimer, self.DebugTimer, self.MoveTimer, self.MissileID, self.OldTimer, self.NewTimer = 0, 0, 0, 0, 0, 0
+	self.DDTimer, self.DebugTimer, self.MoveTimer, self.MissileID, self.PosY, self.OldTimer, self.NewTimer = 0, 0, 0, 0, 0, 0, 0
 	self.SpellSlot = {[_Q] = "Q", [_W] = "W", [_E] = "E", [_R] = "R"}
 	for i = 1, GameHeroCount() do
 		local unit = GameHero(i)
@@ -1257,7 +1257,7 @@ function JEvade:DotProduct(p1, p2)
 end
 
 function JEvade:FixPos(pos)
-	return Vector(pos.x, 0, pos.y):To2D()
+	return Vector(pos.x, self.PosY or 0, pos.y):To2D()
 end
 
 function JEvade:GetBestEvadePos(spells, mode, extra, force)
@@ -1540,7 +1540,7 @@ function JEvade:To2D(pos)
 end
 
 function JEvade:To3D(pos)
-	return Vector(pos.x, 0, pos.y)
+	return Vector(pos.x, self.PosY or 0, pos.y)
 end
 
 --[[
@@ -1850,7 +1850,7 @@ function JEvade:OnProcessSpell(unit, spell)
 			if SpellDatabase[unit.charName] and SpellDatabase[unit.charName][spell.name] then
 				local data = SpellDatabase[unit.charName][spell.name]
 				if data.exception then return end
-				local placementPos = self:To2D(spell.placementPos)
+				local placementPos = self:To2D(spell.placementPos); self.PosY = spell.placementPos.y
 				local startPos = spell.startPos and self:To2D(spell.startPos) or unitPos
 				local endPos, range2 = self:CalculateEndPos(startPos, placementPos, unitPos, data.speed, data.range, data.radius, data.collision, data.type)
 				local extraRadius = self.JEMenu.Spells[spell.name]["ER"..spell.name]:Value() or 0
@@ -1890,7 +1890,7 @@ function JEvade:OnCreateMissile(unit, missile)
 	if menuName == "" then return end
 	local data = SpellDatabase[unit.charName][menuName]
 	if self.JEMenu.Spells[menuName]["FOW"..menuName]:Value() and not unit.visible and not data.exception or (data.exception and unit.visible) then
-		local placementPos = self:To2D(missile.placementPos)
+		local placementPos = self:To2D(missile.placementPos); self.PosY = missile.placementPos.y
 		local startPos = self:To2D(missile.startPos) or unitPos
 		local endPos, range2 = self:CalculateEndPos(startPos, placementPos, unitPos, data.speed, data.range, data.radius, data.collision, data.type)
 		local extraRadius = self.JEMenu.Spells[menuName]["ER"..menuName]:Value() or 0
