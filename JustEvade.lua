@@ -32,10 +32,10 @@ end
 
 local Version, IntVer = 1.0, "1.0"
 local function AutoUpdate()
-	DownloadFile("https://github.com/Ark223/GoS-Scripts/blob/master/JustEvade.version", SCRIPT_PATH .. "JustEvade.version")
+	DownloadFile("https://raw.githubusercontent.com/Ark223/GoS-Scripts/master/JustEvade.version", SCRIPT_PATH .. "JustEvade.version")
 	if tonumber(ReadFile(SCRIPT_PATH .. "GoS-U Reborn.version")) > Version then
 		print("JustEvade: Found update! Downloading...")
-		DownloadFile("https://github.com/Ark223/GoS-Scripts/blob/master/JustEvade.lua", SCRIPT_PATH .. "JustEvade.lua")
+		DownloadFile("https://raw.githubusercontent.com/Ark223/GoS-Scripts/master/JustEvade.lua", SCRIPT_PATH .. "JustEvade.lua")
 		print("JustEvade: Successfully updated. Use 2x F6!")
 	end
 end
@@ -1917,8 +1917,8 @@ _G.JustEvade = {
 	Evading = function() return JEvade.Evading end,
 	IsDangerous = function(self, pos) return JEvade:IsDangerous(JEvade:To2D(pos)) end,
 	SafePos = function(self) return JEvade:SafePosition() end,
-	OnImpossibleDodge = function(func) JEvade:ImpossibleDodge(func) end,
 	OnCreateMissile = function(func) JEvade:CreateMissile(func) end,
+	OnImpossibleDodge = function(func) JEvade:ImpossibleDodge(func) end,
 	OnProcessSpell = function(func) JEvade:ProcessSpell(func) end
 }
 
