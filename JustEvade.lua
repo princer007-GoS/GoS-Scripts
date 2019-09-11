@@ -1092,7 +1092,7 @@ function JEvade:__init()
 	self.JEMenu.Main:MenuElement({id = "Evade", name = "Enable Evade", value = true})
 	self.JEMenu.Main:MenuElement({id = "Dodge", name = "Dodge Spells", value = true})
 	self.JEMenu.Main:MenuElement({id = "Draw", name = "Draw Spells", value = true})
-	self.JEMenu.Main:MenuElement({id = "FOW", name = "Enable FOW Detection", value = false})
+	self.JEMenu.Main:MenuElement({id = "FOW", name = "Enable Missile Detection", value = false})
 	self.JEMenu.Main:MenuElement({id = "Debug", name = "Debug Evade Points", value = true})
 	self.JEMenu.Main:MenuElement({id = "Status", name = "Draw Evade Status", value = true})
 	self.JEMenu.Main:MenuElement({id = "SafePos", name = "Draw Safe Position", value = true})
@@ -1885,7 +1885,7 @@ function JEvade:OnCreateMissile(unit, missile)
 	end
 	if menuName == "" then return end
 	local data = SpellDatabase[unit.charName][menuName]
-	if self.JEMenu.Main.FOW:Value() and self.JEMenu.Spells[menuName]["FOW"..menuName]:Value() and not unit.visible and not data.exception or (data.exception and unit.visible) then
+	if self.JEMenu.Spells[menuName]["FOW"..menuName]:Value() and not unit.visible and not data.exception or (data.exception and unit.visible) then
 		local placementPos = self:To2D(missile.placementPos)
 		local startPos = self:To2D(missile.startPos) or unitPos
 		local endPos, range2 = self:CalculateEndPos(startPos, placementPos, unitPos, data.speed, data.range, data.radius, data.collision, data.type)
@@ -1917,8 +1917,8 @@ _G.JustEvade = {
 	Evading = function() return JEvade.Evading end,
 	IsDangerous = function(self, pos) return JEvade:IsDangerous(JEvade:To2D(pos)) end,
 	SafePos = function(self) return JEvade:SafePosition() end,
-	OnCreateMissile = function(func) JEvade:CreateMissile(func) end,
 	OnImpossibleDodge = function(func) JEvade:ImpossibleDodge(func) end,
+	OnCreateMissile = function(func) JEvade:CreateMissile(func) end,
 	OnProcessSpell = function(func) JEvade:ProcessSpell(func) end
 }
 
