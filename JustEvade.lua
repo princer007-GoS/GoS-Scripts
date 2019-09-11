@@ -1459,7 +1459,7 @@ function JEvade:IsAboutToHit(spell, pos, extra)
 		local vb = Point2D(spell.endPos - spell.startPos):Normalized() * spell.speed
 		local da, db = Point2D(myPos - spell.startPos), Point2D(va - vb)
 		local a, b = self:DotProduct(db, db), 2 * self:DotProduct(da, db)
-		local c = self:DotProduct(da, da) - (spell.radius + self.BoundingRadius * 2) ^ 2
+		local c = self:DotProduct(da, da) - (spell.radius + self.BoundingRadius * 1.5) ^ 2
 		local delta = b * b - 4 * a * c
 		if delta >= 0 then
 			local t1, t2 = (-b + MathSqrt(delta)) / (2 * a), (-b - MathSqrt(delta)) / (2 * a)
