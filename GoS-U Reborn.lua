@@ -8,6 +8,9 @@
 
 	Changelog:
 
+	v1.1.7
+	+ Updated to support new JustEvade
+
 	v1.1.6
 	+ Fixed Tristana's Q usage
 
@@ -132,7 +135,7 @@ local OnTicks = {Champion = nil, Utility = nil}
 local BaseUltC = {["Ashe"] = true, ["Draven"] = true, ["Ezreal"] = true, ["Jinx"] = true}
 local Champions = {["Ashe"] = true, ["Caitlyn"] = false, ["Corki"] = false, ["Draven"] = false, ["Ezreal"] = true, ["Jhin"] = false, ["Jinx"] = true, ["Kaisa"] = true, ["Kalista"] = false, ["KogMaw"] = true, ["Lucian"] = true, ["MissFortune"] = false, ["Quinn"] = false, ["Sivir"] = true, ["Tristana"] = true, ["Twitch"] = true, ["Varus"] = false, ["Vayne"] = true, ["Xayah"] = false}
 local Item_HK = {[ITEM_1] = HK_ITEM_1, [ITEM_2] = HK_ITEM_2, [ITEM_3] = HK_ITEM_3, [ITEM_4] = HK_ITEM_4, [ITEM_5] = HK_ITEM_5, [ITEM_6] = HK_ITEM_6, [ITEM_7] = HK_ITEM_7}
-local Version = "1.16"; local LuaVer = "1.1.6"
+local Version = "1.17"; local LuaVer = "1.1.7"
 local VerSite = "https://raw.githubusercontent.com/Ark223/GoS-Scripts/master/GoS-U%20Reborn.version"
 local LuaSite = "https://raw.githubusercontent.com/Ark223/GoS-Scripts/master/GoS-U%20Reborn.lua"
 
@@ -1318,7 +1321,8 @@ function Ashe:__init()
 end
 
 function Ashe:Tick()
-	if ((_G.ExtLibEvade and _G.ExtLibEvade.Evading) or _G.JustEvade or Game.IsChatOpen() or not myHero.alive) then return end
+	if _G.JustEvade and _G.JustEvade.Evading() then return end
+	if ((_G.ExtLibEvade and _G.ExtLibEvade.Evading) or Game.IsChatOpen() or not myHero.alive) then return end
 	self:Auto2()
 	self.Range = myHero.range + myHero.boundingRadius * 2
 	self.Target1 = Module.TargetSelector:GetTarget(self.WData.range, nil)
@@ -1492,7 +1496,8 @@ function Ezreal:__init()
 end
 
 function Ezreal:Tick()
-	if ((_G.ExtLibEvade and _G.ExtLibEvade.Evading) or _G.JustEvade or Game.IsChatOpen() or not myHero.alive) then return end
+	if _G.JustEvade and _G.JustEvade.Evading() then return end
+	if ((_G.ExtLibEvade and _G.ExtLibEvade.Evading) or Game.IsChatOpen() or not myHero.alive) then return end
 	self:Auto2()
 	if GoSuManager:GetOrbwalkerMode() == "Clear" then self:LaneClear() end
 	self.Range = myHero.range + myHero.boundingRadius * 2
@@ -1677,7 +1682,8 @@ function Jinx:__init()
 end
 
 function Jinx:Tick()
-	if (_G.ExtLibEvade and _G.ExtLibEvade.Evading) or _G.JustEvade or Game.IsChatOpen() or not myHero.alive then return end
+	if _G.JustEvade and _G.JustEvade.Evading() then return end
+	if (_G.ExtLibEvade and _G.ExtLibEvade.Evading) or Game.IsChatOpen() or not myHero.alive then return end
 	self:Auto2()
 	self.Range = myHero.range + myHero.boundingRadius * 2
 	self.Target = Module.TargetSelector:GetTarget(655 + self.BonusRange[GoSuManager:GetCastLevel(myHero, _Q)], nil)
@@ -1827,7 +1833,8 @@ function Kaisa:__init()
 end
 
 function Kaisa:Tick()
-	if ((_G.ExtLibEvade and _G.ExtLibEvade.Evading) or _G.JustEvade or Game.IsChatOpen() or not myHero.alive or GoSuManager:GotBuff(myHero, "KaisaE") > 0) then return end
+	if _G.JustEvade and _G.JustEvade.Evading() then return end
+	if ((_G.ExtLibEvade and _G.ExtLibEvade.Evading) or Game.IsChatOpen() or not myHero.alive or GoSuManager:GotBuff(myHero, "KaisaE") > 0) then return end
 	self:Auto2()
 	if GoSuManager:GetOrbwalkerMode() == "Clear" then self:LaneClear() end
 	self.Range = myHero.range + myHero.boundingRadius * 2
@@ -1970,7 +1977,8 @@ function KogMaw:__init()
 end
 
 function KogMaw:Tick()
-	if ((_G.ExtLibEvade and _G.ExtLibEvade.Evading) or _G.JustEvade or Game.IsChatOpen() or not myHero.alive) then return end
+	if _G.JustEvade and _G.JustEvade.Evading() then return end
+	if ((_G.ExtLibEvade and _G.ExtLibEvade.Evading) or Game.IsChatOpen() or not myHero.alive) then return end
 	self.RRange = GoSuManager:GetCastRange(myHero, _R)
 	self:Auto2()
 	if GoSuManager:GetOrbwalkerMode() == "Clear" then self:LaneClear() end
@@ -2171,7 +2179,8 @@ function Lucian:__init()
 end
 
 function Lucian:Tick()
-	if ((_G.ExtLibEvade and _G.ExtLibEvade.Evading) or _G.JustEvade or Game.IsChatOpen() or not myHero.alive) then return end
+	if _G.JustEvade and _G.JustEvade.Evading() then return end
+	if ((_G.ExtLibEvade and _G.ExtLibEvade.Evading) or Game.IsChatOpen() or not myHero.alive) then return end
 	self:Auto2()
 	if GoSuManager:GetOrbwalkerMode() == "Clear" then self:LaneClear() end
 	self.Range = myHero.range + myHero.boundingRadius * 2
@@ -2372,7 +2381,8 @@ function Sivir:__init()
 end
 
 function Sivir:Tick()
-	if ((_G.ExtLibEvade and _G.ExtLibEvade.Evading) or _G.JustEvade or Game.IsChatOpen() or not myHero.alive) then return end
+	if _G.JustEvade and _G.JustEvade.Evading() then return end
+	if ((_G.ExtLibEvade and _G.ExtLibEvade.Evading) or Game.IsChatOpen() or not myHero.alive) then return end
 	self:Auto2()
 	if GoSuManager:GetOrbwalkerMode() == "Clear" then self:LaneClear() end
 	self.Range = myHero.range + myHero.boundingRadius * 2
@@ -2576,7 +2586,8 @@ function Tristana:__init()
 end
 
 function Tristana:Tick()
-	if ((_G.ExtLibEvade and _G.ExtLibEvade.Evading) or _G.JustEvade or Game.IsChatOpen() or not myHero.alive) then return end
+	if _G.JustEvade and _G.JustEvade.Evading() then return end
+	if ((_G.ExtLibEvade and _G.ExtLibEvade.Evading) or Game.IsChatOpen() or not myHero.alive) then return end
 	self:Auto2()
 	self.Range = myHero.range + myHero.boundingRadius * 2
 	self.ERange = self:GetSpellRange(_E); self.RRange = self:GetSpellRange(_R)
@@ -2684,7 +2695,8 @@ function Twitch:__init()
 end
 
 function Twitch:Tick()
-	if ((_G.ExtLibEvade and _G.ExtLibEvade.Evading) or _G.JustEvade or Game.IsChatOpen() or not myHero.alive) then return end
+	if _G.JustEvade and _G.JustEvade.Evading() then return end
+	if ((_G.ExtLibEvade and _G.ExtLibEvade.Evading) or Game.IsChatOpen() or not myHero.alive) then return end
 	self:Auto2()
 	self.Range = myHero.range + myHero.boundingRadius * 2
 	self.Target = Module.TargetSelector:GetTarget(self.EData.range, nil)
@@ -2833,7 +2845,8 @@ function Vayne:__init()
 end
 
 function Vayne:Tick()
-	if ((_G.ExtLibEvade and _G.ExtLibEvade.Evading) or _G.JustEvade or Game.IsChatOpen() or not myHero.alive) then return end
+	if _G.JustEvade and _G.JustEvade.Evading() then return end
+	if ((_G.ExtLibEvade and _G.ExtLibEvade.Evading) or Game.IsChatOpen() or not myHero.alive) then return end
 	if GameTimer() > self.Timer + 1 and GoSuManager:GotBuff(myHero, "vaynetumblebonus") > 0 then
 		_G.SDK.Orbwalker:__OnAutoAttackReset(); self.Timer = GameTimer()
 	end
