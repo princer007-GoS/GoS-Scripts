@@ -1305,7 +1305,7 @@ function JEvade:GetExtendedSafePos(pos)
 		if minion and not minion.dead then
 			local minionPos = self:To2D(minion.pos)
 			if self:Distance(self.MyHeroPos, minionPos) <= distance then
-				TableInsert(positions, self:To2D(minion.pos)) 
+				TableInsert(positions, minionPos)
 			end
 		end
 	end
@@ -1313,8 +1313,8 @@ function JEvade:GetExtendedSafePos(pos)
 		local collision = false
 		local ext = self:AppendVector(self.MyHeroPos, pos, self.BoundingRadius * i)
 		if i > 2 and not MapPosition:inWall(self:To3D(ext)) or i == 2 then
-			for j, pos in ipairs(positions) do
-				if self:Distance(ext, pos) < self.BoundingRadius then collision = true; break end
+			for j, minionPos in ipairs(positions) do
+				if self:Distance(ext, minionPos) < self.BoundingRadius then collision = true; break end
 			end
 			if not collision then return ext end
 		end
