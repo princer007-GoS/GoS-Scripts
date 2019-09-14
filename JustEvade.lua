@@ -984,7 +984,7 @@ function XPolygon:ClipPolygons(subj, clip, op)
 	local result = {}
 	local subjList, l1 = self:InitVertices(subj)
 	local clipList, l2 = self:InitVertices(clip)
-    local ints = self:FindIntersectionsForClip(subjList, clipList)
+	local ints = self:FindIntersectionsForClip(subjList, clipList)
 	if ints then
 		self:IdentifyIntersectionType(subjList, clipList, clip, subj, op)
 		result = self:GetClipResult(subjList, clipList)
@@ -1462,7 +1462,8 @@ function JEvade:IsAboutToHit(spell, pos, extra)
 		local c = self:DotProduct(da, da) - (spell.radius + self.BoundingRadius * 1.5) ^ 2
 		local delta = b * b - 4 * a * c
 		if delta >= 0 then
-			local t1, t2 = (-b + MathSqrt(delta)) / (2 * a), (-b - MathSqrt(delta)) / (2 * a)
+			local rtDelta = MathSqrt(delta)
+			local t1, t2 = (-b + rtDelta) / (2 * a), (-b - rtDelta) / (2 * a)
 			local t = MathMin(t1, t2)
 			if t < 0 then t = MathMax(t1, t2) end
 			if (extraSafety + t) > 0 then return true end
