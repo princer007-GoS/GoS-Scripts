@@ -12,6 +12,9 @@
 
 	Changelog:
 
+	v1.0.2
+	+ Fixed flash usage
+
 	v1.0.1
 	+ Fixed loading & spell usage
 
@@ -33,7 +36,7 @@ local function ReadFile(file)
 	txt:close(); return result
 end
 
-local Version, IntVer = 1.01, "1.0.1"
+local Version, IntVer = 1.02, "1.0.2"
 local function AutoUpdate()
 	DownloadFile("https://raw.githubusercontent.com/Ark223/GoS-Scripts/master/JustEvade.version", SCRIPT_PATH .. "JustEvade.version")
 	if tonumber(ReadFile(SCRIPT_PATH .. "JustEvade.version")) > Version then
@@ -1803,7 +1806,7 @@ function JEvade:Avoid(spell, dodgePos)
 	end
 	local dodgePos = not dodgePos and self:GetBestEvadePos(self.DodgeableSpells, 1, true, true) or dodgePos
 	if dodgePos then
-		if self:IsReady(self.Flash2) and spell.danger == 5 then
+		if self.JEMenu.Spells.Flash.US:Value() and self:IsReady(self.Flash2) and spell.danger == 5 then
 			local flashPos = self:To3D(dodgePos)
 			if _G.SDK and _G.Control.Flash then _G.Control.Flash(self.Flash, flashPos)
 			else _G.Control.CastSpell(self.Flash, flashPos) end
@@ -1827,7 +1830,7 @@ function JEvade:Draw()
 			else self:DrawText("Evade: ON", 14, myHero.pos2D, -30, 45, DrawColor(224, 255, 255, 255)) end
 		else self:DrawText("Evade: OFF", 14, myHero.pos2D, -32, 45, DrawColor(224, 255, 255, 255)) end
 	end
-	if #self.DetectedSpells > 0 and self.Evading == true and self.SafePos ~= nil and self.JEMenu.Main.SafePos:Value() then
+	if #self.DetectedSpells > 0 and self.Evading and self.SafePos ~= nil and self.JEMenu.Main.SafePos:Value() then
 		DrawCircle(self:To3D(self.SafePos), self.BoundingRadius, 0.5, self.JEMenu.Main.SPC:Value())
 		self:DrawArrow(self.MyHeroPos, self.SafePos, self.JEMenu.Main.Arrow:Value())
 	end
