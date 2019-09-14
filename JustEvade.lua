@@ -224,7 +224,7 @@ local SpellDatabase = {
 	},
 	["Jinx"] = {
 		["JinxWMissile"] = {icon = Icons.."JinxW"..Png, displayName = "Zap!", missileName = "JinxWMissile", slot = _W, type = "linear", speed = 3300, range = 1450, delay = 0.6, radius = 60, danger = 1, cc = true, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
-		--["JinxE"] = {icon = Icons.."JinxE"..Png, displayName = "Flame Chompers!", missileName = "JinxEHit", slot = _E, type = "polygon", speed = 1100, range = 900, delay = 1.5, radius = 120, danger = 1, cc = true, collision = false, windwall = true, hitbox = false, fow = true, exception = false},
+		["JinxEHit"] = {icon = Icons.."JinxE"..Png, displayName = "Flame Chompers!", missileName = "JinxEHit", slot = _E, type = "polygon", speed = 1100, range = 900, delay = 1.5, radius = 120, danger = 2, cc = true, collision = false, windwall = true, hitbox = false, fow = true, exception = true},
 		["JinxR"] = {icon = Icons.."JinxR"..Png, displayName = "Super Mega Death Rocket!", missileName = "JinxR", slot = _R, type = "linear", speed = 1700, range = 12500, delay = 0.6, radius = 140, danger = 4, cc = false, collision = false, windwall = true, hitbox = true, fow = true, exception = false},
 	},
 	["Kaisa"] = {
