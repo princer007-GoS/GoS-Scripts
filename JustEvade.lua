@@ -12,6 +12,9 @@
 
 	Changelog:
 
+	v1.0.3
+	+ Fixed bug related to polygon offsetting
+
 	v1.0.2
 	+ Fixed flash usage
 
@@ -36,7 +39,7 @@ local function ReadFile(file)
 	txt:close(); return result
 end
 
-local Version, IntVer = 1.02, "1.0.2"
+local Version, IntVer = 1.03, "1.0.3"
 local function AutoUpdate()
 	DownloadFile("https://raw.githubusercontent.com/Ark223/GoS-Scripts/master/JustEvade.version", SCRIPT_PATH .. "JustEvade.version")
 	if tonumber(ReadFile(SCRIPT_PATH .. "JustEvade.version")) > Version then
@@ -1015,15 +1018,14 @@ function XPolygon:Distance(p1, p2)
 end
 
 function XPolygon:DistanceSquared(p1, p2)
-	return (p1.x - p2.x) ^ 2 + (p1.y - p2.y) ^ 2
+	return (p2.x - p1.x) ^ 2 + (p2.y - p1.y) ^ 2
 end
 
 function XPolygon:Intersection(a1, b1, a2, b2)
 	local a1, b1, a2, b2 = Point2D(a1), Point2D(b1), Point2D(a2), Point2D(b2)
 	local r, s = Point2D(b1 - a1), Point2D(b2 - a2); local x = self:CrossProduct(r, s)
 	local t, u = self:CrossProduct(a2 - a1, s) / x, self:CrossProduct(a2 - a1, r) / x
-	if x ~= 0 then return Point2D(a1 + t * r), t >= 0 and t <= 1 and u >= 0 and u <= 1 end
-	return nil, nil
+	return Point2D(a1 + t * r), t >= 0 and t <= 1 and u >= 0 and u <= 1
 end
 
 function XPolygon:IsPointInPolygon(poly, point)
@@ -1238,7 +1240,7 @@ function JEvade:ConeToPolygon(startPos, endPos, angle)
 	TableInsert(points, Point2D(startPos))
 	for i = -angle / 2, angle / 2, angle / 5 do
 		local rotated = Point2D(endPos - startPos):Rotated(i)
-		TableInsert(points, Point2D(startPos + rotated):Round())
+		TableInsert(points, Point2D(startPos + rotated))
 	end
 	return points
 end
