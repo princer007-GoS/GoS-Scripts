@@ -1240,7 +1240,7 @@ function JEvade:ConeToPolygon(startPos, endPos, angle)
 	TableInsert(points, Point2D(startPos))
 	for i = -angle / 2, angle / 2, angle / 5 do
 		local rotated = Point2D(endPos - startPos):Rotated(i)
-		TableInsert(points, Point2D(startPos + rotated))
+		TableInsert(points, Point2D(startPos + rotated):Round())
 	end
 	return points
 end
