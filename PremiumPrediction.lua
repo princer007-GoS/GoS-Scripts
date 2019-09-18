@@ -68,7 +68,7 @@ local function ReadFile(file)
 	txt:close(); return result
 end
 
-local Version, IntVer = 1.0, "1.0"
+local Version, IntVer = 1.01, "1.0.1"
 local function AutoUpdate()
 	DownloadFile("https://raw.githubusercontent.com/Ark223/GoS-Scripts/master/PremiumPrediction.version", COMMON_PATH .. "PremiumPrediction.version")
 	if tonumber(ReadFile(COMMON_PATH .. "PremiumPrediction.version")) > Version then
@@ -1014,9 +1014,9 @@ _G.PremiumPrediction = {
 	OnGainVision = function(func) PremiumPred:GainVision(func) end,
 	OnLoseVision = function(func) PremiumPred:LoseVision(func) end,
 	OnProcessSpell = function(func) PremiumPred:ProcessSpell(func) end,
-	OnProcessWaypoint = function(func) PremiumPred:ProcessWaypoint(func) end
+	OnProcessWaypoint = function(func) PremiumPred:ProcessWaypoint(func) end,
 	To2D = function(self, position) return PremiumPred:To2D(position) end,
-	To3D = function(self, point, height) return PremiumPred:To3D(point, height) end,
+	To3D = function(self, point, height) return PremiumPred:To3D(point, height) end
 }
 
 AutoUpdate()
