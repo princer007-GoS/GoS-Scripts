@@ -50,6 +50,8 @@
 	_G.PremiumPrediction:OnLoseVision(unit) - calls function when unit has disappeared
 	_G.PremiumPrediction:OnProcessSpell(unit, spellData) - calls function when unit has casted channeling spell
 	_G.PremiumPrediction:OnProcessWaypoint(unit, startPos, endPos) - calls function when unit has changed pathing
+	_G.PremiumPrediction:To2D(position) - converts position to 2D Point {x, y}
+	_G.PremiumPrediction:To3D(point, height) - converts 2D Point {x, y} to 3D Vector
 
 --]]
 
@@ -1013,6 +1015,8 @@ _G.PremiumPrediction = {
 	OnLoseVision = function(func) PremiumPred:LoseVision(func) end,
 	OnProcessSpell = function(func) PremiumPred:ProcessSpell(func) end,
 	OnProcessWaypoint = function(func) PremiumPred:ProcessWaypoint(func) end
+	To2D = function(self, position) return PremiumPred:To2D(position) end,
+	To3D = function(self, point, height) return PremiumPred:To3D(point, height) end,
 }
 
 AutoUpdate()
