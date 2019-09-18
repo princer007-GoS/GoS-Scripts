@@ -488,7 +488,7 @@ end
 function PremiumPred:GetPositionAfterTime(unit, time)
 	if not self:IsMoving(unit) then return self:To2D(unit.pos) end
 	local path, speed = self:GetWaypoints(unit), self:GetMovementSpeed(unit)
-	return self:GetPositionAfter(path, speed, time)
+	return self:To3D(self:GetPositionAfter(path, speed, time), unit.pos.y)
 end
 
 function PremiumPred:GetPossibleUnits(source, unit, spellData)
