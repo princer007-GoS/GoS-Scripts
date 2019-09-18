@@ -122,91 +122,91 @@ local function IsVector(v)
 	return v and v.x and type(v.x) == "number" and v.y and type(v.y) == "number" and v.z and type(v.z) == "number"
 end
 
-local Point2D = Class()
+local Point2 = Class()
 
-function Point2D:__init(x, y)
+function Point2:__init(x, y)
 	if not x then self.x, self.y = 0, 0
 	elseif not y then self.x, self.y = x.x, x.y
 	else self.x = x; if y and type(y) == "number" then self.y = y end end
 end
 
-function Point2D:__type()
+function Point2:__type()
 	return "Point"
 end
 
-function Point2D:__eq(p)
+function Point2:__eq(p)
 	return (self.x == p.x and self.y == p.y)
 end
 
-function Point2D:__add(p)
-	return Point2D(self.x + p.x, (p.y and self.y) and self.y + p.y)
+function Point2:__add(p)
+	return Point2(self.x + p.x, (p.y and self.y) and self.y + p.y)
 end
 
-function Point2D:__sub(p)
-	return Point2D(self.x - p.x, (p.y and self.y) and self.y - p.y)
+function Point2:__sub(p)
+	return Point2(self.x - p.x, (p.y and self.y) and self.y - p.y)
 end
 
-function Point2D.__mul(a, b)
+function Point2.__mul(a, b)
 	if type(a) == "number" and IsPoint(b) then
-		return Point2D(b.x * a, b.y * a)
+		return Point2(b.x * a, b.y * a)
 	elseif type(b) == "number" and IsPoint(a) then
-		return Point2D(a.x * b, a.y * b)
+		return Point2(a.x * b, a.y * b)
 	end
 end
 
-function Point2D.__div(a, b)
+function Point2.__div(a, b)
 	if type(a) == "number" and IsPoint(b) then
-		return Point2D(a / b.x, a / b.y)
+		return Point2(a / b.x, a / b.y)
 	else
-		return Point2D(a.x / b, a.y / b)
+		return Point2(a.x / b, a.y / b)
 	end
 end
 
-function Point2D:__tostring()
+function Point2:__tostring()
 	return "("..self.x..", "..self.y..")"
 end
 
-function Point2D:Clone()
-	return Point2D(self)
+function Point2:Clone()
+	return Point2(self)
 end
 
-function Point2D:Extended(to, distance)
-	return self + (Point2D(to) - self):Normalized() * distance
+function Point2:Extended(to, distance)
+	return self + (Point2(to) - self):Normalized() * distance
 end
 
-function Point2D:Magnitude()
+function Point2:Magnitude()
 	return MathSqrt(self:MagnitudeSquared())
 end
 
-function Point2D:MagnitudeSquared(p)
-	local p = p and Point2D(p) or self
+function Point2:MagnitudeSquared(p)
+	local p = p and Point2(p) or self
 	return self.x * self.x + self.y * self.y
 end
 
-function Point2D:Normalize()
+function Point2:Normalize()
 	local dist = self:Magnitude()
 	self.x, self.y = self.x / dist, self.y / dist
 end
 
-function Point2D:Normalized()
+function Point2:Normalized()
 	local p = self:Clone()
 	p:Normalize(); return p
 end
 
-function Point2D:Perpendicular()
-	return Point2D(-self.y, self.x)
+function Point2:Perpendicular()
+	return Point2(-self.y, self.x)
 end
 
-function Point2D:Perpendicular2()
-	return Point2D(self.y, -self.x)
+function Point2:Perpendicular2()
+	return Point2(self.y, -self.x)
 end
 
-function Point2D:Rotate(phi)
+function Point2:Rotate(phi)
 	local c, s = MathCos(phi), MathSin(phi)
 	self.x, self.y = self.x * c + self.y * s, self.y * c - self.x * s
 end
 
-function Point2D:Rotated(phi)
+function Point2:Rotated(phi)
 	local p = self:Clone()
 	p:Rotate(phi); return p
 end
@@ -227,7 +227,7 @@ function MEC:FindMinimalBoundingCircle(points)
 	local center, radius2 = points[1], MathHuge
 	for i = 1, #hull - 1 do
 		for j = i + 1, #hull do
-			local testCenter = Point2D((hull[i].x + hull[j].x) / 2, (hull[i].y + hull[j].y) / 2)
+			local testCenter = Point2((hull[i].x + hull[j].x) / 2, (hull[i].y + hull[j].y) / 2)
 			local dx, dy = testCenter.x - hull[i].x, testCenter.y - hull[i].y
 			local testRadius2 = dx * dx + dy * dy
 			if testRadius2 < radius2 then
@@ -314,14 +314,14 @@ function MEC:FindCircle(a, b, c)
 	local x2, y2, dy2, dx2 = (c.x + b.x) / 2, (c.y + b.y) / 2, c.x - b.x, -(c.y - b.y)
 	local cx = (y1 * dx1 * dx2 + x2 * dx1 * dy2 - x1 * dy1 * dx2 - y2 * dx1 * dx2) / (dx1 * dy2 - dy1 * dx2)
 	local cy = (cx - x1) * dy1 / dx1 + y1
-	local center = Point2D(cx, cy)
+	local center = Point2(cx, cy)
 	local dx, dy = cx - a.x, cy - a.y
 	local radius2 = dx * dx + dy * dy
 	return center, radius2
 end
 
 function MEC:GetMinMaxBox(points)
-	local ul = Point2D(0, 0)
+	local ul = Point2(0, 0)
 	local ur, ll, lr = ul, ul, ul
 	ul, ur, lr, ll = self:GetMinMaxCorners(points, ul, ur, ll, lr)
 	local xmin, ymin, xmax, ymax = ul.x, ul.y, ur.x, lr.y
@@ -394,7 +394,7 @@ end
 
 function PremiumPred:InitCustomData(unit)
 	CustomData[unit.networkID] = {
-		oldPos = Point2D(0, 0), dash = {startPos = Point2D(0, 0), endPos = Point2D(0, 0), speed = 0},
+		oldPos = Point2(0, 0), dash = {startPos = Point2(0, 0), endPos = Point2(0, 0), speed = 0},
 		waypoints = {}, timers = {}, angles = {}, lengths = {}, spell = nil, visible = false, 
 		mia = 0, windup = 0, avgLength = 0, avgMoveClick = 0, avgAngle = 0
 	}
@@ -413,7 +413,7 @@ function PremiumPred:AngleBetween(p1, p2, p3)
 end
 
 function PremiumPred:AppendVector(p1, p2, dist)
-	return p2 + Point2D(p2 - p1):Normalized() * dist
+	return p2 + Point2(p2 - p1):Normalized() * dist
 end
 
 function PremiumPred:CalcTravelTime(startPos, endPos, spellData)
@@ -421,9 +421,9 @@ function PremiumPred:CalcTravelTime(startPos, endPos, spellData)
 end
 
 function PremiumPred:ClosestPointOnSegment(s1, s2, pt)
-	local ab = Point2D(s2 - s1)
+	local ab = Point2(s2 - s1)
 	local t = ((pt.x - s1.x) * ab.x + (pt.y - s1.y) * ab.y) / (ab.x * ab.x + ab.y * ab.y)
-	return t < 0 and Point2D(s1) or (t > 1 and Point2D(s2) or Point2D(s1 + t * ab))
+	return t < 0 and Point2(s1) or (t > 1 and Point2(s2) or Point2(s1 + t * ab))
 end
 
 function PremiumPred:CrossProduct(p1, p2)
@@ -432,14 +432,14 @@ end
 
 function PremiumPred:CutWaypoints(waypoints, distance)
 	if distance < 0 then
-		waypoints[1] = waypoints[1] + distance * Point2D(waypoints[2] - waypoints[1]):Normalized()
+		waypoints[1] = waypoints[1] + distance * Point2(waypoints[2] - waypoints[1]):Normalized()
 		return waypoints
 	end
 	local distance, result = distance, {}
 	for i = 1, #waypoints - 1 do
 		local dist = self:Distance(waypoints[i], waypoints[i + 1])
 		if dist > distance then
-			TableInsert(result, waypoints[i] + distance * Point2D(waypoints[i + 1] - waypoints[i]):Normalized())
+			TableInsert(result, waypoints[i] + distance * Point2(waypoints[i + 1] - waypoints[i]):Normalized())
 			for j = i + 1, #waypoints do TableInsert(result, waypoints[j]) end; break
 		end
 		distance = distance - dist
@@ -472,7 +472,7 @@ function PremiumPred:GetPositionAfter(path, speed, time)
 	if #path == 1 then return path[1] end
 	local distance = time * speed
 	if distance < 0 then
-		return Point2D(path[1]):Extended(path[2], distance)
+		return Point2(path[1]):Extended(path[2], distance)
 	end
 	for i = 1, #path - 1 do
 		local a, b = path[i], path[i + 1]
@@ -480,7 +480,7 @@ function PremiumPred:GetPositionAfter(path, speed, time)
 		if dist == distance then
 			return b
 		elseif dist > distance then
-			return Point2D(a):Extended(b, distance)
+			return Point2(a):Extended(b, distance)
 		end
 		distance = distance - dist
 	end
@@ -516,7 +516,7 @@ function PremiumPred:GetWaypoints(unit)
 			TableInsert(result, self:To2D(unit.pathing.endPos))
 		else
 			for i = unit.pathing.pathIndex, unit.pathing.pathCount do
-				TableInsert(result, Point2D(unit:GetPath(i).x, unit:GetPath(i).z))
+				TableInsert(result, Point2(unit:GetPath(i).x, unit:GetPath(i).z))
 			end
 		end
 	end
@@ -540,9 +540,9 @@ end
 
 function PremiumPred:Interception(startPos, endPos, source, speed, missileSpeed, delay)
 	local delta = delta or 0
-	local dir = Point2D(endPos - startPos); local magn = self:Magnitude(dir)
-	local vel = Point2D(speed * dir.x / magn, speed * dir.y / magn)
-	dir = Point2D(startPos - source)
+	local dir = Point2(endPos - startPos); local magn = self:Magnitude(dir)
+	local vel = Point2(speed * dir.x / magn, speed * dir.y / magn)
+	dir = Point2(startPos - source)
 	local a = self:MagnitudeSquared(vel) - missileSpeed * missileSpeed
 	local b = 2 * self:DotProduct(vel, dir)
 	local c = self:MagnitudeSquared(dir)
@@ -557,9 +557,9 @@ function PremiumPred:Interception(startPos, endPos, source, speed, missileSpeed,
 end
 
 function PremiumPred:Intersection(a1, b1, a2, b2)
-	local r, s = Point2D(b1 - a1), Point2D(b2 - a2); local x = self:CrossProduct(r, s)
+	local r, s = Point2(b1 - a1), Point2(b2 - a2); local x = self:CrossProduct(r, s)
 	local t, u = self:CrossProduct(a2 - a1, s) / x, self:CrossProduct(a2 - a1, r) / x
-	return x ~= 0 and t >= 0 and t <= 1 and u >= 0 and u <= 1 and Point2D(a1 + t * r) or nil
+	return x ~= 0 and t >= 0 and t <= 1 and u >= 0 and u <= 1 and Point2(a1 + t * r) or nil
 end
 
 function PremiumPred:IsColliding(source, position, spellData, flags)
@@ -598,7 +598,7 @@ function PremiumPred:IsColliding(source, position, spellData, flags)
 		elseif flag == "windwall" then
 			local data = self.WindWall
 			if #data == 0 then break end
-			local s1, s2, s3, s4 = Point2D(data.pos1 - data.dir), Point2D(data.pos1 + data.dir), Point2D(data.pos2 - data.dir), Point2D(data.pos2 + data.dir)
+			local s1, s2, s3, s4 = Point2(data.pos1 - data.dir), Point2(data.pos1 + data.dir), Point2(data.pos2 - data.dir), Point2(data.pos2 + data.dir)
 			local int1, int2 = self:Intersection(sourcePos, position, s1, s2), self:Intersection(sourcePos, position, s3, s4)
 			if int1 or int2 then return true end
 		end
@@ -614,7 +614,7 @@ function PremiumPred:IsPointInArc(sourcePos, unitPos, endPos, range, angle)
 	local sourcePos = IsVector(sourcePos) and self:To2D(sourcePos) or sourcePos
 	local unitPos = IsVector(unitPos) and self:To2D(unitPos) or unitPos
 	local endPos = IsVector(endPos) and self:To2D(endPos) or endPos
-	local e1 = Point2D(endPos):Rotated(-angle / 2); local e2 = Point2D(e1):Rotated(angle)
+	local e1 = Point2(endPos):Rotated(-angle / 2); local e2 = Point2(e1):Rotated(angle)
 	return self:DistanceSquared(startPos, unitPos) <= range * range and
 	self:CrossProduct(e1, unitPos) > 0 and self:CrossProduct(unitPos, e2) > 0
 end
@@ -628,7 +628,7 @@ function PremiumPred:MagnitudeSquared(p)
 end
 
 function PremiumPred:To2D(pos)
-	return pos.z and Point2D(pos.x, pos.z or pos.y) or Point2D(pos)
+	return pos.z and Point2(pos.x, pos.z or pos.y) or Point2(pos)
 end
 
 function PremiumPred:To3D(pos, y)
@@ -725,7 +725,7 @@ function PremiumPred:Tick()
 			-- Dash callback
 			local dashData = myHero.pathing
 			if not dashData.isDashing then
-				data.dash = {startPos = Point2D(0, 0), endPos = Point2D(0, 0), speed = 0}
+				data.dash = {startPos = Point2(0, 0), endPos = Point2(0, 0), speed = 0}
 			elseif dashData.startPos ~= data.dash.startPos then
 				for i = 1, #self.DashCBs do self.DashCBs[i](unit, dashData) end
 				data.dash = {startPos = dashData.startPos, endPos = dashData.endPos, speed = dashData.speed, timer = GameTimer()}
@@ -835,12 +835,12 @@ function PremiumPred:GetAOEPrediction(source, unit, spellData)
 			for i = 1, #candidates do
 				for j = 1, #candidates do
 					if candidates[i] ~= candidates[j] then
-						TableInsert(positions, Point2D(candidates[i] + candidates[j]) / 2)
+						TableInsert(positions, Point2(candidates[i] + candidates[j]) / 2)
 					end
 				end
 			end
 			for i, pos in ipairs(positions) do
-				local endPos, count = Point2D(sourcePos):Extended(pos, spellData.range), 0
+				local endPos, count = Point2(sourcePos):Extended(pos, spellData.range), 0
 				for j, candidate in ipairs(candidates) do
 					if spellType == "linear" and self:DistanceSquared(candidate, self:ClosestPointOnSegment(sourcePos, endPos, candidate)) <= ((unit.boundingRadius / 2 or 32) +
 						spellData.radius) ^ 2 or (spellType == "conic" and self:IsPointInArc(sourcePos, candidate, pos, spellData.range, spellData.angle or 50)) then
@@ -922,8 +922,8 @@ function PremiumPred:PredictUnitPosition(source, unit, spellData)
 	local unitPos, waypoints = self:To2D(unit.pos), {}
 	if not unit.visible then
 		if not unit.posTo then return output end
-		local endPos = Point2D(unitPos):Extended(self:To2D(unit.posTo), 12500)
-		unitPos = Point2D(unitPos):Extended(endPos, moveSpeed * (GameTimer() - data.mia))
+		local endPos = Point2(unitPos):Extended(self:To2D(unit.posTo), 12500)
+		unitPos = Point2(unitPos):Extended(endPos, moveSpeed * (GameTimer() - data.mia))
 		if MapPosition:intersectsWall(LineSegment(Point(unit.pos.x, unit.pos.z), Point(unitPos.x, unitPos.y))) then return output end
 		waypoints = {unitPos, endPos}
 	end
@@ -944,7 +944,7 @@ function PremiumPred:PredictUnitPosition(source, unit, spellData)
 				for i = 1, #waypoints - 1 do
 					local a, b = waypoints[i], waypoints[i + 1]
 					local timeB = self:Distance(a, b) / moveSpeed
-					a = a - moveSpeed * totalTime * Point2D(b - a):Normalized()
+					a = a - moveSpeed * totalTime * Point2(b - a):Normalized()
 					local t = self:Interception(a, b, sourcePos, moveSpeed, spellData.speed, totalTime)
 					if t > 0 and t >= totalTime and t <= totalTime + timeB then
 						output.PredPos = self:GetPositionAfter(waypoints, moveSpeed, t)
