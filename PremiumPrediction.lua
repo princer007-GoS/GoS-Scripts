@@ -878,7 +878,7 @@ function PremiumPred:GetFastPrediction(source, unit, spellData)
 	if spellData.speed == MathHuge or #waypoints == 1 then return self:To3D(waypoints[1], y) end
 	if #waypoints >= 2 then
 		local t = self:Interception(waypoints[1], waypoints[2], sourcePos, moveSpeed, spellData.speed, 0)
-		return t > 0 and self:To3D(self:GetPositionAfter(waypoints, moveSpeed, t), y) or self:To3D(waypoints[2])
+		return t > 0 and self:To3D(self:GetPositionAfter(waypoints, moveSpeed, t), y) or self:To3D(waypoints[2], y)
 	end
 	return nil
 end
