@@ -25,7 +25,7 @@
 	}
 	* TimeToHit - Predicted arrival time of spell (in seconds)
 	* CanHit - Defines if spell cast is possible (boolean)
-	* Center - Center (3D Vector) of minimum enclosing circle
+	* Center - Center (2D Point {x, y}) of minimum enclosing circle
 	* Radius - Radius (number) of minimum enclosing circle
 
 	API:
