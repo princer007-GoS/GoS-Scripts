@@ -32,6 +32,7 @@
 	_G.PremiumPrediction:Loaded() - returns boolean
 	_G.PremiumPrediction:PredictUnitPosition(source, unit, spellData) - returns {CastPos, PredPos, TimeToHit, CanHit}
 	_G.PremiumPrediction:GetPrediction(source, unit, spellData) - returns {CastPos, PredPos, HitChance, TimeToHit}
+	_G.PremiumPrediction:GetAOEPrediction(source, unit, spellData) - returns {CastPos, PredPos, HitChance, TimeToHit}
 	_G.PremiumPrediction:GetDashPrediction(source, unit, spellData) - returns {CastPos, PredPos, HitChance, TimeToHit}
 	_G.PremiumPrediction:GetFastPrediction(source, unit, spellData) - returns PredPos
 	_G.PremiumPrediction:GetHitChance(source, unit, castPos, spellData, timeToHit, canHit) - returns HitChance
@@ -68,7 +69,7 @@ local function ReadFile(file)
 	txt:close(); return result
 end
 
-local Version, IntVer = 1.01, "1.0.1"
+local Version, IntVer = 1.02, "1.0.2"
 local function AutoUpdate()
 	DownloadFile("https://raw.githubusercontent.com/Ark223/GoS-Scripts/master/PremiumPrediction.version", COMMON_PATH .. "PremiumPrediction.version")
 	if tonumber(ReadFile(COMMON_PATH .. "PremiumPrediction.version")) > Version then
@@ -997,6 +998,7 @@ _G.PremiumPrediction = {
 	Loaded = function() return PremiumPred.Loaded end,
 	PredictUnitPosition = function(self, source, unit, spellData) return PremiumPred:PredictUnitPosition(source, unit, spellData) end,
 	GetPrediction = function(self, source, unit, spellData) return PremiumPred:GetPrediction(source, unit, spellData) end,
+	GetAOEPrediction = function(self, source, unit, spellData) return PremiumPred:GetAOEPrediction(source, unit, spellData) end,
 	GetDashPrediction = function(self, source, unit, spellData) return PremiumPred:GetDashPrediction(source, unit, spellData) end,
 	GetFastPrediction = function(self, source, unit, spellData) return PremiumPred:GetFastPrediction(source, unit, spellData) end,
 	GetHitChance = function(self, source, unit, castPos, spellData, timeToHit, canHit) return PremiumPred:GetHitChance(source, unit, castPos, spellData, timeToHit, canHit) end,
