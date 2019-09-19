@@ -902,8 +902,8 @@ function PremiumPred:GetDashPrediction(source, unit, spellData)
 		output.CastPos, output.PredPos = waypoints[1], waypoints[1]
 	else
 		local t = self:Interception(waypoints[1], waypoints[2], sourcePos, moveSpeed, spellData.speed, 0)
-		local pos = t > 0 and self:GetPositionAfter(waypoints, moveSpeed, t) or nil
-		if pos == nil or pos == data.dash.endPos then return output end
+		local pos = t > 0 and self:GetPositionAfter(waypoints, moveSpeed, t) or data.dash.endPos
+		if pos == data.dash.endPos then return output end
 		output.CastPos, output.PredPos = pos, pos
 	end
 	local y = unit.pos.y; output.CanHit = true
