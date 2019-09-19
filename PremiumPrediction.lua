@@ -33,7 +33,7 @@
 	_G.PremiumPrediction:PredictUnitPosition(source, unit, spellData) - returns {CastPos, PredPos, TimeToHit, CanHit}
 	_G.PremiumPrediction:GetPrediction(source, unit, spellData) - returns {CastPos, PredPos, HitChance, TimeToHit}
 	_G.PremiumPrediction:GetAOEPrediction(source, unit, spellData) - returns {CastPos, PredPos, HitChance, TimeToHit}
-	_G.PremiumPrediction:GetDashPrediction(source, unit, spellData) - returns {CastPos, PredPos, HitChance, TimeToHit}
+	_G.PremiumPrediction:GetDashPrediction(source, unit, spellData) - returns {CastPos, PredPos, TimeToHit, CanHit}
 	_G.PremiumPrediction:GetFastPrediction(source, unit, spellData) - returns PredPos
 	_G.PremiumPrediction:GetHitChance(source, unit, castPos, spellData, timeToHit, canHit) - returns HitChance
 	_G.PremiumPrediction:GetImmobileDuration(unit) - returns duration (in seconds)
