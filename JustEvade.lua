@@ -12,6 +12,9 @@
 
 	Changelog:
 
+	v1.0.4
+	+ Fixed data parsing on detected missile
+
 	v1.0.3
 	+ Fixed bug related to polygon offsetting
 
@@ -39,7 +42,7 @@ local function ReadFile(file)
 	txt:close(); return result
 end
 
-local Version, IntVer = 1.03, "1.0.3"
+local Version, IntVer = 1.04, "1.0.4"
 local function AutoUpdate()
 	DownloadFile("https://raw.githubusercontent.com/Ark223/GoS-Scripts/master/JustEvade.version", SCRIPT_PATH .. "JustEvade.version")
 	if tonumber(ReadFile(SCRIPT_PATH .. "JustEvade.version")) > Version then
@@ -1906,17 +1909,17 @@ function JEvade:OnCreateMissile(unit, missile)
 		local path, path2, sP, eP = self:GetPath(startPos, placementPos, endPos, range2, data.radius + extraRadius, data.radius2, data.angle, data.type)
 		if #path == 0 then return end
 		local sP2 = (data.type == "linear" or data.type == "threeway") and self:AppendVector(eP, sP, self.BoundingRadius) or nil
-		TableInsert(self.DetectedSpells, {path = path, path2 = path2, rawStartPos = sP, rawStartPos2 = sP2, startPos = sP, endPos = eP, unitPos = unitPos, speed = data.speed, range = range2, radius = data.radius + extraRadius, radius2 = data.radius2, angle = data.angle, delay = 0, name = menuName, startTime = RiotClock.time, type = data.type, danger = danger, cc = data.cc, collision = data.collision, windwall = data.windwall})
+		TableInsert(self.DetectedSpells, {path = path, path2 = path2, rawStartPos = sP, rawStartPos2 = sP2, startPos = sP, endPos = eP, unitPos = unitPos, speed = data.speed, range = range2, radius = data.radius + extraRadius, radius2 = data.radius2, angle = data.angle, delay = 0, name = menuName, startTime = GameTimer(), type = data.type, danger = danger, cc = data.cc, collision = data.collision, windwall = data.windwall})
 		if data.type == "threeway" then
 			for i = 1, 2 do
 				if i == 1 then eP = self:Rotate(startPos, endPos, MathRad(data.angle))
 				else eP = self:Rotate(startPos, endPos, -MathRad(data.angle)) end
 				local p1 = self:RectangleToPolygon(startPos, eP, data.radius + self.BoundingRadius)
 				local p2 = self:RectangleToPolygon(startPos, eP, data.radius)
-				TableInsert(self.DetectedSpells, {path = p1, path2 = p2, rawStartPos = sP, rawStartPos2 = sP2, startPos = sP, endPos = Point2D(eP), unitPos = unitPos, speed = data.speed, range = range2, radius = data.radius + extraRadius, radius2 = data.radius2, angle = data.angle, delay = 0, name = menuName, startTime = RiotClock.time, type = data.type, danger = danger, cc = data.cc, collision = data.collision, windwall = data.windwall})
+				TableInsert(self.DetectedSpells, {path = p1, path2 = p2, rawStartPos = sP, rawStartPos2 = sP2, startPos = sP, endPos = Point2D(eP), unitPos = unitPos, speed = data.speed, range = range2, radius = data.radius + extraRadius, radius2 = data.radius2, angle = data.angle, delay = 0, name = menuName, startTime = GameTimer(), type = data.type, danger = danger, cc = data.cc, collision = data.collision, windwall = data.windwall})
 			end
 		end
-		self.NewTimer = RiotClock.time
+		self.NewTimer = GameTimer()
 	end
 end
 
