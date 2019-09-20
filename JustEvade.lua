@@ -1731,6 +1731,7 @@ function JEvade:CoreManager(s)
 	local mode = self.JEMenu.Spells[s.name]["Mode"..s.name]:Value() or 1
 	if self:IsPointInPolygon(s.path, self.MyHeroPos) then
 		if self.OldTimer ~= self.NewTimer then
+			self.SafePos, self.ExtendedPos = nil, nil
 			local safePos = self:GetBestEvadePos(self.DodgeableSpells, mode, false, false)
 			if safePos then
 				self.ExtendedPos = self:GetExtendedSafePos(safePos)
