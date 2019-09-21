@@ -896,7 +896,7 @@ function PremiumPred:GetDashPrediction(source, unit, spellData)
 		return travelTime > data.windup and output or
 			{CastPos = unitPos, PredPos = unitPos, TimeToHit = travelTime, CanHit = true}
 	end
-	local waypoints, moveSpeed = self:GetWaypoints(unit), data.dash.speed
+	local waypoints, moveSpeed = self:GetWaypoints(unit), self:GetMovementSpeed(unit)
 	waypoints = self:CutWaypoints(waypoints, (spellData.delay + self.PPMenu.Latency:Value() / 2000 + 0.07) * moveSpeed)
 	if #waypoints == 1 then return output end
 	if spellData.speed == MathHuge then
@@ -977,8 +977,8 @@ function PremiumPred:GetHitChance(source, unit, castPos, spellData, timeToHit, c
 	local data = CustomData[nid]
 	local sourcePos = IsPoint(source) and self:To2D(source) or self:To2D(source.pos)
 	local castPos, immobileTime = self:To2D(castPos), self:GetImmobileDuration(unit)
-	local hcRadius = spellData.type == "linear" and spellData.radius * 1.41421356237 or spellData.radius
-	local hitChance = hcRadius / self:GetMovementSpeed(unit) / MathMax(0, timeToHit - immobileTime)
+	--local hcRadius = spellData.type == "linear" and spellData.radius * 1.41421356237 or spellData.radius
+	local hitChance = spellData.radius / self:GetMovementSpeed(unit) / MathMax(0, timeToHit - immobileTime)
 	local mod = self:IsMoving(unit) and (1.5 - MathSin(MathRad(data.avgAngle))) * (data.avgMoveClick + 0.5) *
 				(data.avgLength / self:Distance(sourcePos, castPos) + 0.5) or 1
 	--local mod = self:IsMoving(unit) and -0.25 * (MathSin(MathRad(data.avgAngle)) - 2) * (data.avgMoveClick + 1) *
