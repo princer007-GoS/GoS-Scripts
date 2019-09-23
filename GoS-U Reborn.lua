@@ -2828,8 +2828,7 @@ function Vayne:UseQ(target, mode)
 end
 
 function Vayne:IsOnLineToStun(target)
-	self.EData.range = GoSuGeometry:GetDistance(myHero.pos, target.pos)
-	self.EData.radius = target.boundingRadius / 2
+	self.EData.range, self.EData.radius = GoSuGeometry:GetDistance(myHero.pos, target.pos), target.boundingRadius
 	local pred = _G.PremiumPrediction:GetPrediction(myHero, target, self.EData)
 	if pred.CastPos and pred.HitChance >= (self.VayneMenu.HitChance.HCE:Value() / 100) then
 		local Col = pred.CastPos:Extended(myHero.pos, -self.VayneMenu.Misc.PD:Value())
