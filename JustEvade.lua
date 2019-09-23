@@ -1172,9 +1172,9 @@ function JEvade:DrawArrow(startPos, endPos, color)
 	DrawLine(p2.x, p2.y, endPos.x, endPos.y, 1, color)
 end
 
-function JEvade:DrawPolygon(poly, color)
+function JEvade:DrawPolygon(poly, y, color)
 	local path = {}
-	for i = 1, #poly do path[i] = self:FixPos(poly[i]) end
+	for i = 1, #poly do path[i] = self:FixPos(poly[i], y) end
 	DrawLine(path[#path].x, path[#path].y, path[1].x, path[1].y, 0.5, color)
 	for i = 1, #path - 1 do DrawLine(path[i].x, path[i].y, path[i + 1].x, path[i + 1].y, 0.5, color) end
 end
@@ -1264,8 +1264,8 @@ function JEvade:DotProduct(p1, p2)
 	return p1.x * p2.x + p1.y * p2.y
 end
 
-function JEvade:FixPos(pos)
-	return Vector(pos.x, self.PosY or 0, pos.y):To2D()
+function JEvade:FixPos(pos, y)
+	return Vector(pos.x, y or self.PosY or 0, pos.y):To2D()
 end
 
 function JEvade:GetBestEvadePos(spells, mode, extra, force)
@@ -1848,7 +1848,7 @@ function JEvade:Draw()
 		end
 		for i, s in ipairs(self.DetectedSpells) do
 			if self.JEMenu.Spells[s.name]["Draw"..s.name]:Value() then
-				self:DrawPolygon(s.path2, self.JEMenu.Main.SC:Value())
+				self:DrawPolygon(s.path2, s.y, self.JEMenu.Main.SC:Value())
 			end
 		end
 	end
@@ -1877,7 +1877,7 @@ function JEvade:OnProcessSpell(unit, spell)
 						else eP = self:Rotate(startPos, endPos, -MathRad(data.angle)) end
 						local p1 = self:RectangleToPolygon(startPos, eP, data.radius + self.BoundingRadius)
 						local p2 = self:RectangleToPolygon(startPos, eP, data.radius)
-						TableInsert(self.DetectedSpells, {path = p1, path2 = p2, rawStartPos = sP, rawStartPos2 = sP2, startPos = sP, endPos = Point2D(eP), unitPos = unitPos, speed = data.speed, range = range2, radius = data.radius + extraRadius, radius2 = data.radius2, angle = data.angle, delay = data.delay, name = spell.name, startTime = GameTimer(), type = data.type, danger = danger, cc = data.cc, collision = data.collision, windwall = data.windwall})
+						TableInsert(self.DetectedSpells, {y = self.PosY, path = p1, path2 = p2, rawStartPos = sP, rawStartPos2 = sP2, startPos = sP, endPos = Point2D(eP), unitPos = unitPos, speed = data.speed, range = range2, radius = data.radius + extraRadius, radius2 = data.radius2, angle = data.angle, delay = data.delay, name = spell.name, startTime = GameTimer(), type = data.type, danger = danger, cc = data.cc, collision = data.collision, windwall = data.windwall})
 					end
 				end
 				self.NewTimer = GameTimer()
@@ -1917,7 +1917,7 @@ function JEvade:OnCreateMissile(unit, missile)
 				else eP = self:Rotate(startPos, endPos, -MathRad(data.angle)) end
 				local p1 = self:RectangleToPolygon(startPos, eP, data.radius + self.BoundingRadius)
 				local p2 = self:RectangleToPolygon(startPos, eP, data.radius)
-				TableInsert(self.DetectedSpells, {path = p1, path2 = p2, rawStartPos = sP, rawStartPos2 = sP2, startPos = sP, endPos = Point2D(eP), unitPos = unitPos, speed = data.speed, range = range2, radius = data.radius + extraRadius, radius2 = data.radius2, angle = data.angle, delay = 0, name = menuName, startTime = GameTimer(), type = data.type, danger = danger, cc = data.cc, collision = data.collision, windwall = data.windwall})
+				TableInsert(self.DetectedSpells, {y = self.PosY, path = p1, path2 = p2, rawStartPos = sP, rawStartPos2 = sP2, startPos = sP, endPos = Point2D(eP), unitPos = unitPos, speed = data.speed, range = range2, radius = data.radius + extraRadius, radius2 = data.radius2, angle = data.angle, delay = 0, name = menuName, startTime = GameTimer(), type = data.type, danger = danger, cc = data.cc, collision = data.collision, windwall = data.windwall})
 			end
 		end
 		self.NewTimer = GameTimer()
