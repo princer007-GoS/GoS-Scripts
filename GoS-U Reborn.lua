@@ -485,7 +485,7 @@ local SpellData = {
 	},
 	["Vayne"] = {
 		[0] = {range = 300},
-		[2] = {speed = 2000, range = 1, range2 = 550, delay = 0.25, radius = 1, collision = {}, type = "linear"},
+		[2] = {speed = 2000, range = 1, range2 = 550, delay = 0.25, radius = 65, collision = {}, type = "linear"},
 	},
 	["Varus"] = {
 		[0] = {speed = 1900, range = 1525, delay = 0, radius = 70, collision = {}, type = "linear"},
@@ -2830,9 +2830,9 @@ end
 function Vayne:IsOnLineToStun(target)
 	self.EData.range, self.EData.radius = GoSuGeometry:GetDistance(myHero.pos, target.pos), target.boundingRadius
 	local pred = _G.PremiumPrediction:GetPrediction(myHero, target, self.EData)
-	if pred.CastPos and pred.HitChance >= (self.VayneMenu.HitChance.HCE:Value() / 100) then
-		local Col = pred.CastPos:Extended(myHero.pos, -self.VayneMenu.Misc.PD:Value())
-		local Line = LineSegment(pred.CastPos, Col)
+	if pred.PredPos and pred.HitChance >= (self.VayneMenu.HitChance.HCE:Value() / 100) then
+		local Col = pred.PredPos:Extended(myHero.pos, -self.VayneMenu.Misc.PD:Value())
+		local Line = LineSegment(pred.PredPos, Col)
 		return MapPosition:intersectsWall(Line) or MapPosition:inWall(Col)
 	end
 	return false
