@@ -12,6 +12,10 @@
 
 	Changelog:
 
+	v1.0.5
+	+ Added Annie's E evading spell
+	+ Updated Blitz's Q spell range
+
 	v1.0.4
 	+ Fixed data parsing on detected missile
 
@@ -42,7 +46,7 @@ local function ReadFile(file)
 	txt:close(); return result
 end
 
-local Version, IntVer = 1.04, "1.0.4"
+local Version, IntVer = 1.05, "1.0.5"
 local function AutoUpdate()
 	DownloadFile("https://raw.githubusercontent.com/Ark223/GoS-Scripts/master/JustEvade.version", SCRIPT_PATH .. "JustEvade.version")
 	if tonumber(ReadFile(SCRIPT_PATH .. "JustEvade.version")) > Version then
@@ -108,7 +112,7 @@ local SpellDatabase = {
 		["BardR"] = {icon = Icons.."BardR"..Png, displayName = "Tempered Fate", missileName = "BardRMissile", slot = _R, type = "circular", speed = 2100, range = 3400, delay = 0.5, radius = 350, danger = 2, cc = true, collision = false, windwall = false, hitbox = false, fow = true, exception = false},
 	},
 	["Blitzcrank"] = {
-		["RocketGrab"] = {icon = Icons.."BlitzcrankQ"..Png, displayName = "Rocket Grab", missileName = "RocketGrabMissile", slot = _Q, type = "linear", speed = 1800, range = 925, delay = 0.25, radius = 70, danger = 3, cc = true, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
+		["RocketGrab"] = {icon = Icons.."BlitzcrankQ"..Png, displayName = "Rocket Grab", missileName = "RocketGrabMissile", slot = _Q, type = "linear", speed = 1800, range = 1150, delay = 0.25, radius = 70, danger = 3, cc = true, collision = true, windwall = true, hitbox = true, fow = true, exception = false},
 		["StaticField"] = {icon = Icons.."BlitzcrankR"..Png, displayName = "Static Field", slot = _R, type = "circular", speed = MathHuge, range = 0, delay = 0.25, radius = 600, danger = 4, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false},
 	},
 	["Brand"] = {
@@ -552,6 +556,9 @@ local SpellDatabase = {
 local EvadeSpells = {
 	["Ahri"] = {
 		[3] = {icon = Icons.."AhriR"..Png, type = 1, displayName = "Spirit Rush", name = "AhriQ-", danger = 4, range = 450, slot = _R, slot2 = HK_R},
+	},
+	["Annie"] = {
+		[2] = {icon = Icons.."AnnieE"..Png, type = 2, displayName = "Molten Shield", name = "AnnieE-", danger = 2, slot = _E, slot2 = HK_E},
 	},
 	["Blitzcrank"] = {
 		[1] = {icon = Icons.."BlitzcrankW"..Png, type = 2, displayName = "Overdrive", name = "BlitzcrankW-", danger = 3, slot = _W, slot2 = HK_W},
@@ -1581,7 +1588,8 @@ function JEvade:GetMovementSpeed(extra, evadeSpell)
 	local moveSpeed = myHero.ms or 315
 	if not extra then return moveSpeed end; if not evadeSpell then return MathHuge end
 	local lvl, name = myHero:GetSpellData(evadeSpell.slot).level or 1, evadeSpell.name
-	if name == "BlitzcrankW-" then return ({1.7, 1.75, 1.8, 1.85, 1.9})[lvl] * moveSpeed
+	if name == "AnnieE-" then return (1.2824 + (0.0176 * myHero.levelData.lvl)) * moveSpeed
+	elseif name == "BlitzcrankW-" then return ({1.7, 1.75, 1.8, 1.85, 1.9})[lvl] * moveSpeed
 	elseif name == "DravenW-" then return ({1.4, 1.45, 1.5, 1.55, 1.6})[lvl] * moveSpeed
 	elseif name == "GarenQ-" then return 1.3 * moveSpeed
 	elseif name == "KaisaE-" then return ({1.55, 1.6, 1.65, 1.7, 1.75})[lvl] * 2 * MathMin(1, myHero.attackSpeed) * moveSpeed
