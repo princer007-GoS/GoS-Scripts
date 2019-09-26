@@ -1878,7 +1878,7 @@ function JEvade:OnProcessSpell(unit, spell)
 				local path, path2, sP, eP = self:GetPath(startPos, placementPos, endPos, range2, data.radius + extraRadius, data.radius2, data.angle, data.type, spell.name)
 				if #path == 0 then return end
 				local sP2 = (data.type == "linear" or data.type == "threeway") and self:AppendVector(eP, sP, self.BoundingRadius) or nil
-				TableInsert(self.DetectedSpells, {path = path, path2 = path2, rawStartPos = sP, rawStartPos2 = sP2, startPos = sP, endPos = eP, unitPos = unitPos, speed = data.speed, range = range2, radius = data.radius + extraRadius, radius2 = data.radius2, angle = data.angle, delay = data.delay, name = spell.name, startTime = GameTimer(), type = data.type, danger = danger, cc = data.cc, collision = data.collision, windwall = data.windwall})
+				TableInsert(self.DetectedSpells, {y = self.PosY, path = path, path2 = path2, rawStartPos = sP, rawStartPos2 = sP2, startPos = sP, endPos = eP, unitPos = unitPos, speed = data.speed, range = range2, radius = data.radius + extraRadius, radius2 = data.radius2, angle = data.angle, delay = data.delay, name = spell.name, startTime = GameTimer(), type = data.type, danger = danger, cc = data.cc, collision = data.collision, windwall = data.windwall})
 				if data.type == "threeway" then
 					for i = 1, 2 do
 						if i == 1 then eP = self:Rotate(startPos, endPos, MathRad(data.angle))
@@ -1918,7 +1918,7 @@ function JEvade:OnCreateMissile(unit, missile)
 		local path, path2, sP, eP = self:GetPath(startPos, placementPos, endPos, range2, data.radius + extraRadius, data.radius2, data.angle, data.type)
 		if #path == 0 then return end
 		local sP2 = (data.type == "linear" or data.type == "threeway") and self:AppendVector(eP, sP, self.BoundingRadius) or nil
-		TableInsert(self.DetectedSpells, {path = path, path2 = path2, rawStartPos = sP, rawStartPos2 = sP2, startPos = sP, endPos = eP, unitPos = unitPos, speed = data.speed, range = range2, radius = data.radius + extraRadius, radius2 = data.radius2, angle = data.angle, delay = 0, name = menuName, startTime = GameTimer(), type = data.type, danger = danger, cc = data.cc, collision = data.collision, windwall = data.windwall})
+		TableInsert(self.DetectedSpells, {y = self.PosY, path = path, path2 = path2, rawStartPos = sP, rawStartPos2 = sP2, startPos = sP, endPos = eP, unitPos = unitPos, speed = data.speed, range = range2, radius = data.radius + extraRadius, radius2 = data.radius2, angle = data.angle, delay = 0, name = menuName, startTime = GameTimer(), type = data.type, danger = danger, cc = data.cc, collision = data.collision, windwall = data.windwall})
 		if data.type == "threeway" then
 			for i = 1, 2 do
 				if i == 1 then eP = self:Rotate(startPos, endPos, MathRad(data.angle))
