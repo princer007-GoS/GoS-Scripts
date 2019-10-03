@@ -9,6 +9,10 @@
 
 	Changelog:
 
+	v1.1.9
+	+ Removed Ezreal's & Lucian's E gapclosing
+	+ Minor changes regarding to evade check
+
 	v1.1.8
 	+ Updated compatibility with new Premium Prediction
 	+ Removed missile data from Sivir E settings
@@ -140,7 +144,7 @@ local OnTicks = {Champion = nil, Utility = nil}
 local BaseUltC = {["Ashe"] = true, ["Draven"] = true, ["Ezreal"] = true, ["Jinx"] = true}
 local Champions = {["Ashe"] = true, ["Caitlyn"] = false, ["Corki"] = false, ["Draven"] = false, ["Ezreal"] = true, ["Jhin"] = false, ["Jinx"] = true, ["Kaisa"] = true, ["Kalista"] = false, ["KogMaw"] = true, ["Lucian"] = true, ["MissFortune"] = false, ["Quinn"] = false, ["Sivir"] = true, ["Tristana"] = true, ["Twitch"] = true, ["Varus"] = false, ["Vayne"] = true, ["Xayah"] = false}
 local Item_HK = {[ITEM_1] = HK_ITEM_1, [ITEM_2] = HK_ITEM_2, [ITEM_3] = HK_ITEM_3, [ITEM_4] = HK_ITEM_4, [ITEM_5] = HK_ITEM_5, [ITEM_6] = HK_ITEM_6, [ITEM_7] = HK_ITEM_7}
-local Version = "1.18"; local LuaVer = "1.1.8"
+local Version = "1.19"; local LuaVer = "1.1.9"
 local VerSite = "https://raw.githubusercontent.com/Ark223/GoS-Scripts/master/GoS-U%20Reborn.version"
 local LuaSite = "https://raw.githubusercontent.com/Ark223/GoS-Scripts/master/GoS-U%20Reborn.lua"
 
@@ -1344,7 +1348,6 @@ function Ezreal:__init()
 	self.EzrealMenu:MenuElement({id = "Combo", name = "Combo", type = MENU})
 	self.EzrealMenu.Combo:MenuElement({id = "UseQ", name = "Use Q [Mystic Shot]", value = true, leftIcon = self.QIcon})
 	self.EzrealMenu.Combo:MenuElement({id = "UseW", name = "Use W [Essence Flux]", value = true, leftIcon = self.WIcon})
-	self.EzrealMenu.Combo:MenuElement({id = "UseE", name = "Use E [Arcane Shift]", value = true, leftIcon = self.EIcon})
 	self.EzrealMenu.Combo:MenuElement({id = "UseR", name = "Use R [Trueshot Barrage]", value = true, leftIcon = self.RIcon})
 	self.EzrealMenu.Combo:MenuElement({id = "Distance", name = "Distance: R", value = 2000, min = self.QData.range, max = 5000, step = 50})
 	self.EzrealMenu.Combo:MenuElement({id = "X", name = "Minimum Enemies: R", value = 1, min = 0, max = 5, step = 1})
@@ -1452,9 +1455,6 @@ function Ezreal:Combo(target1, target2)
 		elseif self.EzrealMenu.Combo.UseQ:Value() and GoSuManager:IsReady(_Q) then
 			self:UseQ(target1)
 		end
-	end
-	if target1 and self.EzrealMenu.Combo.UseE:Value() and GoSuManager:IsReady(_E) and GoSuGeometry:GetDistance(myHero.pos, target1.pos) > self.Range then
-		ControlCastSpell(HK_E, myHero.pos:Extended(mousePos, self.EData.range))
 	end
 	if self.EzrealMenu.Combo.UseR:Value() and GoSuManager:IsReady(_R) and GoSuManager:ValidTarget(target2, self.EzrealMenu.Combo.Distance:Value()) then
 		local enemies, count = GoSuManager:GetHeroesAround(myHero.pos, self.EzrealMenu.Combo.Distance:Value())
@@ -2097,6 +2097,7 @@ function Lucian:OnPreAttack(args)
 end
 
 function Lucian:OnPostAttackTick(args)
+	if _G.JustEvade and _G.JustEvade:Evading() or (_G.ExtLibEvade and _G.ExtLibEvade.Evading) then return end
 	if self.Target then
 		local Mode = GoSuManager:GetOrbwalkerMode()
 		if Mode == "Harass" and GoSuManager:GetPercentMana(myHero) <= self.LucianMenu.Harass.MP:Value() then return end
@@ -2131,18 +2132,12 @@ function Lucian:Combo(target)
 	if self.LucianMenu.Combo.UseExQ:Value() and GoSuManager:IsReady(_Q) and GoSuManager:ValidTarget(target, self.QData.range) then
 		if GoSuGeometry:GetDistance(myHero.pos, target.pos) > self.QData.range2 then self:UseExQ(target) end
 	end
-	if self.LucianMenu.Combo.UseE:Value() and GoSuManager:IsReady(_E) and GoSuManager:ValidTarget(target, self.Range + self.EData.range) then
-		if GoSuGeometry:GetDistance(myHero.pos, target.pos) > (self.Range + target.boundingRadius) then self:UseE(target, 3) end
-	end
 end
 
 function Lucian:Harass(target)
 	if target == nil or myHero.attackData.state == 2 or GoSuManager:GetPercentMana(myHero) <= self.LucianMenu.Harass.MP:Value() then return end
 	if self.LucianMenu.Harass.UseExQ:Value() and GoSuManager:IsReady(_Q) and GoSuManager:ValidTarget(target, self.QData.range) then
 		if GoSuGeometry:GetDistance(myHero.pos, target.pos) > self.QData.range2 then self:UseExQ(target) end
-	end
-	if self.LucianMenu.Harass.UseE:Value() and GoSuManager:IsReady(_E) and GoSuManager:ValidTarget(target, self.Range + self.EData.range) then
-		if GoSuGeometry:GetDistance(myHero.pos, target.pos) > (self.Range + target.boundingRadius) then self:UseE(target, self.LucianMenu.Harass.ModeE:Value()) end
 	end
 end
 
@@ -2195,7 +2190,6 @@ end
 function Lucian:UseE(target, mode)
 	if self.Timer + 1 < GameTimer() then self.MPos = mousePos end
 	if mode == 1 then ControlCastSpell(HK_E, self.MPos)
-	elseif mode == 3 then ControlCastSpell(HK_E, myHero.pos:Extended(target.pos, self.EData.range))
 	else
 		local p1, p2 = GoSuGeometry:CircleCircleIntersection(myHero.pos, target.pos, myHero.range, self.EData.range + 50)
 		if p1 and p2 then
@@ -2470,6 +2464,7 @@ function Tristana:OnPreAttack(args)
 end
 
 function Tristana:OnPostAttackTick(args)
+	if _G.JustEvade and _G.JustEvade:Evading() or (_G.ExtLibEvade and _G.ExtLibEvade.Evading) then return end
 	if (self.TristanaMenu.Combo.UseE:Value() and GoSuManager:GetOrbwalkerMode() == "Combo") or (GoSuManager:GetPercentMana(myHero) > self.TristanaMenu.Harass.MP:Value() and self.TristanaMenu.Harass.UseE:Value() and GoSuManager:GetOrbwalkerMode() == "Harass") then
 		if self.Target and GoSuManager:IsReady(_E) and GoSuManager:ValidTarget(self.Target, self.ERange) then
 			ControlCastSpell(HK_E, self.Target.pos)
@@ -2734,6 +2729,7 @@ function Vayne:OnPreAttack(args)
 end
 
 function Vayne:OnPostAttackTick(args)
+	if _G.JustEvade and _G.JustEvade:Evading() or (_G.ExtLibEvade and _G.ExtLibEvade.Evading) then return end
 	if (self.VayneMenu.Combo.UseQ:Value() and GoSuManager:GetOrbwalkerMode() == "Combo") or (self.VayneMenu.Harass.UseQ:Value() and GoSuManager:GetOrbwalkerMode() == "Harass") then
 		if self.Target and GoSuManager:IsReady(_Q) and GoSuManager:ValidTarget(self.Target, self.Range) then
 			self:UseQ(self.Target, GoSuManager:GetOrbwalkerMode() == "Combo" and self.VayneMenu.Combo.ModeQ:Value() or self.VayneMenu.Harass.ModeQ:Value())
@@ -2774,7 +2770,7 @@ function Vayne:Auto2()
 					end
 				end
 				if self.VayneMenu.Interrupter.UseEDash:Value() then
-					if enemy.pathing.isDashing and enemy.pathing.dashSpeed > 500 then
+					if enemy.pathing.isDashing and enemy.pathing.dashSpeed > 400 then
 						if GoSuGeometry:GetDistance(enemy.pos, myHero.pos) > GoSuGeometry:GetDistance(Vector(enemy.pathing.endPos), myHero.pos) then
 							ControlCastSpell(HK_E, enemy.pos)
 						end
