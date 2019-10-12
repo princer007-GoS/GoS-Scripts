@@ -10,8 +10,7 @@
 	Changelog:
 
 	v1.2
-	+ Added Q switch to minigun while laneclearing
-	+ Fixed Jinx's Q usage
+	+ Fixed Jinx's Q usage and added switch to minigun while laneclearing
 
 	v1.1.9
 	+ Removed Ezreal's & Lucian's E gapclosing
