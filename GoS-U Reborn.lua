@@ -9,6 +9,10 @@
 
 	Changelog:
 
+	v1.2
+	+ Added Q switch to minigun while laneclearing
+	+ Fixed Jinx's Q usage
+
 	v1.1.9
 	+ Removed Ezreal's & Lucian's E gapclosing
 	+ Minor changes regarding to evade check
@@ -144,7 +148,7 @@ local OnTicks = {Champion = nil, Utility = nil}
 local BaseUltC = {["Ashe"] = true, ["Draven"] = true, ["Ezreal"] = true, ["Jinx"] = true}
 local Champions = {["Ashe"] = true, ["Caitlyn"] = false, ["Corki"] = false, ["Draven"] = false, ["Ezreal"] = true, ["Jhin"] = false, ["Jinx"] = true, ["Kaisa"] = true, ["Kalista"] = false, ["KogMaw"] = true, ["Lucian"] = true, ["MissFortune"] = false, ["Quinn"] = false, ["Sivir"] = true, ["Tristana"] = true, ["Twitch"] = true, ["Varus"] = false, ["Vayne"] = true, ["Xayah"] = false}
 local Item_HK = {[ITEM_1] = HK_ITEM_1, [ITEM_2] = HK_ITEM_2, [ITEM_3] = HK_ITEM_3, [ITEM_4] = HK_ITEM_4, [ITEM_5] = HK_ITEM_5, [ITEM_6] = HK_ITEM_6, [ITEM_7] = HK_ITEM_7}
-local Version = "1.19"; local LuaVer = "1.1.9"
+local Version = "1.2"; local LuaVer = "1.2"
 local VerSite = "https://raw.githubusercontent.com/Ark223/GoS-Scripts/master/GoS-U%20Reborn.version"
 local LuaSite = "https://raw.githubusercontent.com/Ark223/GoS-Scripts/master/GoS-U%20Reborn.lua"
 
@@ -219,7 +223,7 @@ local CCSpells = {
 	["AzirR"] = {charName = "Azir", displayName = "Emperor's Divide", slot = _R, type = "linear", speed = 1400, range = 500, delay = 0.3, radius = 250, collision = false},
 	["BardQ"] = {charName = "Bard", displayName = "Cosmic Binding", slot = _Q, type = "linear", speed = 1500, range = 950, delay = 0.25, radius = 60, collision = true},
 	["BardR"] = {charName = "Bard", displayName = "Tempered Fate", slot = _R, type = "circular", speed = 2100, range = 3400, delay = 0.5, radius = 350, collision = false},
-	["RocketGrab"] = {charName = "Blitzcrank", displayName = "Rocket Grab", slot = _Q, type = "linear", speed = 1800, range = 1050, delay = 0.25, radius = 70, collision = true},
+	["RocketGrab"] = {charName = "Blitzcrank", displayName = "Rocket Grab", slot = _Q, type = "linear", speed = 1800, range = 1150, delay = 0.25, radius = 70, collision = true},
 	["BraumQ"] = {charName = "Braum", displayName = "Winter's Bite", slot = _Q, type = "linear", speed = 1700, range = 1000, delay = 0.25, radius = 70, collision = true},
 	["BraumR"] = {charName = "Braum", displayName = "Glacial Fissure", slot = _R, type = "linear", speed = 1400, range = 1250, delay = 0.5, radius = 115, collision = false},
 	["CaitlynYordleTrap"] = {charName = "Caitlyn", displayName = "Yordle Trap", slot = _W, type = "circular", speed = MathHuge, range = 800, delay = 0.25, radius = 75, collision = false},
@@ -1576,13 +1580,15 @@ function Jinx:Tick()
 	if _G.JustEvade and _G.JustEvade:Evading() then return end
 	if (_G.ExtLibEvade and _G.ExtLibEvade.Evading) or Game.IsChatOpen() or not myHero.alive then return end
 	self:Auto2()
+	local mode = GoSuManager:GetOrbwalkerMode()
+	if mode == "Clear" and self:HasQ2() then ControlCastSpell(HK_Q) end
 	self.Range = myHero.range + myHero.boundingRadius * 2
 	self.Target = Module.TargetSelector:GetTarget(655 + self.BonusRange[GoSuManager:GetCastLevel(myHero, _Q)], nil)
 	self.Target1 = Module.TargetSelector:GetTarget(self.WData.range, nil)
 	self.Target2 = Module.TargetSelector:GetTarget(self.JinxMenu.Combo.Distance:Value(), nil)
 	if self.Target2 == nil then return end
-	if GoSuManager:GetOrbwalkerMode() == "Combo" then Module.Utility:Tick(); self:Combo(self.Target1, self.Target2, self.Target)
-	elseif GoSuManager:GetOrbwalkerMode() == "Harass" then self:Harass(self.Target1, self.Target) end
+	if mode == "Combo" then Module.Utility:Tick(); self:Combo(self.Target1, self.Target2, self.Target)
+	elseif mode == "Harass" then self:Harass(self.Target1, self.Target) end
 end
 
 function Jinx:Draw()
@@ -1617,7 +1623,7 @@ function Jinx:Combo(target1, target2, target3)
 	if target2 == nil or myHero.attackData.state == 2 then return end
 	if target3 and GoSuManager:IsReady(_Q) and self.JinxMenu.Combo.UseQ:Value() then
 		local dist = GoSuGeometry:GetDistance(myHero.pos, target3.pos)
-		if dist > 590 and not self:HasQ2() or (dist < 590 and self:HasQ2()) then
+		if dist > 615 and not self:HasQ2() or (dist < 615 and self:HasQ2()) then
 			ControlCastSpell(HK_Q)
 		end
 	end
@@ -1643,7 +1649,7 @@ function Jinx:Harass(target1, target2)
 	if target1 == nil or GoSuManager:GetPercentMana(myHero) <= self.JinxMenu.Harass.MP:Value() or myHero.attackData.state == 2 then return end
 	if target2 and GoSuManager:IsReady(_Q) and self.JinxMenu.Harass.UseQ:Value() then
 		local dist = GoSuGeometry:GetDistance(myHero.pos, target2.pos)
-		if dist > 590 and not self:HasQ2() or (dist < 590 and self:HasQ2()) then
+		if dist > 615 and not self:HasQ2() or (dist < 615 and self:HasQ2()) then
 			ControlCastSpell(HK_Q)
 		end
 	end
@@ -1658,7 +1664,7 @@ function Jinx:Harass(target1, target2)
 end
 
 function Jinx:HasQ2()
-	return myHero:GetSpellData(_Q).toggleState == 2
+	return GoSuManager:GotBuff(myHero, "JinxQ") > 0
 end
 
 function Jinx:UseW(target)
