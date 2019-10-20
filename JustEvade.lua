@@ -1106,7 +1106,7 @@ function JEvade:__init()
 	self.JEMenu.Core:MenuElement({id = "DS", name = "Diagonal Search Step", value = 30, min = 5, max = 100, step = 5})
 	self.JEMenu.Core:MenuElement({id = "DC", name = "Diagonal Points Count", value = 3, min = 1, max = 8, step = 1})
 	self.JEMenu.Core:MenuElement({id = "LR", name = "Limited Detection Range", value = 5000, min = 500, max = 10000, step = 250})
-	self.JEMenu.Core:MenuElement({id = "SS", name = "Safety Check Sensitivity", value = 4, min = 0, max = 100, step = 1})
+	self.JEMenu.Core:MenuElement({id = "SS", name = "Safety Check Sensitivity", value = 10, min = 0, max = 100, step = 1})
 	self.JEMenu:MenuElement({id = "Main", name = "Main Settings", type = MENU})
 	self.JEMenu.Main:MenuElement({id = "Evade", name = "Enable Evade", value = true})
 	self.JEMenu.Main:MenuElement({id = "Dodge", name = "Dodge Spells", value = true})
@@ -1739,7 +1739,6 @@ function JEvade:CoreManager(s)
 	local mode = self.JEMenu.Spells[s.name]["Mode"..s.name]:Value() or 1
 	if self:IsPointInPolygon(s.path, self.MyHeroPos) then
 		if self.OldTimer ~= self.NewTimer then
-			self.SafePos, self.ExtendedPos = nil, nil
 			local safePos = self:GetBestEvadePos(self.DodgeableSpells, mode, false, false)
 			if safePos then
 				self.ExtendedPos = self:GetExtendedSafePos(safePos)
