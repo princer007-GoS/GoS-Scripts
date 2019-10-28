@@ -69,7 +69,7 @@ local function ReadFile(file)
 	txt:close(); return result
 end
 
-local Version, IntVer = 1.02, "1.0.2"
+local Version, IntVer = 1.03, "1.0.3"
 local function AutoUpdate()
 	DownloadFile("https://raw.githubusercontent.com/Ark223/GoS-Scripts/master/PremiumPrediction.version", COMMON_PATH .. "PremiumPrediction.version")
 	if tonumber(ReadFile(COMMON_PATH .. "PremiumPrediction.version")) > Version then
@@ -305,7 +305,7 @@ function MEC:CircleEnclosesPoints(center, radius2, points, skip1, skip2, skip3)
 	for i, point in ipairs(unskipped) do
 		local dx, dy = center.x - point.x, center.y - point.y
 		local testRadius2 = dx * dx + dy * dy
-		if not testRadius2 > radius2 then enclosing = enclosing + 1 end
+		if not (testRadius2 > radius2) then enclosing = enclosing + 1 end
 	end
 	return enclosing == #unskipped
 end
@@ -583,7 +583,7 @@ function PremiumPred:IsColliding(source, position, spellData, flags)
 				end
 			end
 		elseif flag == "hero" then
-			for i = 1, self.Enemies do
+			for i = 1, #self.Enemies do
 				local hero = self.Enemies[i]
 				if hero and not hero.dead then
 					local predPos = self:GetFastPrediction(source, hero, spellData)
