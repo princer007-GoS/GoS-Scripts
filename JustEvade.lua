@@ -1950,7 +1950,7 @@ function JEvade:OnCreateMissile(unit, missile)
 		local endPos, range = self:CalculateEndPos(startPos, placementPos, unitPos, data.speed, data.range, data.radius, data.collision, data.type, data.extend)
 		local extraRadius = self.JEMenu.Spells[menuName]["ER"..menuName]:Value() or 0
 		local danger = self.JEMenu.Spells[menuName]["Danger"..menuName]:Value() or 1
-		data.range, data.radius, data.y = range, data.radius + extraRadius, spell.destPos.y
+		data.range, data.radius, data.y = range, data.radius + extraRadius, missile.endPos.y
 		local path, path2 = self:GetPaths(startPos, endPos, data, name)
 		if path == nil then return end
 		if menuName == "VelkozQMissileSplit" then self:SpellExistsThenRemove("VelkozQ")
