@@ -12,6 +12,9 @@
 
 	Changelog:
 
+	v1.0.7
+	+ Added Senna's spells
+
 	v1.0.6
 	+ Added VelKoz's Q split, Jayce EQ & Syndra QE spell
 	+ Added danger level arg to OnImpossibleDodge callback
@@ -53,7 +56,7 @@ local function ReadFile(file)
 	txt:close(); return result
 end
 
-local Version, IntVer = 1.06, "1.0.6"
+local Version, IntVer = 1.07, "1.0.7"
 local function AutoUpdate()
 	DownloadFile("https://raw.githubusercontent.com/Ark223/GoS-Scripts/master/JustEvade.version", SCRIPT_PATH .. "JustEvade.version")
 	if tonumber(ReadFile(SCRIPT_PATH .. "JustEvade.version")) > Version then
@@ -420,6 +423,11 @@ local SpellDatabase = {
 	},
 	["Sejuani"] = {
 		["SejuaniR"] = {icon = Icons.."SejuaniR"..Png, displayName = "Glacial Prison", missileName = "SejuaniRMissile", slot = _R, type = "linear", speed = 1600, range = 1300, delay = 0.25, radius = 120, danger = 5, cc = true, collision = false, windwall = true, hitbox = true, fow = true, exception = false, extend = true},
+	},
+	["Senna"] = {
+		["SennaQCast"] = {icon = Icons.."SennaQ"..Png, displayName = "Piercing Darkness", slot = _Q, type = "linear", speed = MathHuge, range = 1400, delay = 0.4, radius = 80, danger = 2, cc = false, collision = false, windwall = false, hitbox = true, fow = false, exception = false, extend = true},
+		["SennaW"] = {icon = Icons.."SennaW"..Png, displayName = "Last Embrace", missileName = "SennaW", slot = _W, type = "linear", speed = 1150, range = 1300, delay = 0.25, radius = 60, danger = 1, cc = true, collision = true, windwall = true, hitbox = true, fow = true, exception = false, extend = true},
+		["SennaR"] = {icon = Icons.."SennaR"..Png, displayName = "Dawning Shadow", missileName = "SennaRWarningMis", slot = _R, type = "linear", speed = 20000, range = 12500, delay = 1, radius = 180, danger = 4, cc = false, collision = false, windwall = true, hitbox = true, fow = true, exception = false, extend = true},
 	},
 	--["Shen"] = {
 	--	["ShenE"] = {icon = Icons.."ShenE"..Png, displayName = "Shadow Dash", slot = _E, type = "linear", speed = 1200, range = 600, delay = 0, radius = 60, danger = 2, cc = true, collision = false, windwall = false, hitbox = false, fow = false, exception = false, extend = true},
@@ -1777,7 +1785,7 @@ function JEvade:CoreManager(s)
 	if self:IsPointInPolygon(s.path, self.MyHeroPos) then
 		if self.OldTimer ~= self.NewTimer then
 			local evadeSpells = self.EvadeSpellData
-			local flashUsage = self.Flash and self.JEMenu.Spells.Flash.US:Value() and self:IsReady(self.Flash) and s.danger == 5
+			local flashUsage = self.Flash2 and self.JEMenu.Spells.Flash.US:Value() and self:IsReady(self.Flash2) and s.danger == 5
 			local safePos = self:GetBestEvadePos(self.DodgeableSpells, mode, nil, false)
 			if safePos then
 				self.ExtendedPos = self:GetExtendedSafePos(safePos)
