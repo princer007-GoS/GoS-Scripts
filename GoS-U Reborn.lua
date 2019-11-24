@@ -9,6 +9,9 @@
 
 	Changelog:
 
+	v1.2.1
+	+ Fixed icons
+
 	v1.2
 	+ Fixed Jinx's Q usage and added switch to minigun while laneclearing
 
@@ -147,7 +150,7 @@ local OnTicks = {Champion = nil, Utility = nil}
 local BaseUltC = {["Ashe"] = true, ["Draven"] = true, ["Ezreal"] = true, ["Jinx"] = true}
 local Champions = {["Ashe"] = true, ["Caitlyn"] = false, ["Corki"] = false, ["Draven"] = false, ["Ezreal"] = true, ["Jhin"] = false, ["Jinx"] = true, ["Kaisa"] = true, ["Kalista"] = false, ["KogMaw"] = true, ["Lucian"] = true, ["MissFortune"] = false, ["Quinn"] = false, ["Sivir"] = true, ["Tristana"] = true, ["Twitch"] = true, ["Varus"] = false, ["Vayne"] = true, ["Xayah"] = false}
 local Item_HK = {[ITEM_1] = HK_ITEM_1, [ITEM_2] = HK_ITEM_2, [ITEM_3] = HK_ITEM_3, [ITEM_4] = HK_ITEM_4, [ITEM_5] = HK_ITEM_5, [ITEM_6] = HK_ITEM_6, [ITEM_7] = HK_ITEM_7}
-local Version = "1.2"; local LuaVer = "1.2"
+local Version = "1.21"; local LuaVer = "1.2.1"
 local VerSite = "https://raw.githubusercontent.com/Ark223/GoS-Scripts/master/GoS-U%20Reborn.version"
 local LuaSite = "https://raw.githubusercontent.com/Ark223/GoS-Scripts/master/GoS-U%20Reborn.lua"
 
@@ -1151,7 +1154,7 @@ class "Ashe"
 
 function Ashe:__init()
 	self.Target1 = nil; self.Target2 = nil
-	self.HeroIcon = "https://vignette.wikia.nocookie.net/leagueoflegends/images/4/4a/AsheSquare.png"
+	self.HeroIcon = "https://vignette.wikia.nocookie.net/leagueoflegends/images/7/7e/Ashe_OriginalSquare.png"
 	self.QIcon = "https://vignette.wikia.nocookie.net/leagueoflegends/images/2/2a/Ranger%27s_Focus_2.png"
 	self.WIcon = "https://vignette.wikia.nocookie.net/leagueoflegends/images/5/5d/Volley.png"
 	self.EIcon = "https://vignette.wikia.nocookie.net/leagueoflegends/images/e/e3/Hawkshot.png"
@@ -1335,7 +1338,7 @@ class "Ezreal"
 
 function Ezreal:__init()
 	self.Target1 = nil; self.Target2 = nil
-	self.HeroIcon = "https://vignette.wikia.nocookie.net/leagueoflegends/images/c/c3/EzrealSquare.png"
+	self.HeroIcon = "https://vignette.wikia.nocookie.net/leagueoflegends/images/5/54/Ezreal_OriginalSquare.png"
 	self.QIcon = "https://vignette.wikia.nocookie.net/leagueoflegends/images/5/5a/Mystic_Shot.png"
 	self.WIcon = "https://vignette.wikia.nocookie.net/leagueoflegends/images/9/9e/Essence_Flux.png"
 	self.EIcon = "https://vignette.wikia.nocookie.net/leagueoflegends/images/f/fb/Arcane_Shift.png"
@@ -1528,7 +1531,7 @@ class "Jinx"
 function Jinx:__init()
 	self.Target = nil; self.Target1 = nil; self.Target2 = nil
 	self.BonusRange = {75, 100, 125, 150, 175}
-	self.HeroIcon = "https://vignette.wikia.nocookie.net/leagueoflegends/images/e/e2/JinxSquare.png"
+	self.HeroIcon = "https://vignette.wikia.nocookie.net/leagueoflegends/images/6/65/Jinx_OriginalSquare.png"
 	self.QIcon = "https://vignette.wikia.nocookie.net/leagueoflegends/images/4/4d/Pow-Pow.png"
 	self.WIcon = "https://vignette.wikia.nocookie.net/leagueoflegends/images/7/76/Zap%21.png"
 	self.EIcon = "https://vignette.wikia.nocookie.net/leagueoflegends/images/b/bb/Flame_Chompers%21.png"
@@ -1692,7 +1695,7 @@ class "Kaisa"
 
 function Kaisa:__init()
 	self.Target1 = nil; self.Target2 = nil; self.Timer = 0
-	self.HeroIcon = "https://vignette.wikia.nocookie.net/leagueoflegends/images/4/49/Kai%27SaSquare.png"
+	self.HeroIcon = "https://vignette.wikia.nocookie.net/leagueoflegends/images/1/15/Kai%27Sa_OriginalSquare.png"
 	self.QIcon = "https://vignette.wikia.nocookie.net/leagueoflegends/images/9/9a/Icathian_Rain.png"
 	self.WIcon = "https://vignette.wikia.nocookie.net/leagueoflegends/images/8/89/Void_Seeker.png"
 	self.EIcon = "https://vignette.wikia.nocookie.net/leagueoflegends/images/e/e4/Supercharge.png"
@@ -1816,7 +1819,7 @@ class "KogMaw"
 function KogMaw:__init()
 	self.Target1 = nil; self.Target2 = nil; self.Timer = 0
 	self.BonusRange = {130, 150, 170, 190, 210}
-	self.HeroIcon = "https://vignette.wikia.nocookie.net/leagueoflegends/images/4/45/Kog%27MawSquare.png"
+	self.HeroIcon = "https://vignette.wikia.nocookie.net/leagueoflegends/images/b/bd/Kog%27Maw_OriginalSquare.png"
 	self.QIcon = "https://vignette.wikia.nocookie.net/leagueoflegends/images/a/a9/Caustic_Spittle.png"
 	self.WIcon = "https://vignette.wikia.nocookie.net/leagueoflegends/images/e/ef/Bio-Arcane_Barrage.png"
 	self.EIcon = "https://vignette.wikia.nocookie.net/leagueoflegends/images/0/0c/Void_Ooze.png"
@@ -2022,7 +2025,7 @@ class "Lucian"
 
 function Lucian:__init()
 	self.Target1 = nil; self.Target2 = nil; self.MPos = mousePos; self.Timer = GameTimer()
-	self.HeroIcon = "https://vignette.wikia.nocookie.net/leagueoflegends/images/1/1e/LucianSquare.png"
+	self.HeroIcon = "https://vignette.wikia.nocookie.net/leagueoflegends/images/1/10/Lucian_OriginalSquare.png"
 	self.QIcon = "https://vignette.wikia.nocookie.net/leagueoflegends/images/2/2d/Piercing_Light.png"
 	self.WIcon = "https://vignette.wikia.nocookie.net/leagueoflegends/images/6/60/Ardent_Blaze.png"
 	self.EIcon = "https://vignette.wikia.nocookie.net/leagueoflegends/images/f/f1/Relentless_Pursuit.png"
@@ -2215,7 +2218,7 @@ class "Sivir"
 
 function Sivir:__init()
 	self.DetectedMissiles = {}; self.DetectedSpells = {}; self.Target = nil; self.Timer = 0
-	self.HeroIcon = "https://vignette.wikia.nocookie.net/leagueoflegends/images/e/e1/SivirSquare.png"
+	self.HeroIcon = "https://vignette.wikia.nocookie.net/leagueoflegends/images/9/90/Sivir_OriginalSquare.png"
 	self.QIcon = "https://vignette.wikia.nocookie.net/leagueoflegends/images/b/bb/Boomerang_Blade.png"
 	self.WIcon = "https://vignette.wikia.nocookie.net/leagueoflegends/images/8/87/Ricochet.png"
 	self.EIcon = "https://vignette.wikia.nocookie.net/leagueoflegends/images/4/4a/Spell_Shield.png"
@@ -2394,7 +2397,7 @@ class "Tristana"
 
 function Tristana:__init()
 	self.Target = nil
-	self.HeroIcon = "https://vignette.wikia.nocookie.net/leagueoflegends/images/0/06/TristanaSquare.png"
+	self.HeroIcon = "https://vignette.wikia.nocookie.net/leagueoflegends/images/0/08/Tristana_OriginalSquare.png"
 	self.QIcon = "https://vignette.wikia.nocookie.net/leagueoflegends/images/4/4b/Rapid_Fire.png"
 	self.EIcon = "https://vignette.wikia.nocookie.net/leagueoflegends/images/1/1d/Explosive_Charge.png"
 	self.RIcon = "https://vignette.wikia.nocookie.net/leagueoflegends/images/f/f3/Buster_Shot.png"
@@ -2526,7 +2529,7 @@ class "Twitch"
 
 function Twitch:__init()
 	self.Target = nil; self.VenomData = {}
-	self.HeroIcon = "https://vignette.wikia.nocookie.net/leagueoflegends/images/7/79/TwitchSquare.png"
+	self.HeroIcon = "https://vignette.wikia.nocookie.net/leagueoflegends/images/f/fb/Twitch_OriginalSquare.png"
 	self.WIcon = "https://vignette.wikia.nocookie.net/leagueoflegends/images/f/f6/Venom_Cask.png"
 	self.EIcon = "https://vignette.wikia.nocookie.net/leagueoflegends/images/5/5f/Contaminate.png"
 	self.WData = SpellData[myHero.charName][1]; self.EData = SpellData[myHero.charName][2]
@@ -2643,7 +2646,7 @@ class "Vayne"
 
 function Vayne:__init()
 	self.Target = nil; self.Timer = GameTimer()
-	self.HeroIcon = "https://vignette.wikia.nocookie.net/leagueoflegends/images/9/95/VayneSquare.png"
+	self.HeroIcon = "https://vignette.wikia.nocookie.net/leagueoflegends/images/0/05/Vayne_OriginalSquare.png"
 	self.QIcon = "https://vignette.wikia.nocookie.net/leagueoflegends/images/8/8d/Tumble.png"
 	self.EIcon = "https://vignette.wikia.nocookie.net/leagueoflegends/images/6/66/Condemn.png"
 	self.RIcon = "https://vignette.wikia.nocookie.net/leagueoflegends/images/b/b4/Final_Hour.png"
