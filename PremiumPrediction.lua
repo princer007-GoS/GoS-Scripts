@@ -563,7 +563,7 @@ function PremiumPred:Intersection(a1, b1, a2, b2)
 	return x ~= 0 and t >= 0 and t <= 1 and u >= 0 and u <= 1 and Point2(a1 + t * r) or nil
 end
 
-function PremiumPred:IsColliding(source, position, spellData, flags)
+function PremiumPred:IsColliding(source, position, spellData, flags, target)
 	local position, result = self:To2D(position), false
 	local sourcePos = IsPoint(source) and self:To2D(source) or self:To2D(source.pos)
 	for i = 1, #flags do
@@ -585,7 +585,7 @@ function PremiumPred:IsColliding(source, position, spellData, flags)
 		elseif flag == "hero" then
 			for i = 1, #self.Enemies do
 				local hero = self.Enemies[i]
-				if hero and not hero.dead then
+				if hero and not hero.dead and target ~= hero then
 					local predPos = self:GetFastPrediction(source, hero, spellData)
 					if predPos then
 						local predPos = self:To2D(predPos)
@@ -596,7 +596,7 @@ function PremiumPred:IsColliding(source, position, spellData, flags)
 					end
 				end
 			end
-		elseif flag == "windwall" then
+		elseif flag == "windwall" and self.WindWall ~= nil then
 			local data = self.WindWall
 			if #data == 0 then break end
 			local s1, s2, s3, s4 = Point2(data.pos1 - data.dir), Point2(data.pos1 + data.dir), Point2(data.pos2 - data.dir), Point2(data.pos2 + data.dir)
@@ -987,7 +987,7 @@ function PremiumPred:GetHitChance(source, unit, castPos, spellData, timeToHit, c
 	if not unit.visible then hitChance = hitChance / 2 end
 	local flags = spellData.collision
 	if self:DistanceSquared(sourcePos, castPos) > spellData.range * spellData.range then hitChance = 0
-	elseif flags and #flags > 0 and self:IsColliding(source, self:To3D(castPos), spellData, flags) then hitChance = -1 end
+	elseif flags and #flags > 0 and self:IsColliding(source, self:To3D(castPos), spellData, flags, unit) then hitChance = -1 end
 	return hitChance
 end
 
@@ -1008,7 +1008,7 @@ _G.PremiumPrediction = {
 	GetMovementSpeed = function(self, unit) return PremiumPred:GetMovementSpeed(unit) end,
 	GetPositionAfterTime = function(self, unit, time) return PremiumPred:GetPositionAfterTime(unit, time) end,
 	GetWaypoints = function(self, unit) return PremiumPred:GetWaypoints3D(unit) end,
-	IsColliding = function(self, source, position, spellData, flags) return PremiumPred:IsColliding(source, position, spellData, flags) end,
+	IsColliding = function(self, source, position, spellData, flags, target) return PremiumPred:IsColliding(source, position, spellData, flags, target) end,
 	IsDashing = function(self, unit) return PremiumPred:IsDashing(unit) end,
 	IsFacing = function(self, source, unit, angle) return PremiumPred:IsFacing(source, unit, angle) end,
 	IsMoving = function(self, unit) return PremiumPred:IsMoving(unit) end,
